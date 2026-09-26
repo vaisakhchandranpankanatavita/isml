@@ -1,0 +1,127 @@
+/* ==========================================================================
+   Inside-POV 3D carousel — the viewer stands at the centre of a ring,
+   looking outward, instead of cards stacking toward them. Pure CSS 3D
+   transforms; rotation is a custom property (`--pov-rotation`) written by
+   InsidePovCarousel.tsx on every `requestAnimationFrame` tick, never by a
+   CSS animation. Warm-neutral ground, matching this site's paper tokens so
+   it repaints with the Studio/Cinema toggle for free.
+   ========================================================================== */
+
+.ipc {
+  --pov-perspective: 1000px;
+  --pov-radius: 420px;
+  --pov-card-w: 220px;
+  --pov-card-h: 390px;
+  --pov-step: 45deg;
+  --pov-rotation: 0deg;
+  --pov-tilt-x: 0deg;
+  --pov-card-radius: 0;
+
+  position: relative;
+  width: 100%;
+  height: min(78vh, 560px);
+  min-height: 380px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: var(--pov-card-radius);
+  isolation: isolate;
+  user-select: none;
+  touch-action: none;
+  cursor: grab;
+  background:
+    radial-gradient(
+      ellipse at 50% 45%,
+      rgb(var(--paper-light-rgb)) 0%,
+      rgb(var(--paper-rgb)) 55%,
+      rgb(var(--paper-dark-rgb)) 100%
+    );
+  box-shadow: inset 0 0 0 1px var(--paper-line);
+}
+.ipc--dragging {
+  cursor: grabbing;
+}
+.ipc--static {
+  cursor: default;
+}
+.ipc:focus-visible {
+  outline: 2px solid rgb(var(--ink-rgb) / 0.35);
+  outline-offset: 4px;
+}
+
+.ipc__stage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  perspective: var(--pov-perspective);
+  perspective-origin: 50% 50%;
+  overflow: hidden;
+  transform-style: preserve-3d;
+}
+
+.ipc__world {
+  position: relative;
+  width: 0;
+  height: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--pov-tilt-x)) rotateY(var(--pov-rotation));
+  will-change: transform;
+}
+
+.ipc__card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--pov-card-w);
+  height: var(--pov-card-h);
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--pov-card-radius);
+  background: rgb(var(--paper-band-rgb));
+  transform-style: preserve-3d;
+  transform: translate(-50%, -50%) rotateY(calc(var(--i) * var(--pov-step)))
+    translateZ(calc(var(--pov-radius) * -1));
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  backface-visibility: hidden;
+  will-change: transform;
+  contain: layout paint style;
+}
+.ipc__card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 35%, rgba(0, 0, 0, 0.16));
+  pointer-events: none;
+}
+
+.ipc__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+@media (max-width: 760px) {
+  .ipc {
+    min-height: 320px;
+    height: 62vh;
+    --pov-perspective: 640px;
+    --pov-radius: 280px;
+    --pov-card-w: 156px;
+    --pov-card-h: 278px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ipc {
+    cursor: default;
+  }
+  .ipc__world,
+  .ipc__card {
+    will-change: auto;
+  }
+}

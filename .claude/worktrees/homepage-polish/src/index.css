@@ -1,0 +1,649 @@
+/* Outfit (everything) + Reenie Beanie (the one cursive accent) — both free,
+   both actually vendored (via Fontsource, self-hosted through
+   `node_modules`, no Google Fonts network request at runtime). Outfit is the
+   variable-weight build; Reenie Beanie only ships one weight, so it's the
+   plain (non-variable) Fontsource package. */
+@import '@fontsource-variable/outfit';
+@import '@fontsource-variable/jetbrains-mono';
+@import '@fontsource/reenie-beanie';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Neo-Academy Terminal — the theme engine
+
+   Two consoles, switched by `data-theme` on <html> (see `useTheme.ts`). This
+   archetype is dark-only by design (pure ink-black canvas, paper-white
+   type), so both registers stay in the dark family — the toggle shifts
+   between a slightly raised console and the true black terminal rather than
+   between light and dark:
+
+     Studio (default)   near-black #0c0c0e ground, paper-white type.
+     Cinema (dark)       pure ink #070708 ground, paper-white type.
+
+   Every existing `bg-paper` / `text-ink` / `border-paper-line` utility across
+   the site reads these variables, so the whole site repaints on toggle with
+   no class changes anywhere else. `obsidian` (in `tailwind.config.js`) is the
+   one fixed exception — reserved for the scrim under a photo caption, which
+   needs to stay dark regardless of site chrome.
+   ========================================================================== */
+
+@layer base {
+  :root {
+    --paper-rgb: 12 12 14;
+    --paper-sunk-rgb: 9 9 11;
+    --paper-band-rgb: 17 17 19;
+    --paper-light-rgb: 24 24 27;
+    --paper-dark-rgb: 5 5 6;
+    --paper-line: rgba(228, 228, 231, 0.14);
+    --ink-rgb: 244 244 245;
+    --ink-soft-rgb: 200 200 205;
+    --ink-muted-rgb: 154 154 162;
+    --ink-faint-rgb: 106 106 114;
+  }
+
+  [data-theme='cinema'] {
+    --paper-rgb: 7 7 8;
+    --paper-sunk-rgb: 4 4 5;
+    --paper-band-rgb: 12 12 14;
+    --paper-light-rgb: 17 17 19;
+    --paper-dark-rgb: 2 2 3;
+    --paper-line: rgba(228, 228, 231, 0.1);
+    --ink-rgb: 244 244 245;
+    --ink-soft-rgb: 196 196 201;
+    --ink-muted-rgb: 148 148 156;
+    --ink-faint-rgb: 96 96 104;
+  }
+}
+
+/* ==========================================================================
+   Indian School Muladha — design system
+
+   An institutional site, built the way a university site is built: structure
+   carried by rules rather than boxes. Nothing floats, nothing glows.
+
+   Four structural devices carry the whole site:
+
+   1. The rule label      (.rule-label)
+      A label sitting *inside* a horizontal rule. Replaces the tracked-out
+      eyebrow floating above a heading.
+
+   2. The register        (.register)
+      Facts separated by rules rather than boxed in identical cards. This is
+   how a school's calendar, timetable and mark sheet actually read.
+
+   3. The notice board    (.notice)
+      Dated entries in a left gutter, with marigold reserved for genuinely
+      new items.
+
+   4. The story           (.story)
+      Image above headline, separated from its neighbours by whitespace and a
+      hairline — never a bordered, shadowed card. This is the unit the news
+      grid, the programme grid and the gallery are all built from.
+
+   Marigold is never decoration. It flags a new notice, and nothing else.
+   ========================================================================== */
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  [data-theme='cinema'] {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Clears the two-tier fixed header (navy utility strip + nav bar). */
+    scroll-padding-top: 6.5rem;
+    background: rgb(var(--paper-rgb));
+  }
+
+  /* Lenis drives every scroll position itself; the browser's own smoothing on
+     top of it re-eases each frame and makes scrolling feel stuck. */
+  html.lenis,
+  html.lenis body {
+    scroll-behavior: auto !important;
+  }
+
+  body {
+    @apply bg-paper font-sans text-base text-ink antialiased transition-colors duration-300;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* One family for everything (`font-display` and `font-sans` both resolve
+     to Outfit — see `tailwind.config.js`), Reenie Beanie (`font-serif`)
+     reserved for `.voice`. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display font-semibold text-ink;
+    text-wrap: balance;
+  }
+
+  h1,
+  h2 {
+    letter-spacing: -0.025em;
+  }
+
+  /* Outfit's advance is tighter at small sizes, so the sizes this site leans
+     on — nav, rule labels, table metadata — open up slightly instead of
+     tightening. Display type is untouched; it tightens instead, above. */
+  .rule-label,
+  nav,
+  th,
+  label,
+  .btn-primary {
+    letter-spacing: 0.03em;
+  }
+
+  a {
+    @apply transition-colors;
+  }
+
+  ::selection {
+    @apply bg-marigold-500/25 text-ink;
+  }
+
+  /* One visible focus treatment everywhere, public and admin — the neon
+     emission value, reserved for exactly this and tiny cursors/indicators. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-marigold-500 ring-offset-2 ring-offset-paper;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    /* No ink-bleed sweep, no clip-path shutter — the theme just switches. */
+    ::view-transition-group(root),
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none !important;
+    }
+  }
+}
+
+/* Custom cursor is opt-in via a class the CustomCursor component sets on
+   <html> once it has confirmed a fine pointer and no reduced-motion request
+   — never assume one exists. Hiding the native cursor any earlier would
+   strand touch/reduced-motion visitors with no pointer at all. */
+html.has-custom-cursor,
+html.has-custom-cursor a,
+html.has-custom-cursor button {
+  cursor: none;
+}
+
+/* `cursor` inherits, so without this, any element the two selectors above
+   don't name — inputs, textareas, selects, editable regions — falls through
+   to the inherited `none` and goes invisible on hover, with no caret and no
+   dot/ring to replace it. Restore the native cursor there explicitly. */
+html.has-custom-cursor input,
+html.has-custom-cursor textarea,
+html.has-custom-cursor select,
+html.has-custom-cursor [contenteditable='true'] {
+  cursor: auto;
+}
+
+@layer components {
+  .glass {
+    @apply backdrop-blur-xl bg-white/30 border border-white/40 shadow-sm;
+  }
+  .glass-dark {
+    @apply backdrop-blur-xl bg-obsidian/60 border border-white/10 shadow-sm;
+  }
+  .glass-light {
+    @apply backdrop-blur-xl bg-paper-light/40 border border-paper-line shadow-sm;
+  }
+  .cursor-dot,
+  .cursor-ring {
+    @apply pointer-events-none fixed left-0 top-0 z-[100] rounded-none;
+    will-change: transform;
+  }
+  .cursor-dot {
+    @apply h-1.5 w-1.5 bg-ink;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    @apply h-8 w-8 border border-ink;
+    mix-blend-mode: difference;
+  }
+}
+
+@layer components {
+  /* ----------------------------------------------------------------- shell
+     The page gutter, and the only thing that decides how wide the site is —
+     every wrapper across the public pages uses it. Fluid at every breakpoint:
+     content tracks the viewport instead of stopping at a cap and leaving dead
+     gutter on large displays.
+
+     Nothing here bounds the reading measure. Prose sets its own, so widening
+     the shell opens up grids, mastheads and media without stretching a line
+     of text. If a section needs a cap, it caps itself — don't add one here.
+
+     The padding ramp climbs past `lg` because a fluid shell has no gutter of
+     its own: on a wide screen this padding is all that keeps content off the
+     viewport edge. */
+  .container {
+    @apply mx-auto w-full px-5 sm:px-8 lg:px-10 xl:px-14 2xl:px-20;
+  }
+
+  /* ---------------------------------------------------------------- buttons
+     One button language: transparent, hairline-bordered, no fill at rest.
+     Hover is a faint tint of the button's own colour, never a solid block —
+     the outline stays the whole design. */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 border bg-transparent px-6 py-2.5
+           text-sm font-medium transition-[color,background-color,border-color] duration-300
+           focus:outline-none;
+  }
+  .btn-primary {
+    @apply btn border-brand-600 text-brand-700
+           hover:bg-brand-600/10 focus-visible:ring-brand-500 bg-brand-600/5;
+  }
+  [data-theme='cinema'] .btn-primary {
+    @apply border-brand-400 text-brand-300 hover:bg-brand-400/10 bg-brand-400/5;
+  }
+  .btn-outline {
+    @apply btn border-ink/40 text-ink
+           hover:border-ink/60 hover:bg-ink/5 focus-visible:ring-brand-500;
+  }
+  /* For use over a photograph, where the ground is unknown. */
+  .btn-on-image {
+    @apply btn border-white/60 text-white
+           hover:border-white hover:bg-white/10;
+  }
+  .btn-red {
+    @apply btn border-clay-500 text-clay-500
+           hover:bg-clay-500/10 focus-visible:ring-clay-500;
+  }
+  .btn-ghost {
+    @apply btn border-transparent text-ink-soft
+           hover:border-ink/15 hover:text-ink focus-visible:ring-brand-500;
+  }
+  .btn-sm {
+    @apply px-4 py-1.5 text-xs;
+  }
+
+  /* The hover tint sweeps in from the pointer's entry point (`--ex`/`--ey`,
+     set by `useInvertHover`, defaulting to centre if nothing sets them). It is
+     a faint wash of the button's own text colour, sitting behind the label —
+     with no solid fill left to invert, a blend-mode flood would just paint
+     the button white. */
+  .btn-invert {
+    @apply relative isolate overflow-hidden;
+  }
+  .btn-invert::before {
+    content: '';
+    @apply pointer-events-none absolute inset-0 -z-10 bg-current opacity-[0.08];
+    clip-path: circle(0% at var(--ex, 50%) var(--ey, 50%));
+    transition: clip-path 450ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .btn-invert:hover::before,
+  .btn-invert:focus-visible::before {
+    clip-path: circle(140% at var(--ex, 50%) var(--ey, 50%));
+  }
+
+  /* ------------------------------------------------------------------ links
+     Institutional sites underline their links. The underline is offset so it
+     doesn't collide with descenders. */
+  .link {
+    @apply text-brand-700 underline decoration-brand-600/30 underline-offset-[3px]
+           hover:decoration-brand-600;
+  }
+
+  /* ------------------------------------------------------------------ panels */
+  .card {
+    @apply border border-paper-line bg-white;
+  }
+
+  /* --------------------------------------------------------- vertical rhythm
+     Generous but not cavernous — an institution's pages are read, not
+     scrolled through. */
+  .section {
+    @apply py-14 md:py-20;
+  }
+  .section-lg {
+    @apply py-16 md:py-24;
+  }
+  .section-xl {
+    @apply py-20 md:py-28;
+  }
+  /* Alternating ground. Full-bleed, so it must sit outside `.container`. */
+  .band {
+    @apply bg-paper-sunk;
+  }
+  .band-line {
+    @apply border-y border-paper-line;
+  }
+
+  /* -------------------------------------------------- device 1: the rule label
+     A label set into a rule line. Sentence case on purpose: the tracked-out
+     all-caps eyebrow is the single commonest piece of template chrome, and
+     the rule is already doing the work of separating the label from the
+     heading below it. */
+  .rule-label {
+    @apply flex items-center gap-4 text-xs font-semibold text-ink-muted;
+  }
+  .rule-label::after {
+    content: '';
+    @apply h-px flex-1 bg-paper-line;
+  }
+  .rule-label--brand {
+    @apply text-brand-700;
+  }
+  .rule-label--light {
+    @apply text-white/70;
+  }
+  .rule-label--light::after {
+    @apply bg-white/25;
+  }
+
+  /* Technical index marker — the "[SYS_REF // DEPT_01]" tag pinned above a
+     section name or image frame. Micro-mono, tracking-spaced, always paired
+     with a live cursor dot so it reads as telemetry rather than decoration.
+     One accent color on the site (marigold, the neon emission value) lives
+     on the dot; the label text itself stays neutral. */
+  .sys-tag {
+    @apply inline-flex items-center gap-2 font-mono text-[10px] font-medium uppercase
+           tracking-[0.22em] text-ink-faint;
+  }
+  .sys-tag::before {
+    content: '';
+    @apply h-1 w-1 shrink-0 bg-marigold-500;
+  }
+
+  /* Section masthead: heading on the left, an optional link on the right,
+     a rule beneath both. The news, gallery and programme sections all open
+     this way, which is what makes the homepage read as one document. */
+  .section-head {
+    @apply flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2
+           border-b border-paper-line pb-4;
+  }
+
+  /* --------------------------------------------------------- device 2: register
+     Facts separated by rules rather than boxed into identical cards. */
+  .register {
+    @apply grid divide-y divide-paper-line border-y border-paper-line;
+  }
+  @screen sm {
+    .register {
+      @apply grid-flow-col auto-cols-fr divide-x divide-y-0;
+    }
+  }
+  .register__cell {
+    @apply px-0 py-5 sm:px-6 sm:first:pl-0;
+  }
+  .register__value {
+    @apply font-display text-2xl font-semibold text-ink;
+  }
+  .register__label {
+    @apply mt-1 text-xs text-ink-muted;
+  }
+
+  /* ----------------------------------------------------- device 3: notice board
+     Dated rows. The date lives in a gutter so the eye can scan chronology
+     without reading the entries. */
+  .notice-board {
+    @apply divide-y divide-paper-line border-y border-paper-line;
+  }
+  .notice {
+    @apply grid grid-cols-[4rem_1fr] gap-x-5 py-4 transition-colors;
+  }
+  .notice:hover {
+    @apply bg-brand-50/60;
+  }
+  .notice__date {
+    @apply pt-0.5 font-display text-sm font-semibold leading-tight text-brand-700;
+  }
+  .notice__title {
+    @apply text-sm font-medium leading-snug text-ink;
+  }
+  .notice__meta {
+    @apply mt-0.5 text-xs text-ink-muted;
+  }
+  /* The only place marigold appears on the public site. */
+  .notice__flag {
+    @apply ml-2 inline-flex translate-y-[-1px] items-center gap-1 bg-marigold-100
+           px-1.5 py-0.5 text-2xs font-semibold text-marigold-700;
+  }
+
+  /* ---------------------------------------------------------- device 4: story
+     Image above headline. No border, no shadow, no rounded box — whitespace
+     and the grid do the separating. The category is sentence case in the
+     accent; the headline turns green on hover so the whole tile reads as one
+     link target. */
+  .story__media {
+    @apply relative mb-4 aspect-[3/2] overflow-hidden bg-paper-sunk;
+  }
+  .story__media img {
+    @apply h-full w-full object-cover;
+  }
+  .story__cat {
+    @apply text-xs font-semibold text-brand-600;
+  }
+  .story__title {
+    @apply mt-1.5 font-display text-lg font-semibold leading-snug text-ink
+           transition-colors group-hover:text-brand-700;
+  }
+  .story__excerpt {
+    @apply mt-2 text-sm leading-relaxed text-ink-soft;
+  }
+  .story__meta {
+    @apply mt-2 text-xs text-ink-muted;
+  }
+
+  /* Placeholder for an empty image slot. Quiet — an unset cover should read
+     as "nothing here yet", not as a broken image. */
+  .media-empty {
+    @apply flex h-full w-full items-center justify-center bg-paper-band text-xs text-ink-faint;
+  }
+
+  /* ---------------------------------------------------------- spotlight
+     A radial highlight that follows the cursor, tracked by the single
+     delegated listener in `SpotlightTracker.tsx` (which sets `--mouse-x`/
+     `--mouse-y` per hovered card — nothing here reads the mouse directly).
+     Baked straight into `.story__media` — every story/programme tile
+     site-wide gets it for free — plus available standalone as
+     `.spotlight-card` for any other image tile (e.g. the gallery grid).
+     No border-radius, no border/bg color of its own: this only ever
+     decorates a tile that already defines its own ground, it never becomes
+     one. `z-10` keeps it above the <img> but below any caption text a
+     tile stacks on top. */
+  .spotlight-card,
+  .story__media {
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+  }
+  .spotlight-card::before,
+  .story__media::before {
+    content: '';
+    @apply pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-500;
+    background: radial-gradient(
+      320px circle at var(--mouse-x) var(--mouse-y),
+      rgba(255, 255, 255, 0.16),
+      transparent 70%
+    );
+  }
+  .spotlight-card:hover::before,
+  .spotlight-card:focus-within::before,
+  .story__media:hover::before,
+  .story__media:focus-within::before {
+    @apply opacity-100;
+  }
+
+  /* --------------------------------------------------------- sequence markers
+     Only for content that genuinely is a sequence — the K–12 stages. */
+  .step-marker {
+    @apply inline-flex h-7 w-7 shrink-0 items-center justify-center
+           border border-brand-600/25 font-display text-xs font-semibold text-brand-700;
+  }
+
+  /* ------------------------------------------------------------------- forms */
+  .field-label {
+    @apply mb-1.5 block text-sm font-semibold text-ink;
+  }
+  .field-input {
+    @apply w-full border border-paper-line bg-white px-3 py-2.5 text-sm text-ink
+           placeholder:text-ink-faint focus:border-brand-500 focus:outline-none
+           focus:ring-1 focus:ring-brand-500;
+  }
+
+  /* -------------------------------------------------------------- long-form */
+  .measure {
+    @apply max-w-prose;
+  }
+  .body-copy {
+    @apply max-w-measure text-base leading-relaxed text-ink-soft;
+  }
+  /* CMS-authored body text. Content arrives as plain text with newlines, so
+     the whitespace has to survive. */
+  .cms-prose {
+    @apply max-w-measure whitespace-pre-line text-base leading-relaxed text-ink-soft;
+  }
+  /* The principal's voice — set in the display serif, italic, at a larger
+     size than body copy so a signed message reads as the most institutional
+     thing on the page. */
+  .voice {
+    @apply font-serif text-2xl italic leading-relaxed text-ink-soft;
+  }
+
+  /* --------------------------------------------------- cinematic primitives
+     Shared by the motion components in `src/components/motion/` and
+     `src/components/common/CustomCursor.tsx` — kept here so every page reads
+     the same underline weight, grain density and progress-line thickness
+     rather than each component inventing its own. */
+
+  /* Magnetic nav underline: a line that grows from its own centre outward,
+     driven by a `scaleX` transform so it's one compositor-only property. */
+  .magnetic-link {
+    @apply relative inline-flex items-center;
+  }
+  .magnetic-link__rule {
+    @apply pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-center scale-x-0 bg-current
+           transition-transform duration-300 ease-out;
+  }
+  .magnetic-link:hover .magnetic-link__rule,
+  .magnetic-link:focus-visible .magnetic-link__rule {
+    @apply scale-x-100;
+  }
+
+  /* Kinetic accordion progress line — the vector rule that fills in under an
+     open curriculum module's title. Width is driven by the component
+     (0 → 100%) rather than here. */
+  .kinetic-progress {
+    @apply h-px origin-left bg-brand-600 transition-transform duration-500 ease-out;
+  }
+
+  /* Digital-grain overlay for the hero video. A tiled SVG turbulence noise,
+     dropped to whisper opacity and blended so it reads as film grain rather
+     than as a texture in its own right. `mix-blend-mode: overlay` is what
+     keeps it from ever flattening the footage under it. */
+  .grain-overlay {
+    @apply pointer-events-none absolute inset-0;
+    background-image: url("data:image/svg+xml,utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-size: 120px 120px;
+    mix-blend-mode: overlay;
+    opacity: 0.18;
+  }
+}
+
+@layer utilities {
+  /* The one orchestrated motion moment: notice rows arrive once on load.
+     Everything else on the site is still. */
+  .stagger-in {
+    animation: rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Pulls a block out of `.container` to the full viewport width, for the
+     hero and the image bands. */
+  .full-bleed {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+
+  /* Full-viewport-height stacked sections that settle smoothly from one to
+     the next as the reader scrolls — the homepage's cinematic pacing.
+     Reserved for pages built as a sequence of full-bleed moments (Home); a
+     text-heavy page forced into this would just clip its own content, so
+     it's opt-in per page rather than global.
+
+     The snapping itself is done in JS by Lenis (`useSectionSnap`), NOT by CSS
+     `scroll-snap`: native snap on <html> fights Lenis's per-frame scroll
+     writes and makes the page stick between sections. This class only sizes
+     the section and marks it as a snap target.
+
+     `min-height` rather than a fixed height: a section with more content
+     than one screen (the gallery grid on a narrow phone, say) grows instead
+     of clipping. */
+  .snap-section {
+    min-height: 100vh;
+  }
+
+  /* Background watermark — huge ghost type sitting behind a section's real
+     content. This is what a full-viewport-height section with genuinely
+     modest content (four stats, a paragraph) needs instead of dead-centring
+     it in a mostly-empty screen: the "empty" space becomes the brief's
+     "large watermarked institutional acronym" rather than a gap. Never
+     interactive, never announced. */
+  .watermark {
+    @apply pointer-events-none absolute inset-x-0 top-1/2 z-0 select-none whitespace-nowrap
+           text-center font-display font-bold text-ink;
+    font-size: clamp(6rem, 22vw, 16rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    transform: translateY(-50%);
+    opacity: 0.04;
+  }
+}
+
+/* ==========================================================================
+   The kinetic theme transition — the ink-bleed sweep.
+
+   `useTheme.ts` stamps `--ink-x` / `--ink-y` (the click coordinate, in vw/vh)
+   onto <html> right before calling `document.startViewTransition()`. The
+   browser snapshots old and new states either side of that call; this is
+   only the animation between the two snapshots. Deliberately outside every
+   `@layer` — view-transition pseudo-elements sit outside the normal element
+   tree and Tailwind's cascade layers don't reliably reach them.
+
+   Circle radius (150vmax) just has to comfortably outrun the viewport
+   diagonal from any click point; and the theme swaps with the ordinary
+   `transition-colors` already on `body` — this is the fallback, not a bug. */
+@supports (view-transition-name: root) {
+  ::view-transition-old(root) {
+    animation: none;
+  }
+  ::view-transition-new(root) {
+    animation: ink-bleed 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes ink-bleed {
+    from {
+      clip-path: circle(0% at var(--ink-x, 50%) var(--ink-y, 50%));
+    }
+    to {
+      clip-path: circle(150vmax at var(--ink-x, 50%) var(--ink-y, 50%));
+    }
+  }
+}

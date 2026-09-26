@@ -1,0 +1,1290 @@
+/* Type system (VCASS-derived — see `tailwind.config.js` fontFamily):
+     Outfit            body text        (stand-in for GT Walsheim)
+     Barlow Condensed  display + labels (stand-in for GT Walsheim Condensed)
+     Playfair italic   serif accent     (stand-in for GT Super Display)
+   All self-hosted via Fontsource. */
+@import '@fontsource-variable/outfit';
+@import '@fontsource/barlow-condensed/400.css';
+@import '@fontsource/barlow-condensed/600.css';
+@import '@fontsource/barlow-condensed/700.css';
+@import '@fontsource/barlow-condensed/800.css';
+@import '@fontsource-variable/playfair-display/wght-italic.css';
+@import '@fontsource/give-you-glory';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   Theme engine (VCASS neutral palette)
+
+   Two canvases, switched by `data-theme` on <html> (see `useTheme.ts`):
+
+     studio (light, default) #ffffff ground, #1f1e1d type.
+     cinema (dark, optional) #1f1e1d ground, #e6e5dd type.
+
+   Every `bg-paper` / `text-ink` / `border-paper-line` utility reads these
+   variables, so the whole site repaints on toggle. Dark editorial bands
+   become white in Studio; image-backed hero media keeps its dark scrim.
+   ========================================================================== */
+
+@layer base {
+  /* Light neutral ramp: #ffffff · #f8f8f8 · #eeeeee · #737373 · #525252 ·
+     #363633 · #1f1e1d, with the amber `theme-brand` accent (#f59021). */
+  :root {
+    --paper-rgb: 255 255 255;
+    --paper-sunk-rgb: 248 248 248;
+    --paper-band-rgb: 238 238 238;
+    --paper-light-rgb: 255 255 255;
+    --paper-dark-rgb: 238 238 238;
+    --paper-line: #e5e7eb;
+    --ink-rgb: 31 30 29;
+    --ink-soft-rgb: 54 54 51;
+    --ink-muted-rgb: 82 82 82;
+    --ink-faint-rgb: 115 115 115;
+
+    --vc-accent: #f59021;
+    --vc-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12h16M13 5l7 7-7 7'/%3E%3C/svg%3E");
+    --vc-radius: 14px;
+    --vc-nav-height: 75px;
+    --vc-nav-top: calc(clamp(1.75rem, 1.4596rem + 1.2422vw, 3rem) + env(safe-area-inset-top));
+    --vc-ease-out: cubic-bezier(0.34, 0.34, 0.02, 0.97);
+    --vc-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+    --vc-ease-bounce: cubic-bezier(0.32, 1.51, 0.36, 0.97);
+  }
+  @media (min-width: 768px) {
+    :root {
+      --vc-radius: 16px;
+    }
+  }
+  @media (min-width: 1280px) {
+    :root {
+      --vc-nav-height: 84px;
+    }
+  }
+
+  [data-theme='cinema'] {
+    --paper-rgb: 31 30 29;
+    --paper-sunk-rgb: 38 37 35;
+    --paper-band-rgb: 45 44 42;
+    --paper-light-rgb: 44 43 41;
+    --paper-dark-rgb: 22 21 20;
+    --paper-line: #363633;
+    --ink-rgb: 230 229 221;
+    --ink-soft-rgb: 219 218 212;
+    --ink-muted-rgb: 168 167 163;
+    --ink-faint-rgb: 129 128 124;
+  }
+}
+
+/* ==========================================================================
+   Indian School Muladha — design system
+
+   An institutional site, built the way a university site is built: structure
+   carried by rules rather than boxes. Nothing floats, nothing glows.
+
+   Four structural devices carry the whole site:
+
+   1. The rule label      (.rule-label)
+      A label sitting *inside* a horizontal rule. Replaces the tracked-out
+      eyebrow floating above a heading.
+
+   2. The register        (.register)
+      Facts separated by rules rather than boxed in identical cards. This is
+   how a school's calendar, timetable and mark sheet actually read.
+
+   3. The notice board    (.notice)
+      Dated entries in a left gutter, with marigold reserved for genuinely
+      new items.
+
+   4. The story           (.story)
+      Image above headline, separated from its neighbours by whitespace and a
+      hairline — never a bordered, shadowed card. This is the unit the news
+      grid, the programme grid and the gallery are all built from.
+
+   Marigold is never decoration. It flags a new notice, and nothing else.
+   ========================================================================== */
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  [data-theme='cinema'] {
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    overflow-x: clip;
+    /* Clears the floating header bar. */
+    scroll-padding-top: 9rem;
+    background: rgb(var(--paper-rgb));
+  }
+
+  /* Lenis drives every scroll position itself; the browser's own smoothing on
+     top of it re-eases each frame and makes scrolling feel stuck. */
+  html.lenis,
+  html.lenis body {
+    scroll-behavior: auto !important;
+  }
+
+  body {
+    @apply bg-paper font-sans text-base text-ink antialiased transition-colors duration-300;
+    overflow-x: clip;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* VCASS headings: condensed, uppercase, 800, tight tracking and a
+     sub-1 line-height so stacked lines lock together. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display text-ink;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 0.9;
+    text-wrap: balance;
+  }
+  h5,
+  h6 {
+    @apply font-display;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+
+
+  th,
+  label {
+    letter-spacing: 0.02em;
+  }
+
+  a {
+    @apply transition-colors;
+  }
+
+  ::selection {
+    background: var(--vc-accent);
+    color: #1f1e1d;
+  }
+
+  /* One visible focus treatment everywhere, public and admin. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-400 ring-offset-2 ring-offset-paper;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    @media (max-width: 640px) {
+      .field-input,
+      .admin-shell input:not([type='checkbox']):not([type='radio']):not([type='file']),
+      .admin-shell select,
+      .admin-shell textarea,
+      .cb__form input {
+        font-size: 16px;
+      }
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    /* No ink-bleed sweep, no clip-path shutter — the theme just switches. */
+    ::view-transition-group(root),
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none !important;
+    }
+  }
+}
+
+/* Custom cursor is opt-in via a class the CustomCursor component sets on
+   <html> once it has confirmed a fine pointer and no reduced-motion request
+   — never assume one exists. Hiding the native cursor any earlier would
+   strand touch/reduced-motion visitors with no pointer at all. */
+html.has-custom-cursor,
+html.has-custom-cursor a,
+html.has-custom-cursor button {
+  cursor: none;
+}
+
+/* `cursor` inherits, so without this, any element the two selectors above
+   don't name — inputs, textareas, selects, editable regions — falls through
+   to the inherited `none` and goes invisible on hover, with no caret and no
+   dot/ring to replace it. Restore the native cursor there explicitly. */
+html.has-custom-cursor input,
+html.has-custom-cursor textarea,
+html.has-custom-cursor select,
+html.has-custom-cursor [contenteditable='true'] {
+  cursor: auto;
+}
+
+@layer components {
+  /* Former glass panels, now VCASS containers: flat tone, 14–16px corners,
+     no blur, no shadow. */
+  .glass {
+    @apply bg-paper-sunk;
+    border-radius: var(--vc-radius);
+  }
+  .glass-dark {
+    @apply bg-neutral-7 text-neutral-2;
+    border-radius: var(--vc-radius);
+  }
+  .glass-light {
+    @apply bg-paper-light;
+    border-radius: var(--vc-radius);
+  }
+  .cursor-dot,
+  .cursor-ring {
+    @apply pointer-events-none fixed left-0 top-0 z-[100] rounded-full;
+    will-change: transform;
+  }
+  .cursor-dot {
+    @apply h-2 w-2 bg-white;
+    mix-blend-mode: difference;
+  }
+  .cursor-ring {
+    @apply h-8 w-8 border border-white;
+    mix-blend-mode: difference;
+  }
+  /* VCASS "View" cursor: over a `[data-cursor-text]` target the ring grows
+     into a solid amber disc carrying the label. */
+  .cursor-ring--label {
+    @apply flex items-center justify-center border-transparent font-display text-[0.42rem] font-bold uppercase leading-none text-neutral-7;
+    background: var(--vc-accent);
+    mix-blend-mode: normal;
+  }
+}
+
+@layer components {
+  /* ----------------------------------------------------------------- shell
+     The page gutter, and the only thing that decides how wide the site is —
+     every wrapper across the public pages uses it. Fluid at every breakpoint:
+     content tracks the viewport instead of stopping at a cap and leaving dead
+     gutter on large displays.
+
+     Nothing here bounds the reading measure. Prose sets its own, so widening
+     the shell opens up grids, mastheads and media without stretching a line
+     of text. If a section needs a cap, it caps itself — don't add one here.
+
+     The padding ramp climbs past `lg` because a fluid shell has no gutter of
+     its own: on a wide screen this padding is all that keeps content off the
+     viewport edge. */
+  .container {
+    @apply mx-auto w-full px-5 sm:px-8 lg:px-10 xl:px-14 2xl:px-20;
+  }
+
+  /* ---------------------------------------------------------------- buttons
+     One button language: transparent, hairline-bordered, no fill at rest.
+     Hover is a faint tint of the button's own colour, never a solid block —
+     the outline stays the whole design. */
+  /* VCASS pill buttons. The fill lives on `::before` so it can swell
+     (scale 1.05 on a bounce curve) without reflowing the label. These plain
+     `.btn-*` classes are for markup that can't use <Button> (admin forms,
+     raw anchors); <Button> adds the rolling-label and sliding-arrow layer on
+     top of the same look (see `.vc-btn`). */
+  .btn {
+    @apply relative isolate inline-flex items-center justify-center gap-2 rounded-full border-0 px-6 py-3
+           font-display text-sm font-bold uppercase leading-none tracking-normal
+           focus:outline-none;
+    color: var(--btn-fg);
+  }
+  .btn::before {
+    content: '';
+    @apply absolute inset-0 -z-10 rounded-full;
+    background: var(--btn-bg);
+    box-shadow: inset 0 0 0 1px var(--btn-line, transparent);
+    transition: transform 0.3s ease;
+  }
+  .btn:hover::before {
+    transform: scale(1.05);
+    transition: transform 0.5s var(--vc-ease-bounce);
+  }
+  .btn:disabled {
+    @apply pointer-events-none opacity-40;
+  }
+  .btn-primary {
+    @apply btn;
+    --btn-bg: #363633;
+    --btn-fg: #faf9f2;
+  }
+  [data-theme='cinema'] .btn-primary {
+    --btn-bg: #faf9f2;
+    --btn-fg: #1f1e1d;
+  }
+  .btn-outline {
+    @apply btn;
+    --btn-bg: transparent;
+    --btn-line: rgb(var(--ink-rgb) / 0.35);
+    --btn-fg: rgb(var(--ink-rgb));
+  }
+  /* For use over a photograph, where the ground is unknown. */
+  .btn-on-image {
+    @apply btn;
+    --btn-bg: #faf9f2;
+    --btn-fg: #1f1e1d;
+  }
+  .btn-red {
+    @apply btn;
+    --btn-bg: #e2483a;
+    --btn-fg: #fff;
+  }
+  .btn-ghost {
+    @apply btn;
+    --btn-bg: transparent;
+    --btn-fg: rgb(var(--ink-soft-rgb));
+  }
+  .btn-ghost:hover {
+    --btn-bg: rgb(var(--ink-rgb) / 0.06);
+  }
+  .btn-sm {
+    @apply px-4 py-2 text-xs;
+  }
+
+  /* ----------------------------------------------------------- VCASS button
+     Markup (rendered by <Button>):
+       <a class="vc-btn vc-btn--primary">
+         <span class="vc-btn__text"><span>Label</span></span>
+         <span class="vc-btn__icon"><span class="vc-btn__glyph"></span></span>
+       </a>
+     Hover does three things at once, exactly as the reference does:
+       1. the pill fill swells to 105% on a bounce curve;
+       2. the label rolls up — a `text-shadow` copy sits 1.5em below the
+          real glyphs, both clipped, and the span translates up one offset;
+       3. the arrow slides out right while a twin slides in from the left,
+          inside a circular chip that also scales. */
+  .vc-btn {
+    --text-offset: 1.5em;
+    --btn-bg: #363633;
+    --btn-fg: #faf9f2;
+    --btn-chip: #faf9f2;
+    --btn-chip-fg: #1f1e1d;
+    @apply relative isolate inline-flex select-none items-center justify-center gap-3 rounded-full
+           font-display text-[0.95rem] font-bold uppercase leading-none tracking-normal;
+    color: var(--btn-fg);
+    padding: 0.45rem 0.45rem 0.45rem 1.6rem;
+  }
+  .vc-btn--no-icon {
+    padding: 1.05rem 1.75rem;
+  }
+  .vc-btn--sm {
+    @apply text-xs;
+    padding: 0.3rem 0.3rem 0.3rem 1.1rem;
+  }
+  .vc-btn--sm.vc-btn--no-icon {
+    padding: 0.75rem 1.25rem;
+  }
+  .vc-btn::before {
+    content: '';
+    @apply absolute inset-0 -z-10 rounded-full;
+    background: var(--btn-bg);
+    box-shadow: inset 0 0 0 1px var(--btn-line, transparent);
+    transition: transform 0.3s ease;
+    transform: translateZ(0);
+  }
+  .vc-btn:hover::before,
+  .vc-btn:focus-visible::before {
+    transform: scale(1.05);
+    transition: transform 0.5s var(--vc-ease-bounce);
+  }
+  .vc-btn__text span {
+    display: inline-block;
+    text-shadow: 0 var(--text-offset) var(--btn-fg);
+    clip-path: inset(0 0 0 0);
+    transition:
+      transform 0.5s var(--vc-ease-in-out),
+      clip-path 0.5s var(--vc-ease-in-out);
+    transform: translateZ(0);
+  }
+  .vc-btn:hover .vc-btn__text span,
+  .vc-btn:focus-visible .vc-btn__text span {
+    transform: translateY(calc(-1 * var(--text-offset)));
+    clip-path: inset(var(--text-offset) 0 calc(-1 * var(--text-offset)) 0);
+  }
+  .vc-btn__icon {
+    @apply inline-flex shrink-0 items-center justify-center rounded-full;
+    background: var(--btn-chip);
+    padding: 0.8rem;
+    transition:
+      transform 0.3s ease,
+      background-color 0.3s ease;
+  }
+  .vc-btn--sm .vc-btn__icon {
+    padding: 0.55rem;
+  }
+  .vc-btn:hover .vc-btn__icon {
+    transform: scale(1.12);
+  }
+  .vc-btn__glyph {
+    @apply relative inline-block overflow-hidden;
+    width: 1rem;
+    height: 1rem;
+  }
+  .vc-btn--sm .vc-btn__glyph {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+  .vc-btn__glyph::before,
+  .vc-btn__glyph::after {
+    content: '';
+    @apply absolute inset-0;
+    background: var(--btn-chip-fg);
+    -webkit-mask: var(--vc-arrow) center / 100% no-repeat;
+    mask: var(--vc-arrow) center / 100% no-repeat;
+    transition: transform 0.5s var(--vc-ease-in-out);
+  }
+  .vc-btn__glyph::after {
+    transform: translateX(-100%) scale(0);
+  }
+  .vc-btn:hover .vc-btn__glyph::before,
+  .vc-hover-parent:hover .vc-btn__glyph::before {
+    transform: translateX(100%) scale(0);
+  }
+  .vc-btn:hover .vc-btn__glyph::after,
+  .vc-hover-parent:hover .vc-btn__glyph::after {
+    transform: translateX(0) scale(1);
+  }
+  /* Primary and secondary are fixed tones in the reference (`color-6` on
+     `color-1`, and the inverse), independent of the section's ground. */
+  .vc-btn--primary {
+    --btn-bg: #363633;
+    --btn-fg: #faf9f2;
+    --btn-chip: #dbdad4;
+    --btn-chip-fg: #1f1e1d;
+  }
+  .vc-btn--secondary {
+    --btn-bg: #faf9f2;
+    --btn-fg: #1f1e1d;
+    --btn-chip: #dbdad4;
+    --btn-chip-fg: #1f1e1d;
+  }
+  .vc-btn--accent {
+    --btn-bg: #f59021;
+    --btn-fg: #1f1e1d;
+    --btn-chip: #1f1e1d;
+    --btn-chip-fg: #faf9f2;
+  }
+  .vc-btn--outline {
+    --btn-bg: transparent;
+    --btn-line: rgb(var(--ink-rgb) / 0.3);
+    --btn-fg: rgb(var(--ink-rgb));
+    --btn-chip: rgb(var(--ink-rgb));
+    --btn-chip-fg: rgb(var(--paper-rgb));
+  }
+  .vc-btn--on-image {
+    --btn-bg: #faf9f2;
+    --btn-fg: #1f1e1d;
+    --btn-chip: #dbdad4;
+    --btn-chip-fg: #1f1e1d;
+  }
+  .vc-btn--ghost {
+    --btn-bg: transparent;
+    --btn-fg: rgb(var(--ink-soft-rgb));
+    --btn-chip: rgb(var(--ink-rgb) / 0.08);
+    --btn-chip-fg: rgb(var(--ink-rgb));
+  }
+  .vc-btn--red {
+    --btn-bg: #e2483a;
+    --btn-fg: #fff;
+    --btn-chip: #fff;
+    --btn-chip-fg: #b52f23;
+  }
+  .vc-btn:disabled,
+  .vc-btn[aria-disabled='true'] {
+    @apply pointer-events-none opacity-40;
+  }
+
+  /* Circular icon-only button (VCASS `.button--noLabel`): search, carousel
+     arrows, the menu toggle. */
+  .vc-icon-btn {
+    @apply relative isolate inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full;
+    color: var(--btn-fg, #1f1e1d);
+  }
+  .vc-icon-btn::before {
+    content: '';
+    @apply absolute inset-0 -z-10 rounded-full;
+    background: var(--btn-bg, #faf9f2);
+    transition: transform 0.3s ease;
+  }
+  .vc-icon-btn:hover::before {
+    transform: scale(1.1);
+    transition: transform 0.5s var(--vc-ease-bounce);
+  }
+
+  /* ------------------------------------------------------------- labels
+     VCASS `.label`: condensed, uppercase, bold. The workhorse for nav items,
+     eyebrows, meta and footer links. */
+  .vc-label {
+    @apply font-display text-sm font-bold uppercase leading-[1.1];
+  }
+  .vc-label-l {
+    @apply font-display text-xl font-bold uppercase leading-[1.1] md:text-2xl;
+  }
+  /* VCASS `.h7`: the italic serif accent line. */
+  .vc-serif {
+    @apply font-serif italic normal-case tracking-normal;
+    font-weight: 400;
+  }
+  .vc-display {
+    @apply font-display text-display font-extrabold uppercase;
+  }
+
+  /* The hover tint sweeps in from the pointer's entry point (`--ex`/`--ey`,
+     set by `useInvertHover`, defaulting to centre if nothing sets them). It is
+     a faint wash of the button's own text colour, sitting behind the label —
+     with no solid fill left to invert, a blend-mode flood would just paint
+     the button white. */
+  .btn-invert {
+    @apply relative isolate overflow-hidden;
+  }
+  .btn-invert::before {
+    content: '';
+    @apply pointer-events-none absolute inset-0 -z-10 bg-current opacity-[0.08];
+    clip-path: circle(0% at var(--ex, 50%) var(--ey, 50%));
+    transition: clip-path 450ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .btn-invert:hover::before,
+  .btn-invert:focus-visible::before {
+    clip-path: circle(140% at var(--ex, 50%) var(--ey, 50%));
+  }
+
+  /* ------------------------------------------------------------------ links
+     Institutional sites underline their links. The underline is offset so it
+     doesn't collide with descenders. */
+  .link {
+    @apply text-brand-700 underline decoration-brand-600/30 underline-offset-[3px]
+           hover:decoration-brand-600;
+  }
+
+  /* ------------------------------------------------------------------ panels */
+  .card {
+    @apply rounded-lg border border-paper-line bg-paper-light;
+  }
+
+  /* --------------------------------------------------------- vertical rhythm
+     Generous but not cavernous — an institution's pages are read, not
+     scrolled through. */
+  .section {
+    @apply py-14 md:py-20;
+  }
+  .section-lg {
+    @apply py-16 md:py-24;
+  }
+  .section-xl {
+    @apply py-20 md:py-28;
+  }
+  /* Alternating ground. Full-bleed, so it must sit outside `.container`. */
+  .band {
+    @apply bg-paper-sunk;
+  }
+  .band-line {
+    @apply border-y border-paper-line;
+  }
+  /* VCASS `.light` band inside `theme-brand`: cream-amber ground, amber
+     headlines, brown body — the one warm section of the page. Fixed colours,
+     so it reads the same in either site theme. */
+  .band-brand {
+    background: #fff2e0;
+    color: #854000;
+    --ink-rgb: 77 44 0;
+    --ink-soft-rgb: 133 64 0;
+    --ink-muted-rgb: 163 84 0;
+    --paper-line: #ffdead;
+  }
+  .band-brand :is(h1, h2, h3, h4) {
+    color: #eb8900;
+  }
+  /* VCASS `theme-neutral dark` band: fixed near-black, whatever the theme. */
+  .band-dark {
+    background: #1f1e1d;
+    color: #e6e5dd;
+    --ink-rgb: 230 229 221;
+    --ink-soft-rgb: 219 218 212;
+    --ink-muted-rgb: 168 167 163;
+    --ink-faint-rgb: 129 128 124;
+    --paper-rgb: 31 30 29;
+    --paper-line: #363633;
+  }
+
+  /* -------------------------------------------------- device 1: the rule label
+     A label set into a rule line. Sentence case on purpose: the tracked-out
+     all-caps eyebrow is the single commonest piece of template chrome, and
+     the rule is already doing the work of separating the label from the
+     heading below it. */
+  .rule-label {
+    @apply flex items-center gap-4 font-display text-sm font-bold uppercase text-ink-muted;
+  }
+  .rule-label::after {
+    content: '';
+    @apply h-px flex-1 bg-paper-line;
+  }
+  .rule-label--brand {
+    @apply text-brand-700;
+  }
+  .rule-label--light {
+    @apply text-white/70;
+  }
+  .rule-label--light::after {
+    @apply bg-white/25;
+  }
+
+  /* Section masthead: heading on the left, an optional link on the right,
+     a rule beneath both. The news, gallery and programme sections all open
+     this way, which is what makes the homepage read as one document. */
+  .section-head {
+    @apply flex flex-wrap items-end justify-between gap-x-6 gap-y-4
+           border-b border-paper-line pb-6;
+  }
+
+  /* --------------------------------------------------------- device 2: register
+     Facts separated by rules rather than boxed into identical cards. */
+  .register {
+    @apply grid divide-y divide-paper-line border-y border-paper-line;
+  }
+  @screen sm {
+    .register {
+      @apply grid-flow-col auto-cols-fr divide-x divide-y-0;
+    }
+  }
+  .register__cell {
+    @apply px-0 py-5 sm:px-6 sm:first:pl-0;
+  }
+  .register__value {
+    @apply font-display text-4xl font-extrabold uppercase leading-none text-ink;
+  }
+  .register__label {
+    @apply mt-1 text-xs text-ink-muted;
+  }
+
+  /* ----------------------------------------------------- device 3: notice board
+     Dated rows. The date lives in a gutter so the eye can scan chronology
+     without reading the entries. */
+  .notice-board {
+    @apply divide-y divide-paper-line border-y border-paper-line;
+  }
+  .notice {
+    @apply grid grid-cols-[4rem_1fr] gap-x-5 py-4 transition-colors;
+  }
+  .notice:hover {
+    @apply bg-brand-50/60;
+  }
+  .notice__date {
+    @apply pt-0.5 font-display text-base font-bold uppercase leading-tight text-brand-600;
+  }
+  .notice__title {
+    @apply text-sm font-medium leading-snug text-ink;
+  }
+  .notice__meta {
+    @apply mt-0.5 text-xs text-ink-muted;
+  }
+  /* The only place marigold appears on the public site. */
+  .notice__flag {
+    @apply ml-2 inline-flex translate-y-[-1px] items-center gap-1 bg-marigold-100
+           px-1.5 py-0.5 text-2xs font-semibold text-marigold-700;
+  }
+
+  /* ---------------------------------------------------------- device 4: story
+     Image above headline. No border, no shadow, no rounded box — whitespace
+     and the grid do the separating. The category is sentence case in the
+     accent; the headline turns green on hover so the whole tile reads as one
+     link target. */
+  /* VCASS card: rounded media that zooms to 105% on hover, condensed
+     uppercase title. */
+  .story__media {
+    @apply relative mb-4 aspect-[3/2] overflow-hidden bg-paper-sunk;
+    border-radius: var(--vc-radius);
+  }
+  .story__media img {
+    @apply h-full w-full object-cover;
+    transition:
+      transform 350ms ease-out,
+      opacity 1s ease;
+  }
+  .group:hover .story__media img {
+    transform: scale(1.05);
+  }
+  .story__cat {
+    @apply font-display text-sm font-bold uppercase text-brand-600;
+  }
+  .story__title {
+    @apply mt-2 font-display text-2xl font-extrabold uppercase leading-[0.95] text-ink
+           transition-colors;
+  }
+  .story__excerpt {
+    @apply mt-2 text-sm leading-relaxed text-ink-soft;
+  }
+  .story__meta {
+    @apply mt-2 text-xs text-ink-muted;
+  }
+
+  /* Placeholder for an empty image slot. Quiet — an unset cover should read
+     as "nothing here yet", not as a broken image. */
+  .media-empty {
+    @apply flex h-full w-full items-center justify-center bg-paper-band text-xs text-ink-faint;
+  }
+
+  /* ---------------------------------------------------------- spotlight
+     A radial highlight that follows the cursor, tracked by the single
+     delegated listener in `SpotlightTracker.tsx` (which sets `--mouse-x`/
+     `--mouse-y` per hovered card — nothing here reads the mouse directly).
+     Baked straight into `.story__media` — every story/programme tile
+     site-wide gets it for free — plus available standalone as
+     `.spotlight-card` for any other image tile (e.g. the gallery grid).
+     No border-radius, no border/bg color of its own: this only ever
+     decorates a tile that already defines its own ground, it never becomes
+     one. `z-10` keeps it above the <img> but below any caption text a
+     tile stacks on top. */
+  .spotlight-card,
+  .story__media {
+    --mouse-x: 50%;
+    --mouse-y: 50%;
+  }
+  .spotlight-card::before,
+  .story__media::before {
+    content: '';
+    @apply pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-500;
+    background: radial-gradient(
+      320px circle at var(--mouse-x) var(--mouse-y),
+      rgba(255, 255, 255, 0.16),
+      transparent 70%
+    );
+  }
+  .spotlight-card:hover::before,
+  .spotlight-card:focus-within::before,
+  .story__media:hover::before,
+  .story__media:focus-within::before {
+    @apply opacity-100;
+  }
+
+  /* --------------------------------------------------------- sequence markers
+     Only for content that genuinely is a sequence — the K–12 stages. */
+  .step-marker {
+    @apply inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full
+           bg-brand-400 font-display text-sm font-bold text-neutral-7;
+  }
+
+  /* ------------------------------------------------------------------- forms */
+  .field-label {
+    @apply mb-1.5 block text-sm font-semibold text-ink;
+  }
+  .field-input {
+    @apply w-full rounded-md border border-paper-line bg-paper-light px-4 py-3 text-sm text-ink
+           placeholder:text-ink-faint focus:border-brand-500 focus:outline-none
+           focus:ring-1 focus:ring-brand-500;
+  }
+
+  /* -------------------------------------------------------------- long-form */
+  .measure {
+    @apply max-w-prose;
+  }
+  .body-copy {
+    @apply max-w-measure text-base leading-relaxed text-ink-soft;
+  }
+  /* CMS-authored body text. Content arrives as plain text with newlines, so
+     the whitespace has to survive. */
+  .cms-prose {
+    @apply max-w-measure whitespace-pre-line text-base leading-relaxed text-ink-soft;
+  }
+  /* The principal's voice — the one italic serif on the site. Everything
+     else uses `font-display`; this is the one place PP Editorial New shows
+     up, on purpose. */
+  .voice {
+    @apply font-serif text-xl italic leading-relaxed text-ink-soft;
+    font-weight: 400;
+  }
+
+  /* --------------------------------------------------- cinematic primitives
+     Shared by the motion components in `src/components/motion/` and
+     `src/components/common/CustomCursor.tsx` — kept here so every page reads
+     the same underline weight, grain density and progress-line thickness
+     rather than each component inventing its own. */
+
+  /* Magnetic nav underline: a line that grows from its own centre outward,
+     driven by a `scaleX` transform so it's one compositor-only property. */
+  .magnetic-link {
+    @apply relative inline-flex items-center;
+  }
+  .magnetic-link__rule {
+    @apply pointer-events-none absolute -bottom-1 left-0 h-px w-full origin-center scale-x-0 bg-current
+           transition-transform duration-300 ease-out;
+  }
+  .magnetic-link:hover .magnetic-link__rule,
+  .magnetic-link:focus-visible .magnetic-link__rule {
+    @apply scale-x-100;
+  }
+
+  /* Kinetic accordion progress line — the vector rule that fills in under an
+     open curriculum module's title. Width is driven by the component
+     (0 → 100%) rather than here. */
+  .kinetic-progress {
+    @apply h-px origin-left bg-brand-400 transition-transform duration-500 ease-out;
+  }
+
+  /* Digital-grain overlay for the hero video. A tiled SVG turbulence noise,
+     dropped to whisper opacity and blended so it reads as film grain rather
+     than as a texture in its own right. `mix-blend-mode: overlay` is what
+     keeps it from ever flattening the footage under it. */
+  .grain-overlay {
+    @apply pointer-events-none absolute inset-0;
+    background-image: url("data:image/svg+xml,utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-size: 120px 120px;
+    mix-blend-mode: overlay;
+    opacity: 0.18;
+  }
+}
+
+@layer utilities {
+  /* The one orchestrated motion moment: notice rows arrive once on load.
+     Everything else on the site is still. */
+  .stagger-in {
+    animation: rise 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* Pulls a block out of `.container` to the full viewport width, for the
+     hero and the image bands. */
+  .full-bleed {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+
+  /* Full-viewport-height stacked sections that settle smoothly from one to
+     the next as the reader scrolls — the homepage's cinematic pacing.
+     Reserved for pages built as a sequence of full-bleed moments (Home); a
+     text-heavy page forced into this would just clip its own content, so
+     it's opt-in per page rather than global.
+
+     The snapping itself is done in JS by Lenis (`useSectionSnap`), NOT by CSS
+     `scroll-snap`: native snap on <html> fights Lenis's per-frame scroll
+     writes and makes the page stick between sections. This class only sizes
+     the section and marks it as a snap target.
+
+     `min-height` rather than a fixed height: a section with more content
+     than one screen (the gallery grid on a narrow phone, say) grows instead
+     of clipping. */
+  .snap-section {
+    min-height: 100vh;
+  }
+
+  /* Background watermark — huge ghost type sitting behind a section's real
+     content. This is what a full-viewport-height section with genuinely
+     modest content (four stats, a paragraph) needs instead of dead-centring
+     it in a mostly-empty screen: the "empty" space becomes the brief's
+     "large watermarked institutional acronym" rather than a gap. Never
+     interactive, never announced. */
+  .watermark {
+    @apply pointer-events-none absolute inset-x-0 top-1/2 z-0 select-none whitespace-nowrap
+           text-center font-display font-bold text-ink;
+    font-size: clamp(6rem, 22vw, 16rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    transform: translateY(-50%);
+    opacity: 0.04;
+  }
+}
+
+/* ==========================================================================
+   The kinetic theme transition — the ink-bleed sweep.
+
+   `useTheme.ts` stamps `--ink-x` / `--ink-y` (the click coordinate, in vw/vh)
+   onto <html> right before calling `document.startViewTransition()`. The
+   browser snapshots old and new states either side of that call; this is
+   only the animation between the two snapshots. Deliberately outside every
+   `@layer` — view-transition pseudo-elements sit outside the normal element
+   tree and Tailwind's cascade layers don't reliably reach them.
+
+   Circle radius (150vmax) just has to comfortably outrun the viewport
+   diagonal from any click point; and the theme swaps with the ordinary
+   `transition-colors` already on `body` — this is the fallback, not a bug. */
+@supports (view-transition-name: root) {
+  ::view-transition-old(root) {
+    animation: none;
+  }
+  ::view-transition-new(root) {
+    animation: ink-bleed 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes ink-bleed {
+    from {
+      clip-path: circle(0% at var(--ink-x, 50%) var(--ink-y, 50%));
+    }
+    to {
+      clip-path: circle(150vmax at var(--ink-x, 50%) var(--ink-y, 50%));
+    }
+  }
+}
+
+/* ==========================================================================
+   VCASS navigation bar (see Header.tsx)
+   ========================================================================== */
+.vc-nav-container {
+  @apply pointer-events-none fixed inset-x-0 z-50 mx-auto flex flex-col items-center px-4 sm:px-6 lg:px-10 xl:px-14;
+  top: var(--vc-nav-top);
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+.vc-nav {
+  @apply pointer-events-auto relative flex items-center justify-between gap-6;
+  height: var(--vc-nav-height);
+  width: 100%;
+  border-radius: 8px;
+  padding: 0.875rem 1rem;
+  color: #1f1e1d;
+  background: rgb(255 255 255 / 0.76);
+  border: 1px solid rgb(255 255 255 / 0.72);
+  box-shadow: 0 10px 32px rgb(31 30 29 / 0.12);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+  transition: width 0.6s var(--vc-ease-in-out);
+}
+.vc-nav .text-neutral-1,
+.vc-nav .text-neutral-2,
+.vc-nav .text-neutral-3,
+.vc-nav .text-neutral-4,
+.vc-nav .text-neutral-5,
+.vc-nav .vc-menu-item {
+  color: #1f1e1d;
+}
+.vc-nav .vc-menu-item:hover .vc-menu-link,
+.vc-nav .vc-menu-item.is-open .vc-menu-link {
+  color: #b65d00;
+}
+.vc-nav .vc-icon-btn {
+  --btn-bg: rgb(31 30 29 / 0.08);
+  --btn-fg: #1f1e1d;
+}
+/* VCASS narrows the bar to 75% once scrolled; floored so a seven-item menu
+   still fits between the logo and the call to action. */
+.vc-nav-container.is-scrolled .vc-nav {
+  width: min(100%, max(75%, 78rem));
+}
+.vc-nav-utility {
+  @apply items-center gap-2;
+  transition: opacity 0.2s ease;
+}
+.vc-nav-container.is-scrolled .vc-nav-utility {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.vc-menu {
+  @apply flex-1 items-center justify-center;
+}
+.vc-menu-item {
+  @apply relative leading-none text-neutral-2;
+}
+.vc-menu-link {
+  @apply inline-flex items-center whitespace-nowrap px-3 py-3 text-[0.95rem] transition-colors duration-200 2xl:px-4;
+}
+.vc-menu-item:hover .vc-menu-link,
+.vc-menu-item.is-open .vc-menu-link {
+  color: var(--vc-accent);
+}
+.vc-menu-link.is-active {
+  @apply underline decoration-2 underline-offset-[6px];
+  text-decoration-color: var(--vc-accent);
+}
+
+.vc-submenu {
+  @apply pointer-events-none invisible absolute left-1/2 top-full z-10 opacity-0;
+  width: 17rem;
+  padding-top: 10px;
+  transform: translateX(-50%);
+  transform-origin: left center;
+  transition:
+    opacity 0.3s var(--vc-ease-bounce),
+    visibility 0.3s var(--vc-ease-bounce);
+}
+.vc-menu-item.is-open .vc-submenu {
+  @apply pointer-events-auto visible opacity-100;
+}
+.vc-submenu__list {
+  @apply relative flex flex-col items-start bg-neutral-2 text-neutral-6;
+  border-radius: 12px;
+  padding: 1.25rem 1.25rem;
+  transform: translateY(60px) rotate(10deg);
+  backface-visibility: hidden;
+  transition: transform 0.5s var(--vc-ease-bounce);
+}
+.vc-menu-item.is-open .vc-submenu__list {
+  transform: translate(0) rotate(0deg);
+}
+.vc-submenu__item {
+  @apply relative w-full;
+}
+.vc-submenu__item + .vc-submenu__item::before {
+  content: '';
+  @apply pointer-events-none absolute inset-x-0 top-0 h-px bg-neutral-3;
+}
+.vc-submenu__link {
+  @apply flex items-center gap-3 py-2.5;
+}
+.vc-submenu__item:first-child .vc-submenu__link {
+  @apply pt-0;
+}
+.vc-submenu__item:last-child .vc-submenu__link {
+  @apply pb-0;
+}
+.vc-submenu__count {
+  @apply text-base text-neutral-6;
+}
+/* The label swaps for a larger twin of itself on hover (VCASS
+   `.Submenu-heading span`). */
+.vc-submenu__heading {
+  @apply relative flex-1 text-neutral-6 transition-colors duration-200;
+  font-size: 1rem;
+}
+.vc-submenu__heading > span {
+  @apply absolute inset-x-0 top-1/2 -translate-y-1/2;
+  font-size: 1.2rem;
+  color: transparent;
+  transition: color 0.2s ease;
+}
+.vc-submenu__link:hover .vc-submenu__heading,
+.vc-submenu__link:focus-visible .vc-submenu__heading {
+  color: transparent;
+}
+.vc-submenu__link:hover .vc-submenu__heading > span,
+.vc-submenu__link:focus-visible .vc-submenu__heading > span {
+  color: #1f1e1d;
+}
+.vc-submenu__arrow {
+  opacity: 0;
+  transform: scale(0.6);
+  transition:
+    opacity 0.25s ease,
+    transform 0.4s var(--vc-ease-bounce);
+}
+.vc-submenu__link:hover .vc-submenu__arrow,
+.vc-submenu__link:focus-visible .vc-submenu__arrow {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ==========================================================================
+   VCASS motion primitives
+   ========================================================================== */
+
+/* AnimatedWrapper `border-fade-in`: media opens out of a 5% inset. */
+@keyframes vc-border-fade-in {
+  from {
+    opacity: 0;
+    clip-path: inset(5% round var(--vc-radius));
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 round var(--vc-radius));
+  }
+}
+.vc-border-fade-in {
+  animation: vc-border-fade-in 0.7s ease both;
+}
+
+/* ==========================================================================
+   VCASS cards (`.card` / `.cardPost` in the reference)
+
+   A tinted panel sits behind the card, inset by the card's own padding and
+   invisible; on hover it grows out to the card edge (or past it, for post
+   cards) and fades in, the photo zooms to 105% and the type darkens.
+   `--vc-card-hover` sets the panel colour per section.
+   ========================================================================== */
+.vc-card {
+  @apply relative z-[1] flex w-full flex-col;
+  --vc-card-hover: #a8a7a3;
+  padding: clamp(0.5625rem, 0.4609rem + 0.4348vw, 1rem);
+}
+.vc-card::before {
+  content: '';
+  @apply pointer-events-none absolute -z-[1] opacity-0;
+  inset: clamp(0.5625rem, 0.4609rem + 0.4348vw, 1rem);
+  background: var(--vc-card-hover);
+  border-radius: calc(var(--vc-radius) + 4px);
+  transition:
+    inset 0.4s var(--vc-ease-out),
+    opacity 0.2s ease;
+}
+.vc-card:hover::before,
+.vc-card:focus-within::before {
+  inset: 0;
+  opacity: 1;
+}
+.vc-card--post::before {
+  inset: 0;
+}
+.vc-card--post:hover::before,
+.vc-card--post:focus-within::before {
+  inset: calc(-1 * clamp(0.5625rem, 0.4609rem + 0.4348vw, 1rem));
+}
+.vc-card__media {
+  @apply relative overflow-hidden;
+  border-radius: var(--vc-radius);
+}
+.vc-card__media img {
+  transition:
+    transform 350ms ease-out,
+    opacity 1s ease;
+}
+.vc-card:hover .vc-card__media img {
+  transform: scale(1.05);
+}
+.vc-card__title,
+.vc-card__text {
+  transition: color 0.2s ease;
+}
+.vc-card:hover .vc-card__title,
+.vc-card:hover .vc-card__text {
+  color: #1f1e1d;
+}
+
+/* Page-transition curtain (PublicLayout): a dark sheet carrying the crest
+   that wipes upward off each newly entered route. */
+.vc-curtain {
+  @apply pointer-events-none fixed inset-0 z-[1000] grid place-items-center bg-neutral-7;
+}
+
+html[data-theme='studio'] .band-dark {
+  background: #fff;
+  color: #1f1e1d;
+  --ink-rgb: 31 30 29;
+  --ink-soft-rgb: 54 54 51;
+  --ink-muted-rgb: 82 82 82;
+  --ink-faint-rgb: 115 115 115;
+  --paper-rgb: 255 255 255;
+  --paper-line: #e5e7eb;
+}
+html[data-theme='studio'] .band-dark [class~='text-neutral-1'],
+html[data-theme='studio'] .band-dark [class~='text-neutral-2'],
+html[data-theme='studio'] .band-dark [class~='text-neutral-3'] {
+  color: #1f1e1d;
+}
+html[data-theme='studio'] .band-dark [class~='text-neutral-4'] {
+  color: #525252;
+}
+html[data-theme='studio'] .hero-media {
+  background: #1f1e1d;
+  color: #fff;
+}
+html[data-theme='studio'] .hero-media [class~='text-neutral-1'],
+html[data-theme='studio'] .hero-media [class~='text-neutral-2'],
+html[data-theme='studio'] .hero-media [class~='text-neutral-3'] {
+  color: #fff;
+}
+html[data-theme='studio'] .vc-nav {
+  background: rgb(255 255 255 / 0.76);
+  color: #1f1e1d;
+  border: 1px solid rgb(255 255 255 / 0.72);
+  box-shadow: 0 10px 32px rgb(31 30 29 / 0.12);
+}
+html[data-theme='studio'] .vc-nav [class~='text-neutral-1'],
+html[data-theme='studio'] .vc-nav [class~='text-neutral-2'],
+html[data-theme='studio'] .vc-nav [class~='text-neutral-3'] {
+  color: #1f1e1d;
+}
+html[data-theme='studio'] .vc-nav [class~='text-neutral-4'],
+html[data-theme='studio'] .vc-nav [class~='text-neutral-5'] {
+  color: #525252;
+}
+html[data-theme='studio'] #mobile-nav {
+  background: rgb(255 255 255 / 0.9);
+  color: #1f1e1d;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 18px 42px rgb(31 30 29 / 0.16);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+}
+html[data-theme='studio'] #mobile-nav [class~='text-neutral-1'],
+html[data-theme='studio'] #mobile-nav [class~='text-neutral-2'],
+html[data-theme='studio'] #mobile-nav [class~='text-neutral-3'] {
+  color: #1f1e1d;
+}
+html[data-theme='studio'] #mobile-nav [class~='text-neutral-4'],
+html[data-theme='studio'] #mobile-nav [class~='text-neutral-5'] {
+  color: #525252;
+}
+html[data-theme='studio'] #mobile-nav .mobile-nav-item {
+  border-color: #e5e7eb;
+}
+html[data-theme='studio'] .vc-curtain {
+  background: #fff;
+}
+
+.mobile-nav-panel {
+  max-height: min(32rem, 70dvh, calc(100dvh - var(--vc-nav-top) - var(--vc-nav-height) - 1rem));
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.experience-mosaic {
+  background: #1f1e1d;
+}
+.experience-mosaic__photo img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transition: transform 1.2s cubic-bezier(0.2, 0.65, 0.3, 1);
+}
+.experience-mosaic__photo:hover img {
+  transform: scale(1.04);
+}
+.experience-mosaic__content {
+  background: rgb(20 20 19 / 0.4);
+  border: 1px solid rgb(255 255 255 / 0.25);
+  box-shadow: 0 24px 80px rgb(0 0 0 / 0.18);
+  -webkit-backdrop-filter: blur(10px) saturate(115%);
+  backdrop-filter: blur(10px) saturate(115%);
+}
+
+.admin-shell .card {
+  border-color: #e2e8f0;
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+}
+.admin-shell input:not([type='checkbox']):not([type='radio']):not([type='file']),
+.admin-shell select,
+.admin-shell textarea {
+  border-radius: 0.625rem;
+  border-color: #cbd5e1;
+  background-color: #fff;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+}
+.admin-shell input:not([type='checkbox']):not([type='radio']):not([type='file']):focus,
+.admin-shell select:focus,
+.admin-shell textarea:focus {
+  border-color: #f59021;
+  box-shadow: 0 0 0 4px rgb(245 144 33 / 0.14);
+  outline: none;
+}
+.admin-shell table tbody tr {
+  transition: background-color 160ms ease;
+}
+.admin-shell table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-shell input,
+  .admin-shell select,
+  .admin-shell textarea,
+  .admin-shell table tbody tr {
+    transition: none;
+  }
+}

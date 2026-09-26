@@ -1,0 +1,201 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import AdminIcon from '@/components/admin/AdminIcon';
+import { pagesService, postsService, mediaService } from '@/services/cms.service';
+import { usersService } from '@/services/users.service';
+import { storage } from '@/services/storage';
+import type { Post, Page } from '@/types';
+import { useAuth } from '@/hooks/useAuth';
+
+interface Stats {
+  pages: number;
+  posts: number;
+  media: number;
+  users: number;
+}
+
+const KPI_STYLES: Record<
+  string,
+  { icon: string; wash: string; text: string }
+> = {
+  pages: { icon: 'file', wash: 'bg-obsidian-light', text: 'text-brand-400' },
+  posts: { icon: 'newspaper', wash: 'bg-obsidian-light', text: 'text-brand-400' },
+  media: { icon: 'image', wash: 'bg-obsidian-light', text: 'text-brand-400' },
+  users: { icon: 'users', wash: 'bg-obsidian-light', text: 'text-brand-400' },
+};
+
+export default function Dashboard() {
+  const { user } = useAuth();
+  const [stats, setStats] = useState<Stats>({ pages: 0, posts: 0, media: 0, users: 0 });
+  const [recentPosts, setRecentPosts] = useState<Post[]>([]);
+  const [recentPages, setRecentPages] = useState<Page[]>([]);
+
+  useEffect(() => {
+    const refresh = () => {
+      setStats({
+        pages: pagesService.list().length,
+        posts: postsService.list().length,
+        media: mediaService.list().length,
+        users: usersService.list().length,
+      });
+      setRecentPosts(postsService.list().slice(0, 5));
+      setRecentPages(pagesService.list().slice(0, 5));
+    };
+    refresh();
+    return storage.subscribe(refresh);
+  }, []);
+
+  const cards = [
+    { key: 'pages', label: 'Published pages', value: stats.pages, to: '/admin/pages' },
+    { key: 'posts', label: 'Posts', value: stats.posts, to: '/admin/posts' },
+    { key: 'media', label: 'Media', value: stats.media, to: '/admin/media' },
+    { key: 'users', label: 'Users', value: stats.users, to: '/admin/users' },
+  ];
+
+  return (
+    <div className="space-y-6">
+      {/* Welcome banner */}
+      <div className="bg-obsidian p-6 ring-1 ring-paper-line shadow-2xl">
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand-500">
+          Command Center
+        </p>
+        <h1 className="mt-1 text-2xl font-bold text-paper sm:text-3xl">
+          {user ? user.name : 'Editor'}
+        </h1>
+        <p className="mt-1 text-sm text-paper-muted">
+          System overview and content registry.
+        </p>
+      </div>
+
+      {/* KPI cards */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map((c) => {
+          const s = KPI_STYLES[c.key];
+          return (
+            <Link
+              key={c.key}
+              to={c.to}
+              className="group flex items-center gap-4 bg-obsidian p-5 ring-1 ring-paper-line transition hover:ring-brand-500"
+            >
+              <span className={`inline-flex h-12 w-12 items-center justify-center rounded-none ${s.wash} ${s.text}`}>
+                <AdminIcon name={s.icon} className="h-5 w-5" />
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-[10px] font-bold uppercase tracking-wider text-paper-muted">
+                  {c.label}
+                </p>
+                <p className="mt-1 text-2xl font-bold text-paper">{c.value}</p>
+              </div>
+              <span className="ml-auto text-paper-faint group-hover:text-brand-500 transition-colors">
+                <AdminIcon name="chevron" className="h-4 w-4" />
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* Recent posts / pages */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <div className="bg-obsidian p-5 ring-1 ring-paper-line">
+          <div className="flex items-center justify-between">
+            <div className="border-l-2 border-brand-600 pl-3">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-paper">Latest posts</h2>
+              <p className="text-xs text-paper-muted">Most recent news & posts.</p>
+            </div>
+            <Link
+              to="/admin/posts"
+              className="text-xs font-bold uppercase tracking-tighter text-brand-500 hover:text-brand-400"
+            >
+              View All
+            </Link>
+          </div>
+
+          <div className="mt-6 hidden grid-cols-[1fr_auto_auto] gap-4 border-b border-paper-line pb-2 text-[10px] font-bold uppercase tracking-wider text-paper-faint sm:grid">
+            <span>Title</span>
+            <span>Category</span>
+            <span>Status</span>
+          </div>
+
+          <ul className="divide-y divide-paper-line text-sm">
+            {recentPosts.length === 0 && (
+              <li className="py-6 text-center text-paper-muted">No posts yet.</li>
+            )}
+            {recentPosts.map((p) => (
+              <li
+                key={p.id}
+                className="grid grid-cols-[1fr_auto] items-center gap-3 py-3 sm:grid-cols-[1fr_auto_auto] sm:gap-4"
+              >
+                <Link
+                  to={`/admin/posts/${p.id}/edit`}
+                  className="min-w-0 truncate font-medium text-paper-muted hover:text-paper"
+                >
+                  {p.title}
+                </Link>
+                <span className="hidden text-xs text-paper-faint sm:inline">{p.category}</span>
+                <span
+                  className={`inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
+                    p.status === 'published'
+                      ? 'bg-brand-900/30 text-brand-400 ring-1 ring-brand-500/30'
+                      : 'bg-obsidian-light text-paper-muted ring-1 ring-paper-line'
+                  }`}
+                >
+                  {p.status}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="bg-obsidian p-5 ring-1 ring-paper-line">
+          <div className="flex items-center justify-between">
+            <div className="border-l-2 border-brand-600 pl-3">
+              <h2 className="text-sm font-bold uppercase tracking-wider text-paper">Latest pages</h2>
+              <p className="text-xs text-paper-muted">Recently added or edited pages.</p>
+            </div>
+            <Link
+              to="/admin/pages"
+              className="text-xs font-bold uppercase tracking-tighter text-brand-500 hover:text-brand-400"
+            >
+              View All
+            </Link>
+          </div>
+
+          <div className="mt-6 hidden grid-cols-[1fr_auto_auto] gap-4 border-b border-paper-line pb-2 text-[10px] font-bold uppercase tracking-wider text-paper-faint sm:grid">
+            <span>Title</span>
+            <span>Slug</span>
+            <span>Status</span>
+          </div>
+
+          <ul className="divide-y divide-paper-line text-sm">
+            {recentPages.length === 0 && (
+              <li className="py-6 text-center text-paper-muted">No pages yet.</li>
+            )}
+            {recentPages.map((p) => (
+              <li
+                key={p.id}
+                className="grid grid-cols-[1fr_auto] items-center gap-3 py-3 sm:grid-cols-[1fr_auto_auto] sm:gap-4"
+              >
+                <Link
+                  to={`/admin/pages/${p.id}/edit`}
+                  className="min-w-0 truncate font-medium text-paper-muted hover:text-paper"
+                >
+                  {p.title}
+                </Link>
+                <span className="hidden truncate text-xs text-paper-faint sm:inline">/{p.slug}</span>
+                <span
+                  className={`inline-flex items-center px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${
+                    p.status === 'published'
+                      ? 'bg-brand-900/30 text-brand-400 ring-1 ring-brand-500/30'
+                      : 'bg-obsidian-light text-paper-muted ring-1 ring-paper-line'
+                  }`}
+                >
+                  {p.status}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+}

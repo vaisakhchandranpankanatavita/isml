@@ -1,0 +1,135 @@
+/* ==========================================================================
+   AppLoader — minimal first-load splash: logo + thin progress line.
+   ========================================================================== */
+
+.ld {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  overflow: hidden;
+  background: transparent;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.ld__glow {
+  position: absolute;
+  inset: -20%;
+  z-index: 0;
+  background: radial-gradient(38rem 38rem at 20% 25%, rgba(37, 112, 235, 0.12), transparent 60%),
+    radial-gradient(32rem 32rem at 80% 75%, rgba(37, 112, 235, 0.08), transparent 60%);
+  animation: ld-drift 9s ease-in-out infinite alternate;
+}
+@keyframes ld-drift {
+  from {
+    transform: translate3d(-2%, -1%, 0) scale(1);
+  }
+  to {
+    transform: translate3d(2%, 1%, 0) scale(1.06);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ld__glow {
+    animation: none;
+  }
+}
+
+.ld__skeleton {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 4.5rem 8vw;
+  opacity: 0.55;
+}
+
+.ld__skel-bar {
+  border-radius: 0.5rem;
+  background: linear-gradient(
+    100deg,
+    rgba(17, 17, 17, 0.06) 30%,
+    rgba(17, 17, 17, 0.12) 50%,
+    rgba(17, 17, 17, 0.06) 70%
+  );
+  background-size: 200% 100%;
+  animation: ld-shimmer 1.6s ease-in-out infinite;
+}
+.ld__skel-bar--nav {
+  width: 40%;
+  height: 1.75rem;
+}
+.ld__skel-bar--hero {
+  width: 100%;
+  height: 8rem;
+}
+.ld__skel-row {
+  display: flex;
+  gap: 1.25rem;
+}
+.ld__skel-bar--card {
+  flex: 1;
+  height: 6rem;
+}
+@keyframes ld-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ld__skel-bar {
+    animation: none;
+  }
+}
+[data-theme='dark'] .ld__skel-bar,
+[data-theme='cinema'] .ld__skel-bar {
+  background: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.06) 30%,
+    rgba(255, 255, 255, 0.14) 50%,
+    rgba(255, 255, 255, 0.06) 70%
+  );
+  background-size: 200% 100%;
+}
+
+.ld__logo {
+  position: relative;
+  z-index: 1;
+  width: 3rem;
+  height: auto;
+}
+
+.ld__name {
+  position: relative;
+  z-index: 1;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+
+.ld__bar {
+  position: relative;
+  z-index: 1;
+  width: 6.5rem;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+.ld__bar span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: theme('colors.brand.600');
+  transform-origin: left center;
+  will-change: transform;
+}
