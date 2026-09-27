@@ -1,10 +1,10 @@
-import { useState, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
-import PageHero from '@/components/common/PageHero';
-import SectionHeading from '@/components/common/SectionHeading';
-import { usePage } from '@/hooks/usePage';
-import { useSiteSettings } from '@/hooks/useSiteSettings';
-import { useInvertHover } from '@/hooks/useInvertHover';
+import { useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
+import PageHero from "@/components/common/PageHero";
+import SectionHeading from "@/components/common/SectionHeading";
+import { usePage } from "@/hooks/usePage";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { useInvertHover } from "@/hooks/useInvertHover";
 
 /**
  * `#register`, `#directory` and `#events` are linked from the main navigation,
@@ -15,7 +15,7 @@ import { useInvertHover } from '@/hooks/useInvertHover';
  * offering one thing that works.
  */
 export default function Alumni() {
-  const page = usePage('alumni');
+  const page = usePage("alumni");
   const { settings } = useSiteSettings();
   const [submitted, setSubmitted] = useState(false);
   const onInvertHover = useInvertHover();
@@ -28,7 +28,7 @@ export default function Alumni() {
   return (
     <>
       <PageHero
-        title={page?.title ?? 'Alumni'}
+        title={page?.title ?? "Alumni"}
         subtitle="The register, the batch directory and what is happening back on campus."
       />
 
@@ -42,16 +42,16 @@ export default function Alumni() {
 
       {/* ----------------------------------------------------------- register */}
       <section id="register" className="section-lg scroll-mt-32">
-        <div className="container grid gap-12 lg:grid-cols-[1fr_1fr] lg:gap-20">
+        <div className="container grid gap-8 lg:grid-cols-[1fr_1fr] lg:gap-12">
           <div>
             <SectionHeading title="Join the alumni register" />
             <p className="body-copy mt-5">
-              Registering once puts you on the list the school uses for reunions, mentoring
-              requests and batch reconnections. The school does not publish your details
-              without asking first.
+              Registering once puts you on the list the school uses for
+              reunions, mentoring requests and batch reconnections. The school
+              does not publish your details without asking first.
             </p>
             <p className="mt-5 text-sm text-ink-muted">
-              Already registered and need a correction? Write to{' '}
+              Already registered and need a correction? Write to{" "}
               <a href={`mailto:${settings.admissionEmail}`} className="link">
                 {settings.admissionEmail}
               </a>
@@ -61,19 +61,33 @@ export default function Alumni() {
 
           <div>
             {submitted ? (
-              <div role="status" className="border-l-4 border-brand-600 bg-white p-6 shadow-rail">
-                <h3 className="font-display text-lg font-semibold text-ink">You're on the list</h3>
+              <div
+                role="status"
+                className="notice-success"
+              >
+                <h3 className="font-display text-lg font-semibold text-ink">
+                  You're on the list
+                </h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                  The alumni desk will confirm by email. Thank you for keeping in touch.
+                  The alumni desk will confirm by email. Thank you for keeping
+                  in touch.
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="grid gap-5 sm:grid-cols-2">
+              <form
+                onSubmit={handleSubmit}
+                className="grid gap-5 sm:grid-cols-2"
+              >
                 <div>
                   <label htmlFor="al-name" className="field-label">
                     Full name
                   </label>
-                  <input id="al-name" required type="text" className="field-input" />
+                  <input
+                    id="al-name"
+                    required
+                    type="text"
+                    className="field-input"
+                  />
                 </div>
                 <div>
                   <label htmlFor="al-batch" className="field-label">
@@ -93,7 +107,12 @@ export default function Alumni() {
                   <label htmlFor="al-email" className="field-label">
                     Email
                   </label>
-                  <input id="al-email" required type="email" className="field-input" />
+                  <input
+                    id="al-email"
+                    required
+                    type="email"
+                    className="field-input"
+                  />
                 </div>
                 <div className="sm:col-span-2">
                   <label htmlFor="al-now" className="field-label">
@@ -118,16 +137,21 @@ export default function Alumni() {
       </section>
 
       {/* ---------------------------------------------------------- directory */}
-      <section id="directory" className="band band-line section-lg scroll-mt-32">
+      <section
+        id="directory"
+        className="band band-line section-lg scroll-mt-32"
+      >
         <div className="container">
           <SectionHeading title="Batch directory" ruled />
           <p className="body-copy mt-6">
-            The directory is kept by the alumni desk rather than published openly, so that
-            nobody's contact details go online without consent. Registered alumni can ask the
-            desk to pass a message to a batchmate, or to be put in touch with a batch group.
+            The directory is kept by the alumni desk rather than published
+            openly, so that nobody's contact details go online without consent.
+            Registered alumni can ask the desk to pass a message to a batchmate,
+            or to be put in touch with a batch group.
           </p>
           <p className="mt-6 text-sm text-ink-muted">
-            The register goes back to the first batch to leave the school, in 1981.
+            The register goes back to the first batch to leave the school, in
+            1981.
           </p>
         </div>
       </section>
@@ -137,8 +161,9 @@ export default function Alumni() {
         <div className="container">
           <SectionHeading title="Alumni events" ruled />
           <p className="body-copy mt-6">
-            Reunions, careers talks and the mentoring programme are announced through news and
-            circulars alongside the rest of the school calendar.
+            Reunions, careers talks and the mentoring programme are announced
+            through news and circulars alongside the rest of the school
+            calendar.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
@@ -149,7 +174,11 @@ export default function Alumni() {
             >
               See upcoming events
             </Link>
-            <Link to="/contact" className="btn-outline btn-invert" onPointerEnter={onInvertHover}>
+            <Link
+              to="/contact"
+              className="btn-outline btn-invert"
+              onPointerEnter={onInvertHover}
+            >
               Contact the alumni desk
             </Link>
           </div>

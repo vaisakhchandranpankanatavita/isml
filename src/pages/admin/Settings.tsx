@@ -6,7 +6,8 @@ import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { storage, uid } from '@/services/storage';
 import { useToast } from '@/hooks/useToast';
 import { useAuth } from '@/hooks/useAuth';
-import type { K12Program, HomeGalleryImage } from '@/types';
+import type { ChatSuggestions, K12Program, HomeGalleryImage } from '@/types';
+import { CHAT_SUGGESTIONS } from '@/config/site';
 
 export default function Settings() {
   const { settings, update } = useSiteSettings();
@@ -19,6 +20,16 @@ export default function Settings() {
 
   const set = <K extends keyof typeof form>(key: K, value: (typeof form)[K]) =>
     setForm((f) => ({ ...f, [key]: value }));
+  const updateChatSuggestions = (group: keyof ChatSuggestions, value: string) => {
+    const suggestions = form.chatSuggestions ?? CHAT_SUGGESTIONS;
+    set('chatSuggestions', {
+      ...suggestions,
+      [group]: value
+        .split(/\r?\n/)
+        .map((suggestion) => suggestion.trim())
+        .filter(Boolean),
+    });
+  };
 
   // K-12 programs helpers
   const addProgram = () =>
@@ -225,6 +236,39 @@ export default function Settings() {
             value={form.tourLink}
             onChange={(e) => set('tourLink', e.target.value)}
           />
+        </section>
+
+        <section className="card space-y-4 p-6 lg:col-span-2">
+          <div>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+              Assistant suggestions
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Edit the quick-reply suggestions shown for each topic. Enter one
+              suggestion per line.
+            </p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {(
+              [
+                ['welcome', 'Welcome'],
+                ['admissions', 'Admissions'],
+                ['programs', 'Programmes'],
+                ['fees', 'Fees'],
+                ['news', 'News'],
+                ['contact', 'Contact'],
+                ['campus', 'Campus and gallery'],
+              ] as const
+            ).map(([group, label]) => (
+              <TextArea
+                key={group}
+                label={label}
+                rows={4}
+                value={(form.chatSuggestions?.[group] ?? CHAT_SUGGESTIONS[group]).join('\n')}
+                onChange={(e) => updateChatSuggestions(group, e.target.value)}
+              />
+            ))}
+          </div>
         </section>
 
         {/* Contact */}

@@ -1,13 +1,24 @@
 import type { SiteSettings } from '@/types';
+import { CHAT_SUGGESTIONS } from '@/config/site';
 import { storage } from './storage';
+
+function withDefaultChatSuggestions(settings: SiteSettings): SiteSettings {
+  return {
+    ...settings,
+    chatSuggestions: {
+      ...CHAT_SUGGESTIONS,
+      ...settings.chatSuggestions,
+    },
+  };
+}
 
 export const settingsService = {
   get(): SiteSettings {
-    return storage.read().settings;
+    return withDefaultChatSuggestions(storage.read().settings);
   },
   update(patch: Partial<SiteSettings>): SiteSettings {
     const db = storage.read();
-    db.settings = { ...db.settings, ...patch };
+    db.settings = withDefaultChatSuggestions({ ...db.settings, ...patch });
     storage.write(db);
     return db.settings;
   },

@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { useSiteSettings } from '@/hooks/useSiteSettings';
-import ScaffoldedText from '@/components/motion/ScaffoldedText';
-import { Button } from '@/components/common/Button';
+import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useSiteSettings } from "@/hooks/useSiteSettings";
+import ScaffoldedText from "@/components/motion/ScaffoldedText";
+import { Button } from "@/components/common/Button";
 
 /**
  * Full-viewport hero, modelled on the VCASS BlockHero: footage under a 20%
@@ -22,16 +22,16 @@ const isVideo = (url?: string) => !!url && VIDEO_RE.test(url);
  * overrides it, which is how an editor swaps in new footage or a still
  * without touching code.
  */
-const DEFAULT_HERO_MEDIA = '/header.mp4';
+const DEFAULT_HERO_MEDIA = "/header.mp4";
 
 function usePrefersReducedMotion() {
   const [reduced, setReduced] = useState(false);
   useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     setReduced(mq.matches);
     const onChange = () => setReduced(mq.matches);
-    mq.addEventListener('change', onChange);
-    return () => mq.removeEventListener('change', onChange);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
   }, []);
   return reduced;
 }
@@ -44,7 +44,10 @@ function usePrefersReducedMotion() {
  * variable-speed background is exactly the kind of vestibular trigger that
  * preference exists to opt out of.
  */
-function useScrollVelocityPlayback(videoRef: React.RefObject<HTMLVideoElement>, enabled: boolean) {
+function useScrollVelocityPlayback(
+  videoRef: React.RefObject<HTMLVideoElement>,
+  enabled: boolean,
+) {
   useEffect(() => {
     if (!enabled) return;
     const video = videoRef.current;
@@ -78,9 +81,9 @@ function useScrollVelocityPlayback(videoRef: React.RefObject<HTMLVideoElement>, 
       raf = requestAnimationFrame(decay);
     };
 
-    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
-      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(raf);
     };
   }, [videoRef, enabled]);
@@ -92,9 +95,13 @@ export default function Hero() {
   const videoRef = useRef<HTMLVideoElement>(null);
   useScrollVelocityPlayback(videoRef, !reducedMotion);
 
-  const video = isVideo(settings.heroImageUrl) ? settings.heroImageUrl : DEFAULT_HERO_MEDIA;
-  const poster = isVideo(settings.heroImageUrl) ? undefined : settings.heroImageUrl;
-  const headline = settings.heroCaption || 'A school on sixteen acres';
+  const video = isVideo(settings.heroImageUrl)
+    ? settings.heroImageUrl
+    : DEFAULT_HERO_MEDIA;
+  const poster = isVideo(settings.heroImageUrl)
+    ? undefined
+    : settings.heroImageUrl;
+  const headline = settings.heroCaption || "A school on sixteen acres";
   // The reference's display size is set for a four-word headline; a longer
   // CMS caption steps down a size so it still sits clear of the nav bar.
   const long = headline.split(/\s+/).length > 5;
@@ -110,7 +117,7 @@ export default function Hero() {
         className="absolute inset-0 -z-10"
         initial={reducedMotion ? false : { opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 0.8, ease: 'linear' }}
+        transition={{ duration: 1, delay: 0.8, ease: "linear" }}
       >
         <video
           key={video}
@@ -126,9 +133,10 @@ export default function Hero() {
           preload="auto"
           aria-label={settings.heroCaption || `${settings.siteName} campus`}
         />
+        <div aria-hidden className="absolute inset-0 bg-black/25" />
         <div
           aria-hidden
-          className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0.24)_0%,rgba(255,255,255,0.12)_48%,rgba(0,0,0,0.38)_100%)]"
+          className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.18)_0%,rgba(0,0,0,0.08)_42%,rgba(0,0,0,0.58)_100%)]"
         />
       </motion.div>
 
@@ -137,12 +145,15 @@ export default function Hero() {
           <motion.p
             initial={reducedMotion ? false : { opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ type: 'spring', duration: 0.7, delay: 0.6 }}
+            transition={{ type: "spring", duration: 0.7, delay: 0.6 }}
             className="vc-label mb-2 inline-flex flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-full bg-neutral-7/70 px-5 py-2.5 text-neutral-2 backdrop-blur-sm"
           >
             <span>{settings.announcementText}</span>
             {settings.announcementLinkLabel && (
-              <Link to="/admissions" className="text-[#f59021] underline-offset-4 hover:underline">
+              <Link
+                to="/admissions"
+                className="text-school-red underline-offset-4 hover:underline"
+              >
                 {settings.announcementLinkLabel}
               </Link>
             )}
@@ -155,36 +166,45 @@ export default function Hero() {
           by="word"
           className={
             long
-              ? 'max-w-[18ch] text-[clamp(2.5257rem,1.3817rem+4.8943vw,7.4506rem)] font-extrabold leading-[0.85] tracking-[-0.03em] text-neutral-2'
-              : 'vc-display max-w-[14ch] text-neutral-2'
+              ? "max-w-[18ch] text-[clamp(2rem,4vw,3rem)] font-extrabold leading-[0.92] tracking-[-0.025em] text-neutral-2"
+              : "max-w-[14ch] text-[clamp(2rem,4vw,3rem)] font-display font-extrabold leading-[0.92] tracking-[-0.025em] text-neutral-2"
           }
         />
 
         <motion.p
           initial={reducedMotion ? false : { opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ type: 'spring', duration: 0.7, delay: 0.8 }}
-          className="max-w-[38ch] font-display text-xl font-semibold leading-[1.1] tracking-[-0.02em] text-[#eb8900] md:text-3xl"
+          transition={{ type: "spring", duration: 0.7, delay: 0.8 }}
+          className="max-w-[42ch] font-display text-lg font-semibold leading-[1.25] tracking-[-0.01em] text-school-red md:text-xl"
         >
-          An English-medium, co-educational CBSE school in Al Muladha, Oman, from Kindergarten
-          through Grade 12.
+          An English-medium, co-educational CBSE school in Al Muladha, Oman,
+          from Kindergarten through Grade 12.
         </motion.p>
 
         <motion.div
           initial={reducedMotion ? false : { opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ type: 'spring', duration: 0.7, delay: 1 }}
+          transition={{ type: "spring", duration: 0.7, delay: 1 }}
           className="mt-6 flex flex-wrap justify-center gap-3"
         >
-          <Button variant="secondary" as="a" to="/admissions">
+          <Button
+            variant="secondary"
+            as="a"
+            to="/admissions"
+            className="fuse-cta"
+          >
             Apply for admission
           </Button>
-          <Button variant="primary" as="a" to="/contact#locate">
+          <Button
+            variant="primary"
+            as="a"
+            to="/contact#locate"
+            className="fuse-cta"
+          >
             Visit the campus
           </Button>
         </motion.div>
       </div>
-
     </section>
   );
 }

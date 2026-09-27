@@ -1,13 +1,13 @@
-import { useEffect, useState, type FormEvent } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import AdminPageHeader from '@/components/admin/AdminPageHeader';
-import { Select, TextArea, TextInput } from '@/components/admin/FormFields';
-import { postsService } from '@/services/cms.service';
-import { mediaService } from '@/services/cms.service';
-import { slugify } from '@/services/storage';
-import type { PostCategory } from '@/types';
-import { useAuth } from '@/hooks/useAuth';
-import { useToast } from '@/hooks/useToast';
+import { useEffect, useState, type FormEvent } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { Select, TextArea, TextInput } from "@/components/admin/FormFields";
+import { postsService } from "@/services/cms.service";
+import { mediaService } from "@/services/cms.service";
+import { slugify } from "@/services/storage";
+import type { PostCategory } from "@/types";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/useToast";
 
 export default function PostEditor() {
   const { id } = useParams<{ id: string }>();
@@ -16,22 +16,24 @@ export default function PostEditor() {
   const { user } = useAuth();
   const { push } = useToast();
 
-  const [title, setTitle] = useState('');
-  const [slug, setSlug] = useState('');
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
-  const [excerpt, setExcerpt] = useState('');
-  const [content, setContent] = useState('');
-  const [category, setCategory] = useState<PostCategory>('news');
-  const [status, setStatus] = useState<'draft' | 'published'>('draft');
-  const [author, setAuthor] = useState('');
-  const [publishedAt, setPublishedAt] = useState(() => new Date().toISOString().slice(0, 10));
+  const [excerpt, setExcerpt] = useState("");
+  const [content, setContent] = useState("");
+  const [category, setCategory] = useState<PostCategory>("news");
+  const [status, setStatus] = useState<"draft" | "published">("draft");
+  const [author, setAuthor] = useState("");
+  const [publishedAt, setPublishedAt] = useState(() =>
+    new Date().toISOString().slice(0, 10),
+  );
   const [coverUrl, setCoverUrl] = useState<string | undefined>(undefined);
   const [notFound, setNotFound] = useState(false);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (!id) {
-      setAuthor(user?.name ?? '');
+      setAuthor(user?.name ?? "");
       return;
     }
     const post = postsService.get(id);
@@ -62,9 +64,9 @@ export default function PostEditor() {
     try {
       const item = await mediaService.upload(file);
       setCoverUrl(item.url);
-      push('success', 'Cover image uploaded.');
+      push("success", "Cover image uploaded.");
     } catch {
-      push('error', 'Upload failed.');
+      push("error", "Upload failed.");
     } finally {
       setUploading(false);
     }
@@ -86,14 +88,17 @@ export default function PostEditor() {
       };
       if (isEdit && id) {
         postsService.update(id, payload);
-        push('success', 'Post updated.');
+        push("success", "Post updated.");
       } else {
         const created = postsService.create(payload);
-        push('success', `Post "${created.title}" created.`);
+        push("success", `Post "${created.title}" created.`);
       }
-      navigate('/admin/posts');
+      navigate("/admin/posts");
     } catch (err) {
-      push('error', err instanceof Error ? err.message : 'Something went wrong.');
+      push(
+        "error",
+        err instanceof Error ? err.message : "Something went wrong.",
+      );
     }
   };
 
@@ -111,11 +116,14 @@ export default function PostEditor() {
   return (
     <div>
       <AdminPageHeader
-        title={isEdit ? 'Edit post' : 'New post'}
-        breadcrumbs={[{ label: 'News & Posts', to: '/admin/posts' }, { label: isEdit ? 'Edit' : 'New' }]}
+        title={isEdit ? "Edit post" : "New post"}
+        breadcrumbs={[
+          { label: "News & Posts", to: "/admin/posts" },
+          { label: isEdit ? "Edit" : "New" },
+        ]}
       />
 
-      <form onSubmit={onSubmit} className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+      <form onSubmit={onSubmit} className="grid gap-4 lg:grid-cols-[2fr_1fr]">
         <div className="card space-y-5 p-6">
           <TextInput
             label="Title"
@@ -159,7 +167,9 @@ export default function PostEditor() {
             <Select
               label="Status"
               value={status}
-              onChange={(e) => setStatus(e.target.value as 'draft' | 'published')}
+              onChange={(e) =>
+                setStatus(e.target.value as "draft" | "published")
+              }
             >
               <option value="draft">Draft</option>
               <option value="published">Published</option>
@@ -193,14 +203,22 @@ export default function PostEditor() {
               Cover image
             </h3>
             {coverUrl ? (
-              <img src={coverUrl} alt="" className="aspect-video w-full rounded-md object-cover" />
+              <img
+                src={coverUrl}
+                alt=""
+                className="aspect-video w-full rounded-md object-cover"
+              />
             ) : (
               <div className="flex aspect-video w-full items-center justify-center rounded-md border border-dashed border-slate-300 text-xs text-slate-500">
                 No image
               </div>
             )}
             <label className="btn-outline w-full cursor-pointer text-center">
-              {uploading ? 'Uploading…' : coverUrl ? 'Replace image' : 'Upload image'}
+              {uploading
+                ? "Uploading…"
+                : coverUrl
+                  ? "Replace image"
+                  : "Upload image"}
               <input
                 type="file"
                 accept="image/*"
@@ -224,7 +242,7 @@ export default function PostEditor() {
               Cancel
             </Link>
             <button type="submit" className="btn-primary">
-              {isEdit ? 'Save changes' : 'Create post'}
+              {isEdit ? "Save changes" : "Create post"}
             </button>
           </div>
         </div>

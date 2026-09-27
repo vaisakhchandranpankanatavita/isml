@@ -51,6 +51,7 @@ const routes: RouteObject[] = [
           { path: 'alumni', element: <Alumni /> },
           { path: 'contact', element: <Contact /> },
           { path: 'p/:slug', element: <PublicPage /> },
+          { path: ':slug', element: <PublicPage /> },
         ],
       },
       { path: 'admin/login', element: <Login /> },

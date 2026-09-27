@@ -1,9 +1,15 @@
-import { useState } from 'react';
-import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import clsx from 'clsx';
-import { ADMIN_NAV_SECTIONS, SITE_NAME } from '@/config/site';
-import { useAuth } from '@/hooks/useAuth';
-import AdminIcon from '@/components/admin/AdminIcon';
+import { useState } from "react";
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+import clsx from "clsx";
+import { ADMIN_NAV_SECTIONS, SITE_NAME } from "@/config/site";
+import { useAuth } from "@/hooks/useAuth";
+import AdminIcon from "@/components/admin/AdminIcon";
 
 function currentPageTitle(pathname: string) {
   for (const section of ADMIN_NAV_SECTIONS) {
@@ -13,11 +19,11 @@ function currentPageTitle(pathname: string) {
       }
     }
   }
-  if (pathname.startsWith('/admin/posts/')) return 'News & Posts';
-  if (pathname.startsWith('/admin/pages/')) return 'Pages';
-  if (pathname.startsWith('/admin/menus/')) return 'Menus';
-  if (pathname.startsWith('/admin/users/')) return 'Users';
-  return 'Dashboard';
+  if (pathname.startsWith("/admin/posts/")) return "News & Posts";
+  if (pathname.startsWith("/admin/pages/")) return "Pages";
+  if (pathname.startsWith("/admin/menus/")) return "Menus";
+  if (pathname.startsWith("/admin/users/")) return "Users";
+  return "Dashboard";
 }
 
 export default function AdminLayout() {
@@ -29,23 +35,23 @@ export default function AdminLayout() {
 
   const handleLogout = () => {
     logout();
-    navigate('/admin/login', { replace: true });
+    navigate("/admin/login", { replace: true });
   };
 
-  const initials = (user?.name ?? '?')
+  const initials = (user?.name ?? "?")
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
     .map((s) => s[0]?.toUpperCase())
-    .join('');
+    .join("");
 
   return (
     <div className="admin-shell flex min-h-screen bg-slate-50">
       {/* Sidebar */}
       <aside
         className={clsx(
-          'fixed inset-y-0 left-0 z-40 w-64 transform border-r border-slate-200 bg-white text-slate-800 transition-transform lg:static lg:translate-x-0',
-          open ? 'translate-x-0' : '-translate-x-full',
+          "fixed inset-y-0 left-0 z-40 w-64 transform border-r border-slate-200 bg-white text-slate-800 transition-transform lg:static lg:translate-x-0",
+          open ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <div className="flex h-16 items-center justify-between border-b border-slate-200 px-5">
@@ -76,13 +82,13 @@ export default function AdminLayout() {
                     key={item.to}
                     to={item.to}
                     onClick={() => setOpen(false)}
-                    end={item.to === '/admin/dashboard'}
+                    end={item.to === "/admin/dashboard"}
                     className={({ isActive }) =>
                       clsx(
-                        'group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition',
+                        "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition",
                         isActive
-                          ? 'bg-brand-50 text-brand-800 ring-1 ring-brand-200'
-                          : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950',
+                          ? "bg-brand-50 text-brand-800 ring-1 ring-brand-200"
+                          : "text-slate-600 hover:bg-slate-50 hover:text-slate-950",
                       )
                     }
                   >
@@ -101,7 +107,9 @@ export default function AdminLayout() {
             <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
               Site
             </p>
-            <p className="mt-1 truncate text-sm font-semibold text-slate-900">{SITE_NAME}</p>
+            <p className="mt-1 truncate text-sm font-semibold text-slate-900">
+              {SITE_NAME}
+            </p>
             <Link
               to="/"
               className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-brand-700 hover:text-brand-900"
@@ -137,7 +145,9 @@ export default function AdminLayout() {
               <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-brand-50 text-brand-700">
                 <AdminIcon name="grid" className="h-4 w-4" />
               </span>
-              <h1 className="text-base font-semibold text-slate-900">{pageTitle}</h1>
+              <h1 className="text-base font-semibold text-slate-900">
+                {pageTitle}
+              </h1>
             </div>
           </div>
 
@@ -152,14 +162,16 @@ export default function AdminLayout() {
 
             <div className="hidden text-right sm:block">
               <p className="text-sm font-medium text-slate-900">{user?.name}</p>
-              <p className="text-xs capitalize tracking-wide text-slate-500">{user?.role}</p>
+              <p className="text-xs capitalize tracking-wide text-slate-500">
+                {user?.role}
+              </p>
             </div>
 
             <span
               aria-hidden
               className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-800 ring-1 ring-brand-200"
             >
-              {initials || 'U'}
+              {initials || "U"}
             </span>
 
             <button
@@ -176,7 +188,7 @@ export default function AdminLayout() {
           {/* Soft green gradient wash at the top of every admin page */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-brand-50/70 via-white/60 to-transparent"
+            className="pointer-events-none absolute inset-x-0 top-0 h-64 bg-gradient-to-b from-paper-sunk/90 via-paper/60 to-transparent"
           />
           <div className="relative p-4 sm:p-6 lg:p-8">
             <Outlet />

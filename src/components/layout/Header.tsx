@@ -37,7 +37,7 @@ const isExternal = (to: string) => /^https?:\/\//.test(to);
 function fromMenu(nodes: MenuNode[]): NavNode[] {
   return nodes.map((n) => ({
     label: n.label,
-    to: n.url,
+    to: n.url.replace(/^\/p(?=\/)/, '') || '/',
     newTab: n.newTab,
     children: fromMenu(n.children),
   }));
@@ -124,8 +124,6 @@ function NavLinkish({
   );
 }
 
-const pad = (n: number) => String(n + 1).padStart(2, '0');
-
 function TopItem({ node, pathname }: { node: NavNode; pathname: string }) {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef<HTMLLIElement>(null);
@@ -161,10 +159,9 @@ function TopItem({ node, pathname }: { node: NavNode; pathname: string }) {
       {hasChildren && (
         <div className="vc-submenu">
           <ul className="vc-submenu__list">
-            {node.children.map((child, i) => (
+            {node.children.map((child) => (
               <li key={`${child.label}-${child.to}`} className="vc-submenu__item vc-hover-parent">
                 <NavLinkish node={child} className="vc-submenu__link" onClick={() => setOpen(false)}>
-                  <span className="vc-submenu__count vc-serif">{pad(i)}</span>
                   <span className="vc-submenu__heading vc-label-l">
                     {child.label}
                     <span aria-hidden>{child.label}</span>
@@ -186,12 +183,10 @@ function TopItem({ node, pathname }: { node: NavNode; pathname: string }) {
 
 function MobileItem({
   node,
-  index,
   onNavigate,
   tabbable,
 }: {
   node: NavNode;
-  index: number;
   onNavigate: () => void;
   tabbable: boolean;
 }) {
@@ -200,10 +195,9 @@ function MobileItem({
   return (
     <li className="mobile-nav-item border-b border-neutral-6">
       <div className="flex items-center gap-2.5 py-1.5">
-        <span className="vc-serif w-5 text-xs text-neutral-4">{pad(index)}</span>
         <NavLinkish
           node={node}
-          className="flex-1 font-display text-lg font-bold uppercase leading-tight text-neutral-2 transition-colors hover:text-[#f59021]"
+          className="flex-1 font-display text-lg font-bold uppercase leading-tight text-neutral-2 transition-colors hover:text-school-red"
           onClick={onNavigate}
           tabIndex={itemTabIndex}
         />
@@ -276,24 +270,24 @@ export default function Header() {
       <nav aria-label="Main" className="vc-nav">
         <Link
           to="/"
-          className="flex h-full shrink-0 items-center gap-3 text-neutral-1"
+          className="flex h-full min-w-0 flex-1 items-center gap-2 text-neutral-1 sm:gap-3 xl:flex-none"
           aria-label={settings.siteName}
         >
-          <img src="/logo.png" alt="" className="h-10 w-10 shrink-0 xl:h-12 xl:w-12" />
-          <span className="hidden font-display text-xl font-extrabold uppercase leading-[0.85] sm:block">
+          <img src="/logo.png" alt="" className="h-9 w-9 shrink-0 sm:h-10 sm:w-10 xl:h-12 xl:w-12" />
+          <span className="vc-nav__brand-name block min-w-0 flex-1 font-display text-[0.72rem] font-extrabold uppercase leading-[0.95] sm:text-xl sm:leading-[0.85] xl:flex-none">
             {settings.siteName.split(' ').slice(0, -1).join(' ') || settings.siteName}
             <span className="block text-neutral-4">{settings.siteName.split(' ').slice(-1)}</span>
           </span>
         </Link>
 
-        <ul className="vc-menu hidden xl:flex">
+        <ul className="vc-menu hidden 2xl:flex">
           {nav.map((node) => (
             <TopItem key={`${node.label}-${node.to}`} node={node} pathname={pathname} />
           ))}
         </ul>
 
         <div className="flex shrink-0 items-center gap-2">
-          <div className="vc-nav-utility hidden xl:flex">
+          <div className="vc-nav-utility hidden 2xl:flex">
             <ThemeToggle />
           </div>
           <Button variant="accent" size="sm" as="a" to="/admissions" className="hidden sm:inline-flex">
@@ -305,7 +299,7 @@ export default function Header() {
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav"
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-            className="vc-icon-btn xl:hidden"
+            className="vc-icon-btn 2xl:hidden"
           >
             <span
               aria-hidden
@@ -342,14 +336,14 @@ export default function Header() {
             onKeyDown={(e) => {
               if (e.key === 'Escape') setMobileOpen(false);
             }}
-            className="mobile-nav-panel pointer-events-auto mt-2 w-full overflow-y-auto rounded-xl bg-neutral-7 px-3.5 pb-3 pt-2 sm:max-w-[26rem] sm:self-end sm:px-4 xl:hidden"
+            className="mobile-nav-panel pointer-events-auto mt-2 w-full overflow-y-auto rounded-xl bg-neutral-7 px-3.5 pb-3 pt-2 sm:max-w-[26rem] sm:self-end sm:px-4 2xl:hidden"
+            data-lenis-prevent
           >
             <ul>
-              {nav.map((node, i) => (
+              {nav.map((node) => (
                 <MobileItem
                   key={`${node.label}-${node.to}`}
                   node={node}
-                  index={i}
                   onNavigate={() => setMobileOpen(false)}
                   tabbable={mobileOpen}
                 />

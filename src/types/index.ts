@@ -70,6 +70,16 @@ export interface HomeGalleryImage {
   caption?: string;
 }
 
+export interface ChatSuggestions {
+  welcome: string[];
+  admissions: string[];
+  programs: string[];
+  fees: string[];
+  news: string[];
+  contact: string[];
+  campus: string[];
+}
+
 export interface SiteSettings {
   siteName: string;
   tagline: string;
@@ -98,6 +108,7 @@ export interface SiteSettings {
   experienceHeading: string;
   experienceBody: string;
   experienceImages: HomeGalleryImage[];
+  chatSuggestions?: ChatSuggestions;
   // Virtual tour
   tourHeading: string;
   tourBody: string;

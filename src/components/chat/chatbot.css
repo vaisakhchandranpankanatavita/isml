@@ -15,7 +15,7 @@
   --cb-ink-2: rgb(var(--ink-muted-rgb));
   --cb-ink-3: rgb(var(--ink-faint-rgb));
   --cb-line: var(--paper-line);
-  --cb-accent: #f59021;
+  --cb-accent: var(--vc-accent);
   --cb-accent-ink: #854000;
   --cb-on-accent: #1f1e1d;
 

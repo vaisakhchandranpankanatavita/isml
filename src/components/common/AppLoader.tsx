@@ -72,7 +72,7 @@ export default function AppLoader() {
                   transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
                 />
                 <motion.div
-                  className="absolute left-1/2 top-1/2 h-[min(70vw,38rem)] w-[min(70vw,38rem)] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#f59021]/15"
+                  className="absolute left-1/2 top-1/2 h-[min(70vw,38rem)] w-[min(70vw,38rem)] -translate-x-1/2 -translate-y-1/2 rounded-full border border-prestige-gold/15"
                   animate={{ rotate: 360, scale: [0.96, 1.04, 0.96] }}
                   transition={{ rotate: { duration: 36, repeat: Infinity, ease: 'linear' }, scale: { duration: 9, repeat: Infinity, ease: 'easeInOut' } }}
                 />
@@ -98,7 +98,7 @@ export default function AppLoader() {
               {settings.siteName || 'Indian School Muladha'}
             </motion.p>
             <div className="h-[2px] w-36 overflow-hidden rounded-full bg-black/10">
-              <motion.span className="block h-full origin-left rounded-full bg-[#f59021]" style={{ scaleX }} />
+              <motion.span className="block h-full origin-left rounded-full bg-prestige-gold" style={{ scaleX }} />
             </div>
           </div>
         </motion.div>

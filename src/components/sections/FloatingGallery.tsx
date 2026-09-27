@@ -48,24 +48,24 @@ export default function FloatingGallery({
 
       <div className="relative z-10 flex min-h-[760px] items-center justify-center px-5 py-24 md:h-full md:min-h-0 md:px-8">
         <motion.div
-          className="experience-mosaic__content w-full max-w-3xl rounded-2xl px-6 py-12 text-center sm:px-12 sm:py-16 md:px-16 md:py-20"
+          className="experience-mosaic__content w-full max-w-3xl rounded-2xl px-5 py-9 text-center sm:px-10 sm:py-12 md:px-14 md:py-14"
           initial={reduce ? false : { opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.35 }}
           transition={{ duration: 0.75, delay: 0.2, ease: 'easeOut' }}
         >
-          <p className="mb-5 font-display text-sm font-bold uppercase tracking-[0.24em] text-amber-300 sm:text-base">
+          <p className="mb-4 font-display text-xs font-bold uppercase tracking-[0.2em] text-amber-300 sm:text-sm">
             Life at ISML
           </p>
-          <h2 className="mx-auto max-w-[16ch] text-[clamp(2.8rem,7vw,6.5rem)] leading-[0.88] text-white">
+          <h2 className="mx-auto max-w-[18ch] text-balance text-[clamp(2rem,4vw,3rem)] leading-[0.94] tracking-[-0.025em] text-white">
             {heading}
           </h2>
           {body && (
-            <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-white/85 sm:text-lg">
+            <p className="mx-auto mt-4 max-w-xl text-sm leading-relaxed text-white/85 sm:text-base">
               {body}
             </p>
           )}
-          <Button variant="secondary" as="a" to="/gallery" className="mt-8">
+          <Button variant="secondary" as="a" to="/gallery" className="mt-6">
             Explore the gallery
           </Button>
         </motion.div>

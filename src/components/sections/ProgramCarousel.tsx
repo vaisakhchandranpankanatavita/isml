@@ -1,10 +1,10 @@
-import { Component, Suspense, useState, lazy, type ReactNode } from 'react';
-import { Canvas } from '@react-three/fiber';
-import type { K12Program as Program } from '@/types';
-import ProgramOverlay from './ProgramOverlay';
+import { Component, Suspense, useState, lazy, type ReactNode } from "react";
+import { Canvas } from "@react-three/fiber";
+import type { K12Program as Program } from "@/types";
+import ProgramOverlay from "./ProgramOverlay";
 
 // Lazy load the 3D scene to keep initial load fast
-const CarouselScene = lazy(() => import('./CarouselScene'));
+const CarouselScene = lazy(() => import("./CarouselScene"));
 
 interface ProgramCarouselProps {
   programs: Program[];
@@ -12,9 +12,12 @@ interface ProgramCarouselProps {
 
 function ProgramGrid({ programs }: ProgramCarouselProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 py-20">
+    <div className="grid grid-cols-1 gap-6 py-12 sm:grid-cols-2 lg:grid-cols-3">
       {programs.map((program) => (
-        <div key={program.id} className="glass p-4 rounded-2xl transition-all hover:scale-105">
+        <div
+          key={program.id}
+          className="glass p-4 rounded-2xl transition-all hover:scale-105"
+        >
           {program.coverUrl && (
             <img
               src={program.coverUrl}
@@ -22,8 +25,12 @@ function ProgramGrid({ programs }: ProgramCarouselProps) {
               className="aspect-[4/3] object-cover rounded-xl mb-4"
             />
           )}
-          <p className="text-xs font-semibold text-brand-600 uppercase">{program.grades}</p>
-          <h3 className="font-display text-xl font-bold text-ink">{program.title}</h3>
+          <p className="text-xs font-semibold text-brand-600 uppercase">
+            {program.grades}
+          </p>
+          <h3 className="font-display text-xl font-bold text-ink">
+            {program.title}
+          </h3>
         </div>
       ))}
     </div>
@@ -48,7 +55,10 @@ class SceneBoundary extends Component<
   }
 
   componentDidCatch(error: unknown) {
-    console.warn('[ProgramCarousel] 3D scene failed, showing grid fallback:', error);
+    console.warn(
+      "[ProgramCarousel] 3D scene failed, showing grid fallback:",
+      error,
+    );
   }
 
   render() {
@@ -57,10 +67,14 @@ class SceneBoundary extends Component<
 }
 
 export default function ProgramCarousel({ programs }: ProgramCarouselProps) {
-  const [activeProgramIndex, setActiveProgramIndex] = useState<number | null>(null);
+  const [activeProgramIndex, setActiveProgramIndex] = useState<number | null>(
+    null,
+  );
 
   // Reduced motion fallback: a clean, modern grid
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
 
   if (prefersReducedMotion) {
     return <ProgramGrid programs={programs} />;
@@ -95,7 +109,9 @@ export default function ProgramCarousel({ programs }: ProgramCarouselProps) {
         {/* UI Overlay Layer */}
         <div className="absolute inset-0 z-10 pointer-events-none">
           <ProgramOverlay
-            program={activeProgramIndex !== null ? programs[activeProgramIndex] : null}
+            program={
+              activeProgramIndex !== null ? programs[activeProgramIndex] : null
+            }
           />
         </div>
 

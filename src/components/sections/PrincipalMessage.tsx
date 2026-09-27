@@ -1,6 +1,6 @@
-import { motion, useReducedMotion } from 'framer-motion';
-import Media from '@/components/common/Media';
-import { Button } from '@/components/common/Button';
+import { motion, useReducedMotion } from "framer-motion";
+import Media from "@/components/common/Media";
+import { Button } from "@/components/common/Button";
 
 interface PrincipalMessageProps {
   message: string;
@@ -15,16 +15,24 @@ interface PrincipalMessageProps {
  * portrait. The portrait is framed at no more than its natural width
  * (440px) so it stays sharp instead of being stretched across the viewport.
  */
-export default function PrincipalMessage({ message, name, title, imageUrl }: PrincipalMessageProps) {
+export default function PrincipalMessage({
+  message,
+  name,
+  title,
+  imageUrl,
+}: PrincipalMessageProps) {
   const reduce = useReducedMotion();
   if (!message || !name || !title) return null;
 
   return (
-    <section id="principal" className="band-dark relative isolate overflow-hidden">
-      <div className="container grid items-center gap-12 py-[clamp(5.25rem,4.3789rem+3.7267vw,9rem)] lg:grid-cols-[1fr_minmax(0,440px)] lg:gap-20">
-        <div className="max-w-[46ch]">
+    <section
+      id="principal"
+      className="band-dark relative isolate overflow-hidden"
+    >
+      <div className="container grid items-center gap-8 py-[clamp(3.5rem,3.0355rem+1.9876vw,5.5rem)] lg:grid-cols-[1fr_minmax(0,440px)] lg:gap-12">
+        <div className="text-center">
           <motion.p
-            className="vc-label text-[#f59021]"
+            className="vc-label text-school-red"
             initial={reduce ? false : { opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -33,7 +41,7 @@ export default function PrincipalMessage({ message, name, title, imageUrl }: Pri
             From the Principal
           </motion.p>
           <motion.blockquote
-            className="mt-6 font-hand text-xl leading-[1.6] text-neutral-1 md:text-2xl lg:text-[1.75rem]"
+            className="voice mt-6 text-xl leading-[1.6] text-neutral-1 md:text-2xl lg:text-[1.75rem]"
             initial={reduce ? false : { opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -60,7 +68,11 @@ export default function PrincipalMessage({ message, name, title, imageUrl }: Pri
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.15 }}
           >
-            <Media src={imageUrl} alt={`${name}, ${title}`} className="object-top" />
+            <Media
+              src={imageUrl}
+              alt={`${name}, ${title}`}
+              className="object-top"
+            />
           </motion.figure>
         )}
       </div>

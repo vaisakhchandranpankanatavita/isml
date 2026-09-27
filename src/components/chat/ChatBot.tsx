@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { postsService } from '@/services/cms.service';
-import { reply, WELCOME_CHIPS, type ChatLink } from './chatEngine';
+import { getChatSuggestions, reply, type ChatLink } from './chatEngine';
 import Mascot, { usePointerLook } from './Mascot';
 import './chatbot.css';
 
@@ -32,6 +32,11 @@ const STORE = 'isml-chat-v1';
 const NUDGE = 'isml-chat-nudged';
 let seq = 0;
 const uid = () => `${Date.now().toString(36)}-${seq++}`;
+const formatReplyText = (text: string) =>
+  text
+    .replace(/\\n/g, '\n')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/^- /gm, '• ');
 
 const load = (): Msg[] => {
   try {
@@ -154,7 +159,10 @@ export default function ChatBot() {
 
   const pushBot = useCallback(
     (r: { text: string; links?: ChatLink[]; chips?: string[] }) =>
-      setMsgs((m) => [...m, { id: uid(), role: 'bot', ...r, fresh: !reduced }]),
+      setMsgs((m) => [
+        ...m,
+        { id: uid(), role: 'bot', ...r, text: formatReplyText(r.text), fresh: !reduced },
+      ]),
     [reduced],
   );
 
@@ -179,7 +187,7 @@ export default function ChatBot() {
           setTyping(false);
           pushBot({
             text: `Hi, I'm the ${settings.siteName || 'ISML'} assistant. I can help with admissions, programmes, fees, news and getting in touch. What would you like to know?`,
-            chips: WELCOME_CHIPS,
+            chips: getChatSuggestions(settings, 'welcome'),
           });
         },
         reduced ? 0 : 700,
@@ -225,7 +233,10 @@ export default function ChatBot() {
       later(
         () => {
           setTyping(false);
-          pushBot({ text: 'Fresh start. What would you like to know?', chips: WELCOME_CHIPS });
+          pushBot({
+            text: 'Fresh start. What would you like to know?',
+            chips: getChatSuggestions(settings, 'welcome'),
+          });
         },
         reduced ? 0 : 500,
       );

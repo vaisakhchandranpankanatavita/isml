@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion';
 
-const SPRING = { stiffness: 280, damping: 28, mass: 0.6 };
+const SPRING = { stiffness: 520, damping: 34, mass: 0.35 };
 
 /**
  * A crisp dot nested inside a fine vector ring. Over a `[data-cursor-text]`
@@ -36,8 +36,8 @@ export default function CustomCursor() {
 
   const targetX = useMotionValue(-100);
   const targetY = useMotionValue(-100);
-  const dotX = useSpring(targetX, { ...SPRING, stiffness: 500 });
-  const dotY = useSpring(targetY, { ...SPRING, stiffness: 500 });
+  const dotX = useSpring(targetX, { ...SPRING, stiffness: 900, damping: 38, mass: 0.2 });
+  const dotY = useSpring(targetY, { ...SPRING, stiffness: 900, damping: 38, mass: 0.2 });
   const ringX = useSpring(targetX, SPRING);
   const ringY = useSpring(targetY, SPRING);
   const [magnet, setMagnet] = useState(false);
@@ -84,12 +84,12 @@ export default function CustomCursor() {
   return (
     <>
       <motion.div
-        className="cursor-dot"
+        className="cursor-dot z-[210]"
         style={{ x: dotX, y: dotY, marginLeft: -4, marginTop: -4 }}
         animate={{ opacity: label ? 0 : 1 }}
       />
       <motion.div
-        className={label ? 'cursor-ring cursor-ring--label' : 'cursor-ring'}
+        className={label ? 'cursor-ring cursor-ring--label z-[210]' : 'cursor-ring z-[210]'}
         style={{ x: ringX, y: ringY, marginLeft: -16, marginTop: -16 }}
         animate={{ scale: label ? 2.4 : magnet ? 1.7 : 1 }}
         transition={SPRING}

@@ -1,5 +1,5 @@
-import { motion, useReducedMotion } from 'framer-motion';
-import type { ReactNode } from 'react';
+import { motion, useReducedMotion } from "framer-motion";
+import type { ReactNode } from "react";
 
 export interface StatementSegment {
   text: string;
@@ -24,19 +24,21 @@ export default function InlineImagesStatement({
   const reduce = useReducedMotion();
 
   return (
-    <section className="band-dark relative py-[clamp(7.875rem,6.2199rem+7.0807vw,15rem)] text-center">
+    <section className="band-dark relative py-[clamp(4rem,3.5355rem+1.9876vw,6rem)] text-center">
       <div className="container">
         <motion.h2
-          className="mx-auto max-w-[80rem] text-[clamp(2.5257rem,1.3817rem+4.8943vw,7.4506rem)] leading-[0.9] text-neutral-2"
+          className="mx-auto max-w-[64rem] text-[clamp(2.15rem,1.6rem+3.2vw,5.25rem)] leading-[0.94] tracking-[-0.02em] text-neutral-2"
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
         >
           {segments.map((seg, i) => {
-            const offset = segments.slice(0, i).reduce((n, sg) => n + sg.text.split(' ').length, 0);
+            const offset = segments
+              .slice(0, i)
+              .reduce((n, sg) => n + sg.text.split(" ").length, 0);
             return (
               <span key={i}>
-                {seg.text.split(' ').map((word, w) => (
+                {seg.text.split(" ").map((word, w) => (
                   <span key={w}>
                     <motion.span
                       className="inline-block"
@@ -44,9 +46,9 @@ export default function InlineImagesStatement({
                         reduce
                           ? undefined
                           : {
-                              hidden: { clipPath: 'inset(0 0 100%)', y: 60 },
+                              hidden: { clipPath: "inset(0 0 100%)", y: 60 },
                               show: {
-                                clipPath: 'inset(0% 0 -30%)',
+                                clipPath: "inset(0% 0 -30%)",
                                 y: 0,
                                 transition: {
                                   delay: 0.04 * (offset + w),
@@ -58,7 +60,7 @@ export default function InlineImagesStatement({
                       }
                     >
                       {word}
-                    </motion.span>{' '}
+                    </motion.span>{" "}
                   </span>
                 ))}
               </span>
@@ -72,7 +74,7 @@ export default function InlineImagesStatement({
             initial={reduce ? false : { opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.7, ease: 'easeOut' }}
+            transition={{ duration: 0.7, ease: "easeOut" }}
           >
             {lead && (
               <p className="font-display text-2xl font-semibold leading-[1.1] tracking-[-0.02em] text-neutral-3 md:text-4xl">

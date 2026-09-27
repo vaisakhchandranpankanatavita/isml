@@ -1,11 +1,15 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import AdminIcon from '@/components/admin/AdminIcon';
-import { pagesService, postsService, mediaService } from '@/services/cms.service';
-import { usersService } from '@/services/users.service';
-import { storage } from '@/services/storage';
-import type { Post, Page } from '@/types';
-import { useAuth } from '@/hooks/useAuth';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import AdminIcon from "@/components/admin/AdminIcon";
+import {
+  pagesService,
+  postsService,
+  mediaService,
+} from "@/services/cms.service";
+import { usersService } from "@/services/users.service";
+import { storage } from "@/services/storage";
+import type { Post, Page } from "@/types";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Stats {
   pages: number;
@@ -14,19 +18,22 @@ interface Stats {
   users: number;
 }
 
-const KPI_STYLES: Record<
-  string,
-  { icon: string; wash: string; text: string }
-> = {
-  pages: { icon: 'file', wash: 'bg-brand-50', text: 'text-brand-700' },
-  posts: { icon: 'newspaper', wash: 'bg-sky-50', text: 'text-sky-700' },
-  media: { icon: 'image', wash: 'bg-amber-50', text: 'text-amber-700' },
-  users: { icon: 'users', wash: 'bg-violet-50', text: 'text-violet-700' },
-};
+const KPI_STYLES: Record<string, { icon: string; wash: string; text: string }> =
+  {
+    pages: { icon: "file", wash: "bg-brand-50", text: "text-brand-700" },
+    posts: { icon: "newspaper", wash: "bg-sky-50", text: "text-sky-700" },
+    media: { icon: "image", wash: "bg-amber-50", text: "text-amber-700" },
+    users: { icon: "users", wash: "bg-violet-50", text: "text-violet-700" },
+  };
 
 export default function Dashboard() {
   const { user } = useAuth();
-  const [stats, setStats] = useState<Stats>({ pages: 0, posts: 0, media: 0, users: 0 });
+  const [stats, setStats] = useState<Stats>({
+    pages: 0,
+    posts: 0,
+    media: 0,
+    users: 0,
+  });
   const [recentPosts, setRecentPosts] = useState<Post[]>([]);
   const [recentPages, setRecentPages] = useState<Page[]>([]);
 
@@ -46,21 +53,21 @@ export default function Dashboard() {
   }, []);
 
   const cards = [
-    { key: 'pages', label: 'Pages', value: stats.pages, to: '/admin/pages' },
-    { key: 'posts', label: 'Posts', value: stats.posts, to: '/admin/posts' },
-    { key: 'media', label: 'Media', value: stats.media, to: '/admin/media' },
-    { key: 'users', label: 'Users', value: stats.users, to: '/admin/users' },
+    { key: "pages", label: "Pages", value: stats.pages, to: "/admin/pages" },
+    { key: "posts", label: "Posts", value: stats.posts, to: "/admin/posts" },
+    { key: "media", label: "Media", value: stats.media, to: "/admin/media" },
+    { key: "users", label: "Users", value: stats.users, to: "/admin/users" },
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Welcome banner */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-7">
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
         <p className="text-xs font-semibold uppercase tracking-widest text-brand-700">
           Welcome back
         </p>
         <h1 className="mt-2 text-2xl font-bold text-slate-950 sm:text-3xl">
-          {user ? user.name : 'Editor'}
+          {user ? user.name : "Editor"}
         </h1>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
           Here's a snapshot of your site's content.
@@ -77,14 +84,18 @@ export default function Dashboard() {
               to={c.to}
               className="group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-md"
             >
-              <span className={`inline-flex h-12 w-12 items-center justify-center rounded-full ${s.wash} ${s.text}`}>
+              <span
+                className={`inline-flex h-12 w-12 items-center justify-center rounded-full ${s.wash} ${s.text}`}
+              >
                 <AdminIcon name={s.icon} className="h-5 w-5" />
               </span>
               <div className="min-w-0">
                 <p className="truncate text-xs font-medium uppercase tracking-wide text-slate-500">
                   {c.label}
                 </p>
-                <p className="mt-1 text-2xl font-bold text-slate-900">{c.value}</p>
+                <p className="mt-1 text-2xl font-bold text-slate-900">
+                  {c.value}
+                </p>
               </div>
               <span className="ml-auto text-slate-300 transition-colors group-hover:text-brand-600">
                 <AdminIcon name="chevron" className="h-4 w-4" />
@@ -95,12 +106,16 @@ export default function Dashboard() {
       </div>
 
       {/* Recent posts / pages */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <div className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-base font-semibold text-slate-900">Latest posts</h2>
-              <p className="text-xs text-slate-500">Most recent news & posts.</p>
+              <h2 className="text-base font-semibold text-slate-900">
+                Latest posts
+              </h2>
+              <p className="text-xs text-slate-500">
+                Most recent news & posts.
+              </p>
             </div>
             <Link
               to="/admin/posts"
@@ -131,12 +146,14 @@ export default function Dashboard() {
                 >
                   {p.title}
                 </Link>
-                <span className="hidden text-xs text-slate-500 sm:inline">{p.category}</span>
+                <span className="hidden text-xs text-slate-500 sm:inline">
+                  {p.category}
+                </span>
                 <span
                   className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
-                    p.status === 'published'
-                      ? 'bg-emerald-50 text-emerald-700'
-                      : 'bg-slate-100 text-slate-600'
+                    p.status === "published"
+                      ? "bg-emerald-50 text-emerald-700"
+                      : "bg-slate-100 text-slate-600"
                   }`}
                 >
                   {p.status}
@@ -146,11 +163,15 @@ export default function Dashboard() {
           </ul>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-base font-semibold text-slate-900">Latest pages</h2>
-              <p className="text-xs text-slate-500">Recently added or edited pages.</p>
+              <h2 className="text-base font-semibold text-slate-900">
+                Latest pages
+              </h2>
+              <p className="text-xs text-slate-500">
+                Recently added or edited pages.
+              </p>
             </div>
             <Link
               to="/admin/pages"
@@ -181,12 +202,14 @@ export default function Dashboard() {
                 >
                   {p.title}
                 </Link>
-                <span className="hidden truncate text-xs text-slate-500 sm:inline">/{p.slug}</span>
+                <span className="hidden truncate text-xs text-slate-500 sm:inline">
+                  /{p.slug}
+                </span>
                 <span
                   className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
-                    p.status === 'published'
-                      ? 'bg-emerald-50 text-emerald-700'
-                      : 'bg-slate-100 text-slate-600'
+                    p.status === "published"
+                      ? "bg-emerald-50 text-emerald-700"
+                      : "bg-slate-100 text-slate-600"
                   }`}
                 >
                   {p.status}

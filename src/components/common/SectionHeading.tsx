@@ -1,10 +1,10 @@
-import ScaffoldedText from '@/components/motion/ScaffoldedText';
+import ScaffoldedText from "@/components/motion/ScaffoldedText";
 
 interface SectionHeadingProps {
   eyebrow?: string;
   title: string;
   description?: string;
-  align?: 'left' | 'center';
+  align?: "left" | "center";
   /** Renders a rule beneath the heading, matching the homepage sections. */
   ruled?: boolean;
 }
@@ -25,23 +25,25 @@ export default function SectionHeading({
   eyebrow,
   title,
   description,
-  align = 'left',
+  align = "left",
   ruled = false,
 }: SectionHeadingProps) {
   return (
-    <div className={align === 'center' ? 'mx-auto max-w-measure text-center' : ''}>
-      {eyebrow && <p className="vc-label text-[#f59021]">{eyebrow}</p>}
+    <div
+      className={align === "center" ? "mx-auto max-w-measure text-center" : ""}
+    >
+      {eyebrow && <p className="vc-label text-school-red">{eyebrow}</p>}
       <ScaffoldedText
         as="h2"
         text={title}
         by="word"
         className={[
-          'text-4xl md:text-5xl lg:text-6xl',
-          eyebrow ? 'mt-4' : '',
-          ruled ? 'border-b border-paper-line pb-6' : '',
+          "text-2xl sm:text-3xl lg:text-4xl",
+          eyebrow ? "mt-4" : "",
+          ruled ? "border-b border-paper-line pb-6" : "",
         ]
           .filter(Boolean)
-          .join(' ')}
+          .join(" ")}
       />
       {description && <p className="body-copy mt-5">{description}</p>}
     </div>

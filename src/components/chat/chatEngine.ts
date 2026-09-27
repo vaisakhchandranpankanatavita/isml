@@ -1,4 +1,5 @@
 import type { Post, SiteSettings } from '@/types';
+import { CHAT_SUGGESTIONS } from '@/config/site';
 
 /**
  * The assistant's brain. There is no backend, so this is a deliberate,
@@ -25,14 +26,14 @@ interface Ctx {
   posts: Post[];
 }
 
-export const WELCOME_CHIPS = [
-  'Admissions',
-  'Programmes',
-  'Latest news',
-  'Fees',
-  'Contact',
-  'Campus tour',
-];
+export const WELCOME_CHIPS = CHAT_SUGGESTIONS.welcome;
+
+export function getChatSuggestions(
+  settings: SiteSettings,
+  group: keyof typeof CHAT_SUGGESTIONS,
+): string[] {
+  return settings.chatSuggestions?.[group] ?? CHAT_SUGGESTIONS[group];
+}
 
 const norm = (s: string) => s.toLowerCase().replace(/[^a-z0-9\s@.-]/g, ' ');
 
@@ -60,23 +61,23 @@ const INTENTS: Intent[] = [
   {
     id: 'greet',
     keys: [/\b(hi|hello|hey|hola|salam|namaste|greetings|morning|afternoon|evening)\b/],
-    answer: () => ({
+    answer: ({ settings }) => ({
       text: 'Hello! I can help you with **Admissions**, **Programmes**, **Fees**, **News**, and **Contact**. \\n\\nWhat would you like to know first?',
-      chips: WELCOME_CHIPS,
+      chips: getChatSuggestions(settings, 'welcome'),
     }),
   },
   {
     id: 'thanks',
     keys: [/\b(thanks|thank|thx|cheers|great|awesome|perfect)\b/],
-    answer: () => ({
+    answer: ({ settings }) => ({
       text: "You're welcome! \\n\\nIs there **anything else** I can help you find today?",
-      chips: ['Admissions', 'Latest news', 'Contact'],
+      chips: getChatSuggestions(settings, 'welcome'),
     }),
   },
   {
     id: 'docs',
     keys: [/\b(documents?|papers?|certificates?|passport|visa|required|requirements?|checklist)\b/],
-    answer: () => ({
+    answer: ({ settings }) => ({
       text:
         'To start your **Admission**, please ensure you have these documents ready: \\n\\n' +
         '- **Application:** Completed form \\n' +
@@ -87,7 +88,7 @@ const INTENTS: Intent[] = [
         '- **Photos:** Passport-size photographs \\n\\n' +
         'Would you like to know about the **application deadline**?',
       links: [{ label: 'Admissions page', to: '/admissions' }],
-      chips: ['Admission process', 'Fees'],
+      chips: getChatSuggestions(settings, 'admissions'),
     }),
   },
   {
@@ -102,7 +103,7 @@ const INTENTS: Intent[] = [
         { label: 'Email accounts', href: 'mailto:accounts@isml-oman.com' },
         ...contactLinks(settings).slice(0, 1),
       ],
-      chips: ['Admission process', 'Contact'],
+      chips: getChatSuggestions(settings, 'fees'),
     }),
   },
   {
@@ -123,7 +124,7 @@ const INTENTS: Intent[] = [
         { label: 'Admissions page', to: '/admissions' },
         { label: `Email ${settings.admissionEmail}`, href: `mailto:${settings.admissionEmail}` },
       ],
-      chips: ['Documents needed', 'Fees', 'Campus tour'],
+      chips: getChatSuggestions(settings, 'admissions'),
     }),
   },
   {
@@ -138,7 +139,7 @@ const INTENTS: Intent[] = [
           `We follow a continuous **CBSE curriculum** from Kindergarten to Grade 12, ensuring a seamless academic journey.` +
           (list ? `\\n\\n${list}\\n\\nWhich **grade level** are you interested in?` : ''),
         links: [{ label: 'Academics in full', to: '/academics' }],
-        chips: ['Admissions', 'Student resources'],
+        chips: getChatSuggestions(settings, 'programs'),
       };
     },
   },
@@ -147,7 +148,7 @@ const INTENTS: Intent[] = [
     keys: [
       /\b(news|events?|circulars?|announcements?|latest|updates?|holiday|reopening|sports|festival|results?)\b/,
     ],
-    answer: ({ posts }) => {
+    answer: ({ posts, settings }) => {
       const top = posts.slice(0, 3);
       if (!top.length)
         return {
@@ -163,7 +164,7 @@ const INTENTS: Intent[] = [
           ...top.map((p) => ({ label: p.title, to: `/news/${p.slug}` })),
           { label: 'All news and circulars', to: '/news' },
         ],
-        chips: ['Admissions', 'Photo gallery'],
+        chips: getChatSuggestions(settings, 'news'),
       };
     },
   },
@@ -183,7 +184,7 @@ const INTENTS: Intent[] = [
           ? `Here is how you can **reach us**: \\n\\n${lines.join('\\n')}\\n\\nDo you need **directions** to the campus?`
           : 'You can reach the school office through the contact page.',
         links: contactLinks(settings),
-        chips: ['Admissions', 'Campus tour'],
+        chips: getChatSuggestions(settings, 'contact'),
       };
     },
   },
@@ -193,7 +194,7 @@ const INTENTS: Intent[] = [
     answer: ({ settings }) => ({
       text: "I don't have the published **school-hour timetable** available. To avoid any mistakes, the **School Office** can confirm the exact visiting hours. \\n\\nWould you like their **contact details**?",
       links: contactLinks(settings),
-      chips: ['Contact', 'Campus tour'],
+      chips: getChatSuggestions(settings, 'contact'),
     }),
   },
   {
@@ -204,7 +205,7 @@ const INTENTS: Intent[] = [
     answer: ({ settings }) => ({
       text: `**${settings.siteName}** was founded in 1981 in Al Muladha. \\n\\n- **Community:** Home to ~2,200 students \\n- **Campus:** 16 acres of facilities \\n- **Curriculum:** Continuous CBSE (KG to Grade 12) \\n\\nWould you like to see the **Photo Gallery**?`,
       links: [{ label: 'About the school', to: '/about' }],
-      chips: ['Principal', 'Photo gallery', 'Campus tour'],
+      chips: getChatSuggestions(settings, 'campus'),
     }),
   },
   {
@@ -213,16 +214,16 @@ const INTENTS: Intent[] = [
     answer: ({ settings }) => ({
       text: `${settings.principalName}, **${settings.principalTitle}**, leads the school. \\n\\n"${settings.principalMessage.length > 220 ? settings.principalMessage.slice(0, 217) + '…' : settings.principalMessage}" \\n\\nWould you like to read the **complete message**?`,
       links: [{ label: 'Read the full message', to: '/about#principal' }],
-      chips: ['About the school'],
+      chips: getChatSuggestions(settings, 'campus'),
     }),
   },
   {
     id: 'gallery',
     keys: [/\b(photos?|gallery|pictures?|images?|videos?|life|activities)\b/],
-    answer: () => ({
+    answer: ({ settings }) => ({
       text: 'Our **Photo Gallery** showcases campus life and student activities. You can also find the **3D film strip** on the home page. \\n\\nAre you interested in **student achievements**?',
       links: [{ label: 'Full photo gallery', to: '/gallery' }],
-      chips: ['Campus tour', 'Latest news'],
+      chips: getChatSuggestions(settings, 'campus'),
     }),
   },
   {
@@ -238,17 +239,17 @@ const INTENTS: Intent[] = [
           ...(external ? [{ label: 'Walk the campus', href: settings.tourLink }] : []),
           { label: 'Book a visit', to: '/contact' },
         ],
-        chips: ['Admissions', 'Contact'],
+        chips: getChatSuggestions(settings, 'contact'),
       };
     },
   },
   {
     id: 'students',
     keys: [/\b(timetable|time-table|homework|resources?|portal|student)\b/],
-    answer: () => ({
+    answer: ({ settings }) => ({
       text: 'The **Students Area** provides everything in one place: \\n\\n- **Schedules:** Timetables \\n- **Studies:** Syllabus & Homework \\n- **Outcomes:** CBSE Results \\n\\nDo you need help accessing the **portal**?',
       links: [{ label: 'Open student resources', to: '/students' }],
-      chips: ['Programmes', 'Latest news'],
+      chips: getChatSuggestions(settings, 'programs'),
     }),
   },
   {
@@ -267,7 +268,7 @@ const INTENTS: Intent[] = [
     answer: ({ settings }) => ({
       text: 'Of course. The **School Office** is the best route for anything personal or specific. They will get back to you shortly. \\n\\nDo you have a **specific query** for the administration?',
       links: contactLinks(settings),
-      chips: ['Admissions', 'Fees'],
+      chips: getChatSuggestions(settings, 'contact'),
     }),
   },
 ];
@@ -298,6 +299,6 @@ export function reply(input: string, ctx: Ctx): BotReply {
   return {
     text: "I'm not sure I have that information — I'd rather not guess. \\n\\n- **Try:** One of the options below \\n- **Direct:** Ask the school office directly \\n\\nWhat **topic** are you looking for?",
     links: contactLinks(ctx.settings),
-    chips: WELCOME_CHIPS.slice(0, 4),
+    chips: getChatSuggestions(ctx.settings, 'welcome'),
   };
 }

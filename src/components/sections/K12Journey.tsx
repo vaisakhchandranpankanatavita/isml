@@ -27,7 +27,7 @@ export default function K12Journey({ programs, heading }: Props) {
       <div className="container flex items-end justify-between gap-6">
         <div>
           <p className="rule-label">The journey</p>
-          <h2 id="k12-title" className="text-2xl md:text-3xl">
+          <h2 id="k12-title" className="text-[2rem]">
             {heading}
           </h2>
         </div>

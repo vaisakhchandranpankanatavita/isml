@@ -1,10 +1,10 @@
-import { useEffect, useState, type FormEvent } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import AdminPageHeader from '@/components/admin/AdminPageHeader';
-import { Select, TextArea, TextInput } from '@/components/admin/FormFields';
-import { mediaService, pagesService } from '@/services/cms.service';
-import { slugify } from '@/services/storage';
-import { useToast } from '@/hooks/useToast';
+import { useEffect, useState, type FormEvent } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { Select, TextArea, TextInput } from "@/components/admin/FormFields";
+import { mediaService, pagesService } from "@/services/cms.service";
+import { slugify } from "@/services/storage";
+import { useToast } from "@/hooks/useToast";
 
 export default function PageEditor() {
   const { id } = useParams<{ id: string }>();
@@ -12,10 +12,10 @@ export default function PageEditor() {
   const navigate = useNavigate();
   const { push } = useToast();
 
-  const [title, setTitle] = useState('');
-  const [slug, setSlug] = useState('');
-  const [content, setContent] = useState('');
-  const [status, setStatus] = useState<'draft' | 'published'>('draft');
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
+  const [content, setContent] = useState("");
+  const [status, setStatus] = useState<"draft" | "published">("draft");
   const [coverUrl, setCoverUrl] = useState<string | undefined>(undefined);
   const [slugTouched, setSlugTouched] = useState(false);
   const [notFound, setNotFound] = useState(false);
@@ -47,9 +47,9 @@ export default function PageEditor() {
     try {
       const item = await mediaService.upload(file);
       setCoverUrl(item.url);
-      push('success', 'Cover image uploaded.');
+      push("success", "Cover image uploaded.");
     } catch {
-      push('error', 'Upload failed.');
+      push("error", "Upload failed.");
     } finally {
       setUploading(false);
     }
@@ -61,14 +61,17 @@ export default function PageEditor() {
       const payload = { title, slug, content, status, coverUrl };
       if (isEdit && id) {
         pagesService.update(id, payload);
-        push('success', 'Page updated.');
+        push("success", "Page updated.");
       } else {
         const created = pagesService.create(payload);
-        push('success', `Page "${created.title}" created.`);
+        push("success", `Page "${created.title}" created.`);
       }
-      navigate('/admin/pages');
+      navigate("/admin/pages");
     } catch (err) {
-      push('error', err instanceof Error ? err.message : 'Something went wrong.');
+      push(
+        "error",
+        err instanceof Error ? err.message : "Something went wrong.",
+      );
     }
   };
 
@@ -86,11 +89,14 @@ export default function PageEditor() {
   return (
     <div>
       <AdminPageHeader
-        title={isEdit ? 'Edit page' : 'New page'}
-        breadcrumbs={[{ label: 'Pages', to: '/admin/pages' }, { label: isEdit ? 'Edit' : 'New' }]}
+        title={isEdit ? "Edit page" : "New page"}
+        breadcrumbs={[
+          { label: "Pages", to: "/admin/pages" },
+          { label: isEdit ? "Edit" : "New" },
+        ]}
       />
 
-      <form onSubmit={onSubmit} className="grid gap-6 lg:grid-cols-[1fr_320px]">
+      <form onSubmit={onSubmit} className="grid gap-4 lg:grid-cols-[1fr_320px]">
         <div className="card space-y-5 p-6">
           <TextInput
             label="Title"
@@ -121,7 +127,7 @@ export default function PageEditor() {
           <Select
             label="Status"
             value={status}
-            onChange={(e) => setStatus(e.target.value as 'draft' | 'published')}
+            onChange={(e) => setStatus(e.target.value as "draft" | "published")}
           >
             <option value="draft">Draft</option>
             <option value="published">Published</option>
@@ -132,7 +138,7 @@ export default function PageEditor() {
               Cancel
             </Link>
             <button type="submit" className="btn-primary">
-              {isEdit ? 'Save changes' : 'Create page'}
+              {isEdit ? "Save changes" : "Create page"}
             </button>
           </div>
         </div>
@@ -154,7 +160,11 @@ export default function PageEditor() {
               </div>
             )}
             <label className="btn-outline w-full cursor-pointer text-center">
-              {uploading ? 'Uploading…' : coverUrl ? 'Replace image' : 'Upload image'}
+              {uploading
+                ? "Uploading…"
+                : coverUrl
+                  ? "Replace image"
+                  : "Upload image"}
               <input
                 type="file"
                 accept="image/*"
@@ -164,7 +174,7 @@ export default function PageEditor() {
             </label>
             <TextInput
               label="Or paste image URL"
-              value={coverUrl ?? ''}
+              value={coverUrl ?? ""}
               onChange={(e) => setCoverUrl(e.target.value || undefined)}
               placeholder="https://…"
             />

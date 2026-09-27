@@ -1,4 +1,5 @@
 import type { MediaItem, MenuItem, Page, Post, SiteSettings, User } from '@/types';
+import { CHAT_SUGGESTIONS } from '@/config/site';
 
 const DB_KEY = 'isml.cms.v10';
 const CURRENT_USER_KEY = 'isml.cms.currentUser';
@@ -504,6 +505,15 @@ function seed(): Database {
       experienceHeading: 'EXPERIENCE\n@ISML',
       experienceBody:
         'Get a glimpse of the vibrant and engaging environment of Indian School Muladha and visit the places where our students grow, learn and thrive.',
+      chatSuggestions: {
+        welcome: [...CHAT_SUGGESTIONS.welcome],
+        admissions: [...CHAT_SUGGESTIONS.admissions],
+        programs: [...CHAT_SUGGESTIONS.programs],
+        fees: [...CHAT_SUGGESTIONS.fees],
+        news: [...CHAT_SUGGESTIONS.news],
+        contact: [...CHAT_SUGGESTIONS.contact],
+        campus: [...CHAT_SUGGESTIONS.campus],
+      },
       experienceImages: [
         {
           id: uid(),

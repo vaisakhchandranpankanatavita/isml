@@ -5,13 +5,17 @@ export interface MenuNode extends MenuItem {
   children: MenuNode[];
 }
 
+function normalizeUrl(url: string): string {
+  return url.replace(/^\/p(?=\/)/, '') || '/';
+}
+
 function buildTree(items: MenuItem[]): MenuNode[] {
   const byParent = new Map<string | null, MenuNode[]>();
   items
     .slice()
     .sort((a, b) => a.order - b.order)
     .forEach((item) => {
-      const node: MenuNode = { ...item, children: [] };
+      const node: MenuNode = { ...item, url: normalizeUrl(item.url), children: [] };
       const bucket = byParent.get(item.parentId) ?? [];
       bucket.push(node);
       byParent.set(item.parentId, bucket);
@@ -29,7 +33,11 @@ function nextOrder(items: MenuItem[], parentId: string | null): number {
 
 export const menusService = {
   list(): MenuItem[] {
-    return storage.read().menus.slice().sort((a, b) => a.order - b.order);
+    return storage
+      .read()
+      .menus.slice()
+      .sort((a, b) => a.order - b.order)
+      .map((item) => ({ ...item, url: normalizeUrl(item.url) }));
   },
   tree(): MenuNode[] {
     return buildTree(storage.read().menus);
@@ -38,14 +46,15 @@ export const menusService = {
     return buildTree(storage.read().menus.filter((m) => m.active));
   },
   get(id: string): MenuItem | undefined {
-    return storage.read().menus.find((m) => m.id === id);
+    const item = storage.read().menus.find((m) => m.id === id);
+    return item ? { ...item, url: normalizeUrl(item.url) } : undefined;
   },
   create(input: Omit<MenuItem, 'id' | 'order'> & { order?: number }): MenuItem {
     const db = storage.read();
     const item: MenuItem = {
       id: uid(),
       label: input.label,
-      url: input.url,
+      url: normalizeUrl(input.url),
       parentId: input.parentId,
       active: input.active,
       newTab: input.newTab,
@@ -74,7 +83,11 @@ export const menusService = {
         throw new Error('Cannot move an item under one of its own descendants.');
       }
     }
-    const next: MenuItem = { ...db.menus[idx], ...patch };
+    const next: MenuItem = {
+      ...db.menus[idx],
+      ...patch,
+      ...(patch.url ? { url: normalizeUrl(patch.url) } : {}),
+    };
     db.menus[idx] = next;
     storage.write(db);
     return next;

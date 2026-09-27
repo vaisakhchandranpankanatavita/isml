@@ -1,3 +1,5 @@
+import type { ChatSuggestions } from '@/types';
+
 export const SITE_NAME = import.meta.env.VITE_SITE_NAME || 'Indian School Muladha';
 export const SITE_TAGLINE = 'In Pursuit of Excellence';
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
@@ -21,36 +23,49 @@ export interface NavItem {
   children?: NavItem[];
 }
 
+export const CHAT_SUGGESTIONS: ChatSuggestions = {
+  welcome: ['Admissions', 'Programmes', 'Latest news', 'Fees', 'Contact', 'Campus tour'],
+  admissions: ['Admission process', 'Documents needed', 'Fees', 'Campus tour'],
+  programs: ['Admissions', 'Student resources', 'Latest news'],
+  fees: ['Admission process', 'Contact'],
+  news: ['Admissions', 'Photo gallery'],
+  contact: ['Admissions', 'Campus tour'],
+  campus: ['Photo gallery', 'Campus tour', 'Latest news'],
+};
+
 export const PUBLIC_NAV: NavItem[] = [
   { to: '/', label: 'Home' },
   {
     to: '/about',
     label: 'About Us',
     children: [
-      { to: '/about', label: 'About the School' },
-      { to: '/about#principal', label: "Principal's Message" },
-      { to: '/about#management', label: 'Management' },
-      { to: '/about#vision', label: 'Vision & Mission' },
-      { to: '/about#infrastructure', label: 'Infrastructure' },
+      { to: '/vision-mission', label: 'Vision & Mission' },
+      { to: '/school-management', label: 'School Management' },
+      { to: '/board-of-directors', label: 'Board Of Directors' },
+      { to: '/mandatory-public-disclosure', label: 'Mandatory Public Disclosure' },
+      { to: '/academics', label: 'Academics' },
+      { to: '/faculty', label: 'Faculty' },
+      { to: '/infrastructure', label: 'Infrastructure' },
     ],
   },
   {
     to: '/admissions',
     label: 'Admission',
     children: [
-      { to: '/admissions', label: 'Admission Process' },
-      { to: '/admissions#fees', label: 'Fee Structure' },
-      { to: '/admissions#age', label: 'Age Criteria' },
-      { to: '/admissions#tc', label: 'TC / Withdrawal' },
+      { to: '/admission-procedures', label: 'Admission Procedures' },
+      { to: '/fee-structure', label: 'Fee Structure' },
+      { to: '/transfer-certificate', label: 'Transfer Certificate' },
     ],
   },
   {
     to: '/news',
     label: 'News & Events',
     children: [
-      { to: '/news', label: 'Latest News' },
-      { to: '/news?category=event', label: 'Events' },
-      { to: '/news?category=announcement', label: 'Circulars' },
+      { to: '/circulars', label: 'Circulars' },
+      { to: '/results', label: 'Results' },
+      { to: '/e-magazine', label: 'E-Magazine' },
+      { to: '/press-release', label: 'Press release' },
+      { to: '/school-calendar', label: 'School Calendar' },
       { to: '/gallery', label: 'Gallery' },
     ],
   },
@@ -58,29 +73,29 @@ export const PUBLIC_NAV: NavItem[] = [
     to: '/students',
     label: 'Students Resources',
     children: [
-      { to: '/students#timetable', label: 'Time Table' },
-      { to: '/students#homework', label: 'Home Work' },
-      { to: '/students#syllabus', label: 'Syllabus' },
-      { to: '/students#downloads', label: 'Downloads' },
-      { to: '/students#results', label: 'CBSE Results' },
+      { to: '/syllabus-2026-2027', label: 'Syllabus 2026 – 2027' },
+      { to: '/upcoming-events', label: 'Upcoming Events / Activities' },
+      { to: '/question-bank', label: 'QUESTION BANK' },
+      { to: '/vle-portal', label: 'VLE Portal' },
+      { to: '/useful-links', label: 'Useful Links' },
     ],
   },
   {
     to: '/alumni',
     label: 'Alumni',
     children: [
-      { to: '/alumni#register', label: 'Register' },
-      { to: '/alumni#directory', label: 'Directory' },
-      { to: '/alumni#events', label: 'Alumni Events' },
+      { to: '/about-alumni', label: 'About ALUMNI' },
+      { to: '/alumni-objective', label: 'ALUMNI Objective' },
+      { to: '/alumni-registration', label: 'ALUMNI Registration' },
     ],
   },
   {
     to: '/contact',
     label: 'Contact Us',
     children: [
-      { to: '/contact', label: 'Contact' },
-      { to: '/contact#locate', label: 'Locate Us' },
-      { to: '/contact#feedback', label: 'Feedback' },
+      { to: '/contact', label: 'Contact Us' },
+      { to: '/careers-tenders', label: 'Careers & Tenders at ISML' },
+      { to: '/grievance-redressal', label: 'Grievance Redressal System' },
     ],
   },
 ];
