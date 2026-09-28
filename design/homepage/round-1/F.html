@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F</title>
+<style>
+@font-face { font-family: "Xenon"; src: url("fonts/MonaspaceXenon-Var.woff2") format("woff2"); font-weight: 200 800; font-stretch: 100% 125%; }
+html { background: #1d1a2e; }
+body {
+  margin: 0;
+  color: #efe6d2;            /* primary: what the school is */
+  font-family: "Xenon", ui-monospace, monospace;
+  font-size: 15px;
+  line-height: 1.65;
+  font-stretch: 100%;
+  font-weight: 300;
+}
+.time  { color: #f0b429; }   /* secondary: years, dates, counts in time */
+.grade { color: #b7a8e0; }   /* tertiary: where a child is in the sequence */
+.frame { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; min-height: 100vh; }
+.edge {
+  position: sticky; top: 0; height: 100vh; margin: 0;
+  writing-mode: vertical-rl;
+  font-weight: 800; font-stretch: 125%;
+  font-size: clamp(40px, 8.5vh, 104px);
+  line-height: 1; letter-spacing: 0.01em;
+  padding: 3vh 2vw;
+  white-space: nowrap;
+}
+.edge.left { transform: rotate(180deg); text-align: right; }
+.edge small { font-size: 0.24em; font-weight: 400; font-stretch: 100%; letter-spacing: 0.12em; text-transform: uppercase; color: #efe6d2; }
+main { padding: 12vh 4vw 20vh; max-width: 62ch; }
+h1 { margin: 0; font-size: 2.2em; line-height: 1.1; font-weight: 700; font-stretch: 112%; }
+.tag { margin: 0.3em 0 0; font-weight: 200; font-stretch: 125%; font-size: 1.25em; letter-spacing: 0.04em; }
+.block { margin: 14vh 0 0; }
+.block p { margin: 0 0 1.2em; }
+.stages { margin: 14vh 0 0; padding: 0; list-style: none; }
+.stages li { margin: 0 0 2.2em; }
+.stages b { display: block; font-weight: 600; font-size: 1.5em; font-stretch: 118%; }
+.quote { margin: 16vh 0 0; font-size: 1.3em; line-height: 1.5; font-weight: 400; }
+.by { margin: 1.2em 0 0; }
+.by span { display: block; }
+@media (max-width: 640px) {
+  body { font-size: 14px; }
+  .edge { font-size: 34px; padding: 16px 6px; }
+  main { padding: 8vh 12px 12vh; }
+}
+</style>
+</head>
+<body>
+<div class="frame">
+  <p class="edge left time">1981 <small>Started in 1981</small></p>
+  <main>
+    <h1>Indian School Muladha</h1>
+    <p class="tag">In Pursuit of Excellence</p>
+
+    <div class="block">
+      <p>An English-medium, co-educational CBSE school in Al Muladha, Oman, from Kindergarten through Grade 12.</p>
+      <p>From a beginning with <span class="time">9 teachers and 90 students</span>, ISML has grown into one of the largest schools outside Muscat’s capital area.</p>
+      <p><span class="time">Nearly 2200 students and 98 staff</span>, spread across 16 acres of lush green land.</p>
+    </div>
+
+    <ol class="stages">
+      <li><b>Foundational</b><span class="grade">Pre-KG – Grade 2</span></li>
+      <li><b>Preparatory</b><span class="grade">Grade 3 – Grade 5</span></li>
+      <li><b>Middle</b><span class="grade">Grade 6 – Grade 8</span></li>
+      <li><b>Senior</b><span class="grade">Grade 9 – Grade 12</span></li>
+    </ol>
+
+    <p class="quote">At ISML we believe every child is unique, and we strive to nurture curiosity, character and confidence in every learner who walks through our gates.</p>
+    <p class="by"><span>Dr Nayer Iqbal</span><span class="grade">Principal, Indian School Muladha</span></p>
+  </main>
+  <p class="edge right time">2026–27 <small>Admissions Open 2026–27&emsp;Register today</small></p>
+</div>
+</body>
+</html>

@@ -140,7 +140,24 @@ export default function Hero() {
         />
       </motion.div>
 
-      <div className="container flex h-full flex-col items-center justify-center gap-4 pb-10 pt-[calc(var(--vc-nav-top)+var(--vc-nav-height)+2rem)] text-center">
+      <div className="hero-orbit" aria-hidden="true">
+        <svg viewBox="0 0 220 220" fill="none">
+          <circle cx="110" cy="110" r="78" />
+          <circle cx="110" cy="110" r="56" />
+          <ellipse
+            cx="110"
+            cy="110"
+            rx="34"
+            ry="78"
+            transform="rotate(45 110 110)"
+          />
+          <path d="M32 110h156M110 32v156" />
+          <circle className="hero-orbit__point" cx="166" cy="56" r="5" />
+          <circle className="hero-orbit__core" cx="110" cy="110" r="8" />
+        </svg>
+      </div>
+
+      <div className="container relative z-10 flex h-full flex-col items-center justify-center gap-4 pb-10 pt-[calc(var(--vc-nav-top)+var(--vc-nav-height)+2rem)] text-center">
         {settings.announcementText && (
           <motion.p
             initial={reducedMotion ? false : { opacity: 0, y: 10 }}
@@ -166,8 +183,8 @@ export default function Hero() {
           by="word"
           className={
             long
-              ? "max-w-[18ch] text-[clamp(2rem,4vw,3rem)] font-bold leading-[0.92] tracking-[-0.025em] text-neutral-2"
-              : "max-w-[14ch] text-[clamp(2rem,4vw,3rem)] font-display font-bold leading-[0.92] tracking-[-0.025em] text-neutral-2"
+              ? "max-w-[18ch] font-sans text-[clamp(3rem,7vw,6.5rem)] font-medium leading-[0.92] tracking-[-0.055em] text-neutral-2"
+              : "max-w-[14ch] font-sans text-[clamp(3rem,7vw,6.5rem)] font-medium leading-[0.92] tracking-[-0.055em] text-neutral-2"
           }
         />
 
@@ -175,7 +192,7 @@ export default function Hero() {
           initial={reducedMotion ? false : { opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", duration: 0.7, delay: 0.8 }}
-          className="max-w-[42ch] font-display text-lg font-semibold leading-[1.25] tracking-[-0.01em] text-school-red [text-shadow:0_1px_3px_rgb(0_0_0/0.8),0_0_16px_rgb(0_0_0/0.55)] md:text-xl"
+          className="max-w-[48ch] text-base font-medium leading-relaxed tracking-[0.005em] text-white/95 [text-shadow:0_1px_8px_rgb(0_0_0/0.55)] sm:text-lg md:text-xl"
         >
           An English-medium, co-educational CBSE school in Al Muladha, Oman,
           from Kindergarten through Grade 12.
@@ -185,7 +202,7 @@ export default function Hero() {
           initial={reducedMotion ? false : { opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", duration: 0.7, delay: 1 }}
-          className="mt-6 flex flex-wrap justify-center gap-3"
+          className="mt-5 flex flex-wrap justify-center gap-3 sm:mt-7 sm:gap-4"
         >
           <Button
             variant="secondary"
@@ -205,6 +222,8 @@ export default function Hero() {
           </Button>
         </motion.div>
       </div>
+
+      <span className="hero-scroll" aria-hidden="true" />
     </section>
   );
 }

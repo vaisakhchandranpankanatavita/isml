@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { animate, AnimatePresence, motion, useMotionValue, useReducedMotion, useTransform } from 'framer-motion';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
+import Prism from '@/components/sections/Prism';
 
 /**
  * First-load splash, shown once per hard page load (it lives above the
@@ -57,8 +58,23 @@ export default function AppLoader() {
               : { clipPath: 'inset(0% 0% 90% 0%)', y: '-10%', transition: { duration: 0.6, ease: 'easeOut' } }
           }
         >
-          <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+          <div aria-hidden className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_#ffffff_0%,_#fffaf2_56%,_#f7ead7_100%)]" />
+            <div className="absolute inset-0 opacity-60">
+              <Prism
+                animationType="rotate"
+                timeScale={0.3}
+                height={3.5}
+                baseWidth={5.5}
+                scale={3.6}
+                colorFrequency={1}
+                noise={0.2}
+                glow={0.65}
+                bloom={0.7}
+                transparent
+                suspendWhenOffscreen
+              />
+            </div>
             {!reduced && (
               <>
                 <motion.div

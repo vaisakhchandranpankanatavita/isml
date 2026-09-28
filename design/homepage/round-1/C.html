@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C</title>
+<style>
+@font-face { font-family: "Schola"; src: url("fonts/texgyreschola-regular.otf") format("opentype"); font-weight: 400; font-style: normal; }
+@font-face { font-family: "Schola"; src: url("fonts/texgyreschola-italic.otf") format("opentype"); font-weight: 400; font-style: italic; }
+@font-face { font-family: "Schola"; src: url("fonts/texgyreschola-bold.otf") format("opentype"); font-weight: 700; font-style: normal; }
+@font-face { font-family: "Schola"; src: url("fonts/texgyreschola-bolditalic.otf") format("opentype"); font-weight: 700; font-style: italic; }
+html { background: #f7efcf; }
+body {
+  margin: 0;
+  color: #2b1d14;
+  font-family: "Schola", "Century Schoolbook", serif;
+  font-size: 19px;
+  line-height: 1.6;
+  hyphens: auto;
+  font-kerning: normal;
+}
+main { max-width: 34em; margin: 0 auto; padding: 12vh 24px 16vh; }
+.red { color: #b3261e; }
+.blue { color: #3f5d7a; }
+h1 { font-size: 2.6em; line-height: 1.1; font-weight: 700; text-align: center; margin: 0; letter-spacing: -0.005em; }
+.tag { text-align: center; font-style: italic; font-size: 1.25em; margin: 0.5em 0 0; }
+.since { text-align: center; font-size: 0.8em; letter-spacing: 0.18em; text-transform: uppercase; margin: 0.6em 0 0; }
+.lesson { margin: 5.5em 0 0; }
+.lesson h2 { font-size: 1em; font-weight: 700; margin: 0 0 0.4em; font-variant-caps: small-caps; letter-spacing: 0.06em; }
+.lesson p { margin: 0 0 0.9em; text-align: justify; text-indent: 1.6em; }
+.lesson p:first-of-type { text-indent: 0; }
+dl { margin: 0; display: grid; grid-template-columns: 1fr auto; gap: 0.25em 2em; }
+dt { font-weight: 700; }
+dd { margin: 0; text-align: right; font-variant-numeric: lining-nums tabular-nums; }
+blockquote { margin: 0; font-style: italic; font-size: 1.15em; text-align: center; }
+.cite { text-align: center; margin: 0.8em 0 0; }
+.cite b { display: block; }
+.end { text-align: center; margin: 7em 0 0; }
+.end b { display: block; font-size: 1.6em; }
+@media (max-width: 520px) {
+  body { font-size: 17px; }
+  main { padding: 8vh 16px 12vh; }
+  h1 { font-size: 2em; }
+  dl { gap: 0.25em 1em; }
+}
+</style>
+</head>
+<body>
+<main>
+  <h1>Indian School Muladha</h1>
+  <p class="tag red">In Pursuit of Excellence</p>
+  <p class="since blue">Started in 1981</p>
+
+  <section class="lesson">
+    <h2 class="red">1&ensp;An English-medium, co-educational CBSE school in Al Muladha, Oman, from Kindergarten through Grade 12.</h2>
+    <p>From a beginning with 9 teachers and 90 students, ISML has grown into one of the largest schools outside Muscat’s capital area.</p>
+    <p>Nearly 2200 students and 98 staff, spread across 16 acres of lush green land.</p>
+  </section>
+
+  <section class="lesson">
+    <h2 class="red">2&ensp;Foundational, Preparatory, Middle, Senior</h2>
+    <dl>
+      <dt>Foundational</dt><dd class="blue">Pre-KG – Grade 2</dd>
+      <dt>Preparatory</dt><dd class="blue">Grade 3 – Grade 5</dd>
+      <dt>Middle</dt><dd class="blue">Grade 6 – Grade 8</dd>
+      <dt>Senior</dt><dd class="blue">Grade 9 – Grade 12</dd>
+    </dl>
+  </section>
+
+  <section class="lesson">
+    <blockquote>At ISML we believe every child is unique, and we strive to nurture curiosity, character and confidence in every learner who walks through our gates.</blockquote>
+    <p class="cite"><b>Dr Nayer Iqbal</b><span class="blue">Principal, Indian School Muladha</span></p>
+  </section>
+
+  <p class="end"><b class="red">Admissions Open 2026–27</b>Register today</p>
+</main>
+</body>
+</html>

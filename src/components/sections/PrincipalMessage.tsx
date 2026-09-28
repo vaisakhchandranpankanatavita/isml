@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import Media from "@/components/common/Media";
 import { Button } from "@/components/common/Button";
+import { useReveal } from "@/components/motion/reveal";
 
 interface PrincipalMessageProps {
   message: string;
@@ -10,10 +11,11 @@ interface PrincipalMessageProps {
 }
 
 /**
- * The principal's message on the dark band: the quote set in a handwritten
- * face with the name in condensed caps, beside the principal's
- * portrait. The portrait is framed at no more than its natural width
- * (440px) so it stays sharp instead of being stretched across the viewport.
+ * The principal's message on the night band, written as a letter: the words
+ * set in a handwritten face on a glass sheet with faint ruled lines, signed
+ * with a gold stroke that draws itself in. Soft drifting light sits behind
+ * it. The portrait is framed at no more than its natural width (440px) so
+ * it stays sharp instead of being stretched across the viewport.
  */
 export default function PrincipalMessage({
   message,
@@ -21,58 +23,85 @@ export default function PrincipalMessage({
   title,
   imageUrl,
 }: PrincipalMessageProps) {
+  const reveal = useReveal();
   const reduce = useReducedMotion();
   if (!message || !name || !title) return null;
 
   return (
     <section
       id="principal"
-      className="band-dark home-section relative isolate overflow-hidden"
+      className="home-section home-section--night home-principal"
+      aria-labelledby="principal-title"
     >
-      <div className="container grid items-center gap-10 lg:grid-cols-[1fr_minmax(0,440px)] lg:gap-16">
-        <div className="text-center">
-          <motion.p
-            className="vc-label text-school-red"
-            initial={reduce ? false : { opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-          >
-            From the Principal
-          </motion.p>
-          <motion.blockquote
-            className="voice mx-auto mt-6 max-w-[46ch] text-xl leading-[1.6] text-neutral-1 md:text-2xl lg:text-[1.75rem]"
-            initial={reduce ? false : { opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-          >
-            {message}
-          </motion.blockquote>
-          <p className="mt-8 font-display text-3xl font-bold uppercase leading-none text-neutral-3">
-            {name}
+      <div className="home-aura" aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
+
+      <div className="container grid items-center gap-14 lg:grid-cols-[minmax(0,46rem)_minmax(0,400px)] lg:justify-center lg:gap-24">
+        <motion.div {...reveal()}>
+          <p id="principal-title" className="home-eyebrow">
+            <span className="home-eyebrow__index">03</span> From the Principal
           </p>
-          <p className="vc-label mt-2 text-neutral-4">{title}</p>
-          <div className="mt-8">
+
+          <figure className="home-principal__letter">
+            <span aria-hidden="true" className="home-principal__mark">
+              “
+            </span>
+            <blockquote className="home-principal__quote">{message}</blockquote>
+            <figcaption className="home-principal__sign">
+              <span className="home-principal__signature">
+                {name}
+                <svg
+                  viewBox="0 0 220 18"
+                  fill="none"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                >
+                  <motion.path
+                    d="M2 12 C 40 4, 80 16, 120 9 S 190 5, 218 11"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    {...(reduce
+                      ? {}
+                      : {
+                          initial: { pathLength: 0 },
+                          whileInView: { pathLength: 1 },
+                          viewport: { once: true, amount: 0.6 },
+                          transition: {
+                            duration: 1.4,
+                            delay: 0.5,
+                            ease: "easeInOut",
+                          },
+                        })}
+                  />
+                </svg>
+              </span>
+              <span className="home-principal__role">{title}</span>
+            </figcaption>
+          </figure>
+
+          <div className="mt-10">
             <Button variant="secondary" as="a" to="/about#principal">
               Read the full message
             </Button>
           </div>
-        </div>
+        </motion.div>
 
         {imageUrl && (
           <motion.figure
-            className="relative mx-auto aspect-[440/467] w-full max-w-[440px] overflow-hidden rounded-[8px]"
-            initial={reduce ? false : { opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.15 }}
+            className="home-principal__portrait"
+            {...reveal(0.15, 28)}
           >
-            <Media
-              src={imageUrl}
-              alt={`${name}, ${title}`}
-              className="object-top"
-            />
+            <div className="home-principal__photo">
+              <Media
+                src={imageUrl}
+                alt={`${name}, ${title}`}
+                className="object-top"
+              />
+            </div>
           </motion.figure>
         )}
       </div>

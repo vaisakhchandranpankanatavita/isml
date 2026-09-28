@@ -4,6 +4,7 @@ import clsx from "clsx";
 import { AnimatePresence, LayoutGroup, motion, MotionConfig, type Variants } from "framer-motion";
 import PageHero from "@/components/common/PageHero";
 import Media from "@/components/common/Media";
+import FlexCarousel from "@/components/sections/FlexCarousel";
 import { usePage } from "@/hooks/usePage";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { mediaService, postsService } from "@/services/cms.service";
@@ -24,19 +25,79 @@ interface Album {
   photos: Photo[];
 }
 
+interface GalleryManifestAlbum {
+  id: string;
+  title: string;
+  photos: string[];
+}
+
+function isGalleryManifestAlbum(value: unknown): value is GalleryManifestAlbum {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "id" in value &&
+    typeof value.id === "string" &&
+    "title" in value &&
+    typeof value.title === "string" &&
+    "photos" in value &&
+    Array.isArray(value.photos) &&
+    value.photos.every((photo) => typeof photo === "string")
+  );
+}
+
 /**
- * Albums are assembled from images the CMS already manages, so editors never
- * maintain a second copy: campus photos (Settings → Experience @ISML), stage
- * covers (Settings → K–12 programs), news and event covers, and any image
- * or video uploaded to the Media library. Empty albums are dropped.
+ * Combines the bundled event albums with images the CMS already manages:
+ * campus photos (Settings → Experience @ISML), stage covers (Settings → K–12
+ * programs), news and event covers, and media uploads. Empty albums are dropped.
  */
-function useAlbums(): Album[] {
+function useAlbums(): { albums: Album[]; galleryError: boolean } {
   const { settings } = useSiteSettings();
   const [version, setVersion] = useState(0);
+  const [galleryAlbums, setGalleryAlbums] = useState<Album[]>([]);
+  const [galleryError, setGalleryError] = useState(false);
   useEffect(() => storage.subscribe(() => setVersion((v) => v + 1)), []);
+
+  useEffect(() => {
+    let active = true;
+    const loadGallery = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.BASE_URL}gallery/manifest.json`);
+        if (!response.ok) {
+          throw new Error(`Gallery manifest request failed: ${response.status}`);
+        }
+        const manifest: unknown = await response.json();
+        if (!Array.isArray(manifest) || !manifest.every(isGalleryManifestAlbum)) {
+          throw new Error("Gallery manifest has an invalid format.");
+        }
+
+        if (active) {
+          setGalleryAlbums(
+            manifest.map((album) => ({
+              id: album.id,
+              title: album.title,
+              photos: album.photos.map((url, index) => ({
+                id: `${album.id}-${index}`,
+                url,
+                caption: album.title,
+              })),
+            })),
+          );
+        }
+      } catch (error) {
+        console.error("Failed to load gallery albums.", error);
+        if (active) setGalleryError(true);
+      }
+    };
+
+    void loadGallery();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return useMemo(() => {
     const albums: Album[] = [
+      ...galleryAlbums,
       {
         id: "campus",
         title: "Campus life",
@@ -76,10 +137,10 @@ function useAlbums(): Album[] {
           .map((m) => ({ id: m.id, url: m.url, caption: m.name, video: true })),
       },
     ];
-    return albums.filter((a) => a.photos.length > 0);
+    return { albums: albums.filter((a) => a.photos.length > 0), galleryError };
     // `version` re-reads posts and media when the CMS store changes.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings, version]);
+  }, [galleryAlbums, galleryError, settings, version]);
 }
 
 /** "All" lists each item once, even if it appears in two albums. */
@@ -117,32 +178,29 @@ function Thumb({ item, className }: { item: Photo; className?: string }) {
 }
 
 /**
- * Two rows of thumbnails drifting in opposite directions — a film-reel
- * teaser above the albums. Purely decorative; the grid below is the
- * accessible way in.
+ * Interactive, looping image carousel above the album filters.
  */
 function Showreel({ items }: { items: Photo[] }) {
-  const rows = [items, [...items].reverse()];
   return (
-    <div aria-hidden className="space-y-3" data-parallax="off">
-      {rows.map((row, r) => (
-        <div key={r} className="gallery-reel">
-          <div
-            className={clsx("gallery-reel__track", r === 1 && "gallery-reel__track--reverse")}
-            style={{ ["--reel-duration" as string]: `${Math.max(30, row.length * 6)}s` }}
-          >
-            {[...row, ...row].map((item, i) => (
-              <div
-                key={`${item.id}-${i}`}
-                className="gallery-reel__item"
-                style={{ aspectRatio: (i + r) % 3 === 0 ? "4 / 3" : "1 / 1" }}
-              >
-                <Thumb item={item} />
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
+    <div className="gallery-carousel-frame" data-parallax="off">
+      <FlexCarousel
+        items={items.map((item) => ({
+          src: item.url,
+          alt: item.caption || "Photograph from the school gallery",
+          title: item.caption || "School life",
+        }))}
+        preset="liquid"
+        intro="rise"
+        cardHeight={0.58}
+        gap={14}
+        radius={16}
+        squeeze={0.12}
+        focusOnClick
+        autoplay
+        interval={3.2}
+        captions
+        captureWheel={false}
+      />
     </div>
   );
 }
@@ -404,7 +462,7 @@ function Lightbox({
 }
 
 /**
- * Photos and videos as an animated bento wall: a drifting two-row showreel,
+ * Photos and videos as an animated bento wall: a drifting showreel,
  * album chips with a sliding highlight, tiles that rise in as they scroll into
  * view, reflow smoothly between albums and tilt toward the pointer, and a
  * full-screen viewer that slides between items. Honours reduced motion.
@@ -412,7 +470,7 @@ function Lightbox({
 export default function Gallery() {
   const page = usePage("gallery");
   const { settings } = useSiteSettings();
-  const albums = useAlbums();
+  const { albums, galleryError } = useAlbums();
   const all = useMemo(() => allPhotos(albums), [albums]);
   const [albumId, setAlbumId] = useState<string>("all");
   const [open, setOpen] = useState<number | null>(null);
@@ -429,7 +487,11 @@ export default function Gallery() {
   }, [open, photos.length]);
 
   const tabs = [{ id: "all", title: "All", photos: all }, ...albums];
-  const reel = useMemo(() => all.filter((p) => !p.video).slice(0, 16), [all]);
+  const reel = useMemo(() => {
+    const photos = all.filter((p) => !p.video);
+    const count = Math.min(48, photos.length);
+    return Array.from({ length: count }, (_, i) => photos[Math.floor((i * photos.length) / count)]);
+  }, [all]);
 
   return (
     <MotionConfig reducedMotion="user">
@@ -441,6 +503,12 @@ export default function Gallery() {
             settings.experienceBody || "Classrooms, fields and events across the school year."
           }
         />
+
+        {galleryError && (
+          <p role="alert" className="container pb-4 text-sm text-red-700">
+            Some gallery albums could not be loaded. Please refresh the page to try again.
+          </p>
+        )}
 
         {reel.length >= 4 && (
           <motion.section
@@ -474,59 +542,65 @@ export default function Gallery() {
         ) : (
           <section className={clsx("section-lg", (page?.content || reel.length >= 4) && "!pt-0")}>
             <div className="container">
+              <div className="mb-3 flex items-center justify-between gap-4">
+                <p className="vc-label text-xs text-ink-muted">Explore albums</p>
+                <p className="text-xs text-ink-muted">Swipe or scroll to browse →</p>
+              </div>
               <LayoutGroup>
-                <ul
-                  className="flex flex-wrap gap-2"
-                  role="tablist"
-                  aria-label="Gallery albums"
-                  data-parallax="off"
-                >
-                  {tabs.map((album, i) => {
-                    const selected = album.id === albumId;
-                    return (
-                      <motion.li
-                        key={album.id}
-                        initial={{ opacity: 0, y: 16 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: i * 0.06, duration: 0.5, ease: EASE }}
-                      >
-                        <button
-                          type="button"
-                          role="tab"
-                          aria-selected={selected}
-                          onClick={() => {
-                            setAlbumId(album.id);
-                            setOpen(null);
-                          }}
-                          className={clsx(
-                            "relative flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-colors duration-300",
-                            selected
-                              ? "border-transparent text-white"
-                              : "border-paper-line text-ink hover:border-ink/40",
-                          )}
+                <div className="gallery-album-rail" data-parallax="off">
+                  <ul
+                    className="flex w-max min-w-full flex-nowrap gap-2.5 pb-2"
+                    role="tablist"
+                    aria-label="Gallery albums"
+                  >
+                    {tabs.map((album, i) => {
+                      const selected = album.id === albumId;
+                      return (
+                        <motion.li
+                          key={album.id}
+                          className="shrink-0"
+                          initial={{ opacity: 0, y: 16 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: Math.min(i, 8) * 0.04, duration: 0.5, ease: EASE }}
                         >
-                          {selected && (
-                            <motion.span
-                              layoutId="gallery-chip"
-                              className="absolute inset-0 -z-10 rounded-full bg-school-red"
-                              transition={{ type: "spring", stiffness: 380, damping: 32 }}
-                            />
-                          )}
-                          {album.title}
-                          <span
+                          <button
+                            type="button"
+                            role="tab"
+                            aria-selected={selected}
+                            onClick={() => {
+                              setAlbumId(album.id);
+                              setOpen(null);
+                            }}
                             className={clsx(
-                              "rounded-full px-1.5 text-xs tabular-nums",
-                              selected ? "bg-white/20" : "bg-paper-band text-ink-muted",
+                              "relative flex items-center gap-2.5 rounded-full border px-4 py-2.5 text-sm font-semibold whitespace-nowrap transition-colors duration-300",
+                              selected
+                                ? "border-school-red text-white shadow-md shadow-school-red/15"
+                                : "border-paper-line bg-paper-band/60 text-ink hover:border-school-red/40 hover:bg-paper-band",
                             )}
                           >
-                            {album.photos.length}
-                          </span>
-                        </button>
-                      </motion.li>
-                    );
-                  })}
-                </ul>
+                            {selected && (
+                              <motion.span
+                                layoutId="gallery-chip"
+                                className="absolute inset-0 -z-10 rounded-full bg-school-red"
+                                transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                              />
+                            )}
+                            <span>{album.title}</span>
+                            <span
+                              className={clsx(
+                                "min-w-6 rounded-full px-1.5 py-0.5 text-center text-[0.7rem] tabular-nums",
+                                selected ? "bg-white/20 text-white" : "bg-white text-ink-muted",
+                              )}
+                            >
+                              {album.photos.length}
+                            </span>
+                          </button>
+                        </motion.li>
+                      );
+                    })}
+                  </ul>
+                </div>
               </LayoutGroup>
 
               <div className="mt-8 flex items-baseline justify-between gap-4 border-b border-paper-line pb-3">

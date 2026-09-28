@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>J</title>
+<style>
+@font-face { font-family: "Chorus"; src: url("fonts/texgyrechorus-mediumitalic.otf") format("opentype"); font-weight: 500; font-style: italic; }
+@font-face { font-family: "Krypton"; src: url("fonts/MonaspaceKrypton-Var.woff2") format("woff2"); font-weight: 200 800; font-stretch: 100% 125%; }
+html { background: #ffffff; }
+body {
+  margin: 0;
+  color: #1a1a1a;
+  font-family: "Krypton", ui-monospace, monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  font-weight: 300;
+}
+.c { font-family: "Chorus", "Zapf Chancery", cursive; font-style: italic; font-weight: 500; text-transform: none; letter-spacing: 0; color: #c8321e; }
+main { max-width: 64em; margin: 0 auto; padding: 16vh 24px 20vh; }
+p { margin: 0; }
+.name { font-size: clamp(52px, 9vw, 150px); line-height: 1; }
+.tag { margin-top: 0.6em; font-size: clamp(22px, 2.6vw, 36px); line-height: 1.2; color: #1a1a1a; }
+.since { margin-top: 3em; }
+.part { margin-top: 20vh; }
+.part .lede { max-width: 46em; margin: 0 auto; }
+.part .lede + .lede { margin-top: 1.4em; }
+.stages { margin: 20vh 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2em; }
+.stages .c { display: block; font-size: clamp(30px, 3.4vw, 52px); line-height: 1.1; }
+.quote { margin-top: 22vh; font-size: clamp(26px, 3.1vw, 46px); line-height: 1.3; max-width: 22em; margin-left: auto; margin-right: auto; color: #1a1a1a; }
+.by { margin-top: 2.2em; }
+.by b { font-weight: 600; }
+.adm { margin-top: 22vh; }
+.adm .c { display: block; font-size: clamp(40px, 5.5vw, 88px); line-height: 1.05; }
+.adm span:last-child { display: block; margin-top: 1.4em; font-weight: 600; }
+@media (max-width: 720px) {
+  main { padding: 10vh 16px 14vh; }
+  .stages { grid-template-columns: 1fr 1fr; row-gap: 3em; }
+  .part, .stages, .quote, .adm { margin-top: 12vh; }
+}
+</style>
+</head>
+<body>
+<main>
+  <p class="name c">Indian School Muladha</p>
+  <p class="tag c">In Pursuit of Excellence</p>
+  <p class="since">Started in 1981</p>
+
+  <div class="part">
+    <p class="lede">An English-medium, co-educational CBSE school in Al Muladha, Oman, from Kindergarten through Grade 12.</p>
+    <p class="lede">From a beginning with 9 teachers and 90 students, ISML has grown into one of the largest schools outside Muscat’s capital area.</p>
+    <p class="lede">Nearly 2200 students and 98 staff, spread across 16 acres of lush green land.</p>
+  </div>
+
+  <ol class="stages">
+    <li><span class="c">Foundational</span>Pre-KG – Grade 2</li>
+    <li><span class="c">Preparatory</span>Grade 3 – Grade 5</li>
+    <li><span class="c">Middle</span>Grade 6 – Grade 8</li>
+    <li><span class="c">Senior</span>Grade 9 – Grade 12</li>
+  </ol>
+
+  <p class="quote c">At ISML we believe every child is unique, and we strive to nurture curiosity, character and confidence in every learner who walks through our gates.</p>
+  <p class="by"><b>Dr Nayer Iqbal</b><br>Principal, Indian School Muladha</p>
+
+  <p class="adm"><span class="c">Admissions Open 2026–27</span><span>Register today</span></p>
+</main>
+</body>
+</html>

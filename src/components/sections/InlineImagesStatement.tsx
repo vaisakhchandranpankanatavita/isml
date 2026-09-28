@@ -24,10 +24,10 @@ export default function InlineImagesStatement({
   const reduce = useReducedMotion();
 
   return (
-    <section className="band-dark home-section relative text-center">
+    <section className="band-dark home-section home-intro-section relative text-center">
       <div className="container">
         <motion.h2
-          className="mx-auto max-w-[64rem] text-[clamp(2.15rem,1.6rem+3.2vw,5.25rem)] leading-[0.94] tracking-[-0.02em] text-neutral-2"
+          className="mx-auto max-w-[58rem] text-[clamp(2rem,1.35rem+3vw,4.25rem)] leading-[0.98] tracking-[-0.035em] text-neutral-2"
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
@@ -46,13 +46,13 @@ export default function InlineImagesStatement({
                         reduce
                           ? undefined
                           : {
-                              hidden: { clipPath: "inset(0 0 100%)", y: 60 },
+                              hidden: { clipPath: "inset(0 0 100%)", y: 24 },
                               show: {
                                 clipPath: "inset(0% 0 -30%)",
                                 y: 0,
                                 transition: {
-                                  delay: 0.04 * (offset + w),
-                                  duration: 0.6,
+                                  delay: 0.025 * (offset + w),
+                                  duration: 0.45,
                                   ease: [0, 0.65, 0.45, 1],
                                 },
                               },
@@ -70,14 +70,14 @@ export default function InlineImagesStatement({
 
         {(lead || children) && (
           <motion.div
-            className="mx-auto mt-[clamp(2.625rem,2.5379rem+0.3727vw,3rem)] max-w-3xl"
+            className="mx-auto mt-6 max-w-4xl sm:mt-8"
             initial={reduce ? false : { opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
             {lead && (
-              <p className="font-display text-2xl font-semibold leading-[1.1] tracking-[-0.02em] text-neutral-3 md:text-4xl">
+              <p className="mx-auto max-w-[64ch] text-base leading-[1.7] text-neutral-3 sm:text-lg">
                 {lead}
               </p>
             )}

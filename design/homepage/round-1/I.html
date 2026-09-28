@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>I</title>
+<style>
+@font-face { font-family: "Argon"; src: url("fonts/MonaspaceArgon-Var.woff2") format("woff2"); font-weight: 200 800; font-stretch: 100% 125%; }
+html { background: #cfe5d8; }
+body {
+  margin: 0;
+  color: #0d2a1e;
+  font-family: "Argon", ui-monospace, monospace;
+  font-size: 14px;
+  line-height: 1.55;
+}
+header { padding: 5vh 4vw 0; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1em 4vw; }
+header p { margin: 0; }
+header .n { font-weight: 700; font-stretch: 112%; }
+.strata { margin: 7vh 0 0; padding: 0; list-style: none; }
+.strata li { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 3fr); align-items: end; column-gap: 3vw; padding: 0 4vw; margin-bottom: 5vh; }
+.strata h2 { margin: 0; line-height: 0.9; letter-spacing: -0.01em; white-space: nowrap; font-weight: inherit; }
+.strata .g { display: block; font-size: 14px; letter-spacing: 0.04em; margin-top: 0.8em; }
+.strata p { margin: 0; max-width: 34ch; }
+/* each stage is wider, heavier and larger than the one below it in age */
+.s1 h2 { font-size: clamp(28px, 4.2vw, 64px);  font-weight: 200; font-stretch: 100%; }
+.s2 h2 { font-size: clamp(30px, 5.0vw, 76px);  font-weight: 350; font-stretch: 108%; }
+.s3 h2 { font-size: clamp(32px, 5.9vw, 90px);  font-weight: 520; font-stretch: 116%; }
+.s4 h2 { font-size: clamp(34px, 6.8vw, 104px); font-weight: 780; font-stretch: 125%; }
+.strata .s2 { padding-left: 10vw; }
+.strata .s3 { padding-left: 16vw; }
+.voice { margin: 14vh 4vw 0 30vw; max-width: 52ch; font-size: 1.15em; font-weight: 300; }
+.voice + p { margin: 1em 4vw 0 30vw; }
+.adm { margin: 14vh 4vw 0;  font-weight: 700; font-stretch: 125%; font-size: 1.2em; }
+.adm span { font-weight: 300; font-stretch: 100%; }
+body { padding-bottom: 12vh; }
+@media (max-width: 720px) {
+  header, .strata li { padding-left: 16px !important; padding-right: 16px; }
+  .strata li { grid-template-columns: 1fr; row-gap: 0.8em; }
+  .strata h2 { white-space: normal; }
+  .voice, .voice + p, .adm { margin-left: 16px; margin-right: 16px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <p class="n">Indian School Muladha</p>
+  <p>In Pursuit of Excellence</p>
+  <p>Started in 1981</p>
+</header>
+
+<ol class="strata">
+  <li class="s1"><h2>Foundational<span class="g">Pre-KG – Grade 2</span></h2><p>An English-medium, co-educational CBSE school in Al Muladha, Oman, from Kindergarten through Grade 12.</p></li>
+  <li class="s2"><h2>Preparatory<span class="g">Grade 3 – Grade 5</span></h2><p>From a beginning with 9 teachers and 90 students, ISML has grown into one of the largest schools outside Muscat’s capital area.</p></li>
+  <li class="s3"><h2>Middle<span class="g">Grade 6 – Grade 8</span></h2><p>Nearly 2200 students and 98 staff, spread across 16 acres of lush green land.</p></li>
+  <li class="s4"><h2>Senior<span class="g">Grade 9 – Grade 12</span></h2></li>
+</ol>
+
+<p class="voice">At ISML we believe every child is unique, and we strive to nurture curiosity, character and confidence in every learner who walks through our gates.</p>
+<p>Dr Nayer Iqbal, Principal, Indian School Muladha</p>
+<p class="adm">Admissions Open 2026–27 <span>Register today</span></p>
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B</title>
+<style>
+@font-face { font-family: "Juni"; src: url("fonts/JunicodeVF-Roman.woff2") format("woff2"); font-weight: 300 700; font-stretch: 75% 125%; font-style: normal; }
+@font-face { font-family: "Juni"; src: url("fonts/JunicodeVF-Italic.woff2") format("woff2"); font-weight: 300 700; font-stretch: 75% 125%; font-style: italic; }
+html { background: #0e3b2c; }
+body {
+  margin: 0;
+  color: #a9d2b3;
+  font-family: "Juni", Georgia, serif;
+  font-size: clamp(16px, 1.15vw, 19px);
+  line-height: 1.45;
+  font-variant-numeric: lining-nums proportional-nums;
+  overflow-x: hidden;
+}
+main { padding: 6vh 4vw 10vh 9vw; }
+.p { color: #f5efe0; }
+.head { font-weight: 300; font-stretch: 100%; font-size: 1.05em; margin: 0 0 1.2em; }
+.head em { font-style: italic; }
+.seq { margin: 0; font-weight: 300; max-width: 100%; }
+.n9    { font-size: 2.2em; font-weight: 300; font-stretch: 75%; line-height: 1; }
+.n90   { font-size: 6.5em; font-weight: 420; font-stretch: 88%; line-height: 0.9; }
+.n2200 { display: block; font-size: clamp(7rem, 31vw, 34rem); font-weight: 700; font-stretch: 125%; line-height: 0.78; letter-spacing: -0.035em; margin: 0.05em 0 0 -0.06em; white-space: nowrap; }
+.w { display: block; max-width: 38ch; }
+.after { max-width: 34ch; margin: 1.4em 0 0 auto; margin-right: 8vw; }
+.stages { margin: 14vh 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(4, max-content); gap: 0 5vw; align-items: baseline; }
+.stages li:nth-child(1) { font-size: 1.1em; font-weight: 300; font-stretch: 78%; }
+.stages li:nth-child(2) { font-size: 1.5em; font-weight: 400; font-stretch: 90%; }
+.stages li:nth-child(3) { font-size: 2em;   font-weight: 540; font-stretch: 105%; }
+.stages li:nth-child(4) { font-size: 2.7em; font-weight: 680; font-stretch: 122%; }
+.stages small { display: block; font-size: max(0.4em, 15px); font-weight: 300; font-stretch: 100%; color: #a9d2b3; }
+.quote { margin: 16vh 0 0 18vw; max-width: 40ch; font-size: 1.45em; font-style: italic; font-weight: 300; }
+.by { margin: 0.8em 0 0 18vw; }
+.adm { margin: 12vh 0 0; font-size: 1.3em; font-weight: 600; font-stretch: 110%; }
+@media (max-width: 720px) {
+  main { padding: 5vh 16px 8vh 16px; }
+  .n90 { font-size: 4.2em; }
+  .after { margin: 1.2em 0 0; }
+  .stages { grid-template-columns: 1fr 1fr; gap: 1.2em 16px; }
+  .quote, .by { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+<main>
+  <p class="head"><span class="p">Indian School Muladha</span>&emsp;<em>In Pursuit of Excellence</em>&emsp;Started in 1981</p>
+
+  <p class="seq">
+    <span class="w">From a beginning with</span>
+    <span class="p n9">9</span> teachers and
+    <span class="p n90">90</span> students, ISML has grown
+  </p>
+  <p class="seq"><span class="p n2200">2200</span></p>
+  <p class="after">Nearly 2200 students and 98 staff, spread across 16 acres of lush green land. From a beginning with 9 teachers and 90 students, ISML has grown into one of the largest schools outside Muscat’s capital area.</p>
+  <p class="after">An English-medium, co-educational CBSE school in Al Muladha, Oman, from Kindergarten through Grade 12.</p>
+
+  <ol class="stages">
+    <li class="p">Foundational<small>Pre-KG – Grade 2</small></li>
+    <li class="p">Preparatory<small>Grade 3 – Grade 5</small></li>
+    <li class="p">Middle<small>Grade 6 – Grade 8</small></li>
+    <li class="p">Senior<small>Grade 9 – Grade 12</small></li>
+  </ol>
+
+  <p class="quote p">At ISML we believe every child is unique, and we strive to nurture curiosity, character and confidence in every learner who walks through our gates.</p>
+  <p class="by">Dr Nayer Iqbal, Principal, Indian School Muladha</p>
+
+  <p class="adm"><span class="p">Admissions Open 2026–27</span> Register today</p>
+</main>
+</body>
+</html>

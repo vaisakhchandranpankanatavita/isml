@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E</title>
+<style>
+@font-face { font-family: "Lib"; src: url("fonts/LibertinusSerif-Regular.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+@font-face { font-family: "Lib"; src: url("fonts/LibertinusSerif-Italic.woff2") format("woff2"); font-weight: 400; font-style: italic; }
+@font-face { font-family: "Lib"; src: url("fonts/LibertinusSerif-Semibold.woff2") format("woff2"); font-weight: 600; font-style: normal; }
+html { background: #8f3a1c; }
+body {
+  margin: 0;
+  color: #f2c9a8;            /* secondary */
+  font-family: "Lib", Georgia, serif;
+  font-size: 17px;
+  line-height: 1.5;
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  font-feature-settings: "liga", "kern";
+}
+.v { color: #fff4e6; }       /* primary: the spoken voice */
+main { padding: 8vh 7vw 12vh; }
+.speech {
+  margin: 0;
+  font-style: italic;
+  font-size: clamp(34px, 5.6vw, 88px);
+  line-height: 1.08;
+  letter-spacing: -0.012em;
+  max-width: 14em;
+}
+.speech span { display: block; }
+.speech span:nth-child(2) { padding-left: 1.2em; }
+.speech span:nth-child(3) { padding-left: 0.4em; }
+.speech span:nth-child(4) { padding-left: 2em; }
+.speaker { margin: 1.4em 0 0; font-size: 1.1em; }
+.speaker b { font-weight: 600; font-variant-caps: all-small-caps; letter-spacing: 0.08em; font-size: 1.15em; }
+.foot { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3em 4vw; margin-top: 22vh; max-width: 1180px; }
+.foot p { margin: 0; }
+.school { font-weight: 600; font-variant-caps: all-small-caps; letter-spacing: 0.08em; font-size: 1.2em; }
+.school i { font-weight: 400; letter-spacing: 0; font-variant-caps: normal; display: block; font-size: 0.86em; }
+.stages { margin: 0; padding: 0; list-style: none; }
+.stages li { display: flex; justify-content: space-between; gap: 1em; }
+.adm { font-style: italic; font-size: 1.5em; line-height: 1.2; }
+@media (max-width: 760px) {
+  main { padding: 6vh 16px 10vh; }
+  .foot { grid-template-columns: 1fr; margin-top: 12vh; }
+  .speech span { padding-left: 0 !important; }
+}
+</style>
+</head>
+<body>
+<main>
+  <p class="speech v">
+    <span>At ISML we believe every child is unique,</span>
+    <span>and we strive to nurture curiosity,</span>
+    <span>character and confidence in every learner</span>
+    <span>who walks through our gates.</span>
+  </p>
+  <p class="speaker"><b class="v">Dr Nayer Iqbal</b>&ensp;Principal, Indian School Muladha</p>
+
+  <div class="foot">
+    <p class="school v">Indian School Muladha<i>In Pursuit of Excellence</i></p>
+    <p>An English-medium, co-educational CBSE school in Al Muladha, Oman, from Kindergarten through Grade 12. Started in 1981.</p>
+    <p>From a beginning with 9 teachers and 90 students, ISML has grown into one of the largest schools outside Muscat’s capital area. Nearly 2200 students and 98 staff, spread across 16 acres of lush green land.</p>
+    <ul class="stages">
+      <li><span class="v">Foundational</span><span>Pre-KG – Grade 2</span></li>
+      <li><span class="v">Preparatory</span><span>Grade 3 – Grade 5</span></li>
+      <li><span class="v">Middle</span><span>Grade 6 – Grade 8</span></li>
+      <li><span class="v">Senior</span><span>Grade 9 – Grade 12</span></li>
+    </ul>
+    <p class="adm v">Admissions Open 2026–27<br><span style="color:#f2c9a8">Register today</span></p>
+  </div>
+</main>
+</body>
+</html>

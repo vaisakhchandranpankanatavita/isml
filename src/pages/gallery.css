@@ -5,55 +5,32 @@
  */
 
 /* ---------------------------------------------------------------- showreel */
-.gallery-reel {
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+.gallery-album-rail {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
-.gallery-reel__track {
-  display: flex;
-  width: max-content;
-  gap: 0.75rem;
-  animation: gallery-reel var(--reel-duration, 60s) linear infinite;
+.gallery-album-rail::-webkit-scrollbar {
+  display: none;
 }
 
-.gallery-reel__track--reverse {
-  animation-direction: reverse;
+.gallery-album-rail li {
+  scroll-snap-align: start;
 }
 
-.gallery-reel:hover .gallery-reel__track {
-  animation-play-state: paused;
-}
-
-.gallery-reel__item {
+.gallery-carousel-frame {
   position: relative;
-  height: 7rem;
-  flex-shrink: 0;
+  height: 18rem;
   overflow: hidden;
-  border-radius: 1rem;
-  background: rgb(var(--paper-band-rgb));
-  transition:
-    transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
-    filter 0.6s ease;
-  filter: saturate(0.85);
-}
-
-.gallery-reel__item:hover {
-  transform: translateY(-6px) scale(1.04);
-  filter: saturate(1.1);
 }
 
 @media (min-width: 640px) {
-  .gallery-reel__item {
-    height: 10rem;
-  }
-}
-
-/* The track holds the list twice, so -50% lands exactly on the loop seam. */
-@keyframes gallery-reel {
-  to {
-    transform: translate3d(-50%, 0, 0);
+  .gallery-carousel-frame {
+    height: 24rem;
   }
 }
 
@@ -218,7 +195,7 @@
   }
   .gallery-tile,
   .gallery-tile__media,
-  .gallery-reel__item {
+  .gallery-carousel-frame {
     transform: none !important;
     transition: opacity 0.2s ease;
   }
