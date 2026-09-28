@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { useReveal } from "@/components/motion/reveal";
-import Media from "@/components/common/Media";
 import type { K12Program } from "@/types";
 
 export const STAGE_DESCRIPTIONS: Record<string, string> = {
@@ -13,6 +12,7 @@ export const STAGE_DESCRIPTIONS: Record<string, string> = {
 
 export default function ProgramGrid({ programs }: { programs: K12Program[] }) {
   const reveal = useReveal();
+  const reducedMotion = useReducedMotion();
   if (programs.length === 0) return null;
 
   return (
@@ -21,21 +21,19 @@ export default function ProgramGrid({ programs }: { programs: K12Program[] }) {
       aria-labelledby="k12-journey-title"
     >
       <div className="container">
-        <div className="home-head">
-          <motion.div {...reveal()}>
+        <div className="k12-journey__header">
+          <motion.div className="k12-journey__heading" {...reveal()}>
             <p className="home-eyebrow">
               <span className="home-eyebrow__index">02</span> The learning
               journey
             </p>
-            <h2
-              id="k12-journey-title"
-              className="home-title home-title--stacked"
-            >
-              <span>Room to grow.</span>
+            <h2 id="k12-journey-title" className="home-title">
+              Room to grow.
+              <br />
               <span className="home-accent">Every step.</span>
             </h2>
           </motion.div>
-          <motion.div className="home-head__aside" {...reveal(0.12)}>
+          <motion.div className="k12-journey__intro" {...reveal(0.12)}>
             <p className="home-body">
               Every age brings a new way of seeing the world. We meet each stage
               with the right mix of challenge, care and discovery.
@@ -46,42 +44,36 @@ export default function ProgramGrid({ programs }: { programs: K12Program[] }) {
           </motion.div>
         </div>
 
-        <ol className="k12-journey__list">
-          {programs.map((program, index) => {
-            const description =
-              STAGE_DESCRIPTIONS[program.title.trim().toLowerCase()] ??
-              "A strong foundation for the next stage of learning.";
+        <div
+          className="k12-journey__path"
+          role="group"
+          aria-labelledby="k12-journey-title"
+          aria-describedby="k12-journey-stages"
+        >
+          <video
+            className="k12-journey__video"
+            src={new URL("../../cideo3.mp4", import.meta.url).href}
+            poster={`${import.meta.env.BASE_URL}home/learning-journey-art.png`}
+            autoPlay={reducedMotion === false}
+            muted
+            playsInline
+            preload="metadata"
+            aria-hidden="true"
+          />
+          <ol id="k12-journey-stages" className="sr-only">
+            {programs.map((program) => {
+              const description =
+                STAGE_DESCRIPTIONS[program.title.trim().toLowerCase()] ??
+                "A strong foundation for the next stage of learning.";
 
-            return (
-              <motion.li
-                key={program.id}
-                className="k12-journey__item"
-                {...reveal(Math.min(index, 5) * 0.08, 12)}
-              >
-                <Link
-                  to="/academics"
-                  className="k12-journey__row"
-                  aria-label={`${program.title}, ${program.grades}. ${description}`}
-                >
-                  <span className="k12-journey__cover" aria-hidden="true">
-                    <Media src={program.coverUrl} alt="" />
-                    <span className="k12-journey__number">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                  </span>
-                  <span className="k12-journey__stage">{program.title}</span>
-                  <span className="k12-journey__grades">{program.grades}</span>
-                  <span className="k12-journey__description">
-                    {description}
-                  </span>
-                  <span className="k12-journey__arrow" aria-hidden="true">
-                    ↗
-                  </span>
-                </Link>
-              </motion.li>
-            );
-          })}
-        </ol>
+              return (
+                <li key={program.id}>
+                  {program.title}, {program.grades}. {description}
+                </li>
+              );
+            })}
+          </ol>
+        </div>
       </div>
     </section>
   );

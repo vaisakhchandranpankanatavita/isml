@@ -22,18 +22,6 @@
   scroll-snap-align: start;
 }
 
-.gallery-carousel-frame {
-  position: relative;
-  height: 18rem;
-  overflow: hidden;
-}
-
-@media (min-width: 640px) {
-  .gallery-carousel-frame {
-    height: 24rem;
-  }
-}
-
 /* ------------------------------------------------------------------- tiles */
 .gallery-tile {
   --rx: 0deg;
@@ -188,14 +176,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .gallery-reel__track,
   .gallery-tile,
   .gallery-play::after {
     animation: none;
   }
   .gallery-tile,
-  .gallery-tile__media,
-  .gallery-carousel-frame {
+  .gallery-tile__media {
     transform: none !important;
     transition: opacity 0.2s ease;
   }

@@ -22,9 +22,8 @@ function toCrumb(pathname: string): string {
 }
 
 /**
- * Inner-page masthead, modelled on the VCASS PageHeader: clears the floating
- * nav, then a condensed breadcrumb, a very large headline revealed word by
- * word, an optional serif-italic eyebrow line and a condensed lead.
+ * Compact inner-page masthead: clears the floating nav, then a breadcrumb,
+ * headline, optional eyebrow and lead.
  */
 export default function PageHero({
   title,
@@ -38,7 +37,7 @@ export default function PageHero({
 
   return (
     <header className="border-b border-paper-line bg-paper">
-      <div className="container pb-[clamp(1.25rem,1rem+1vw,2rem)] pt-[calc(var(--vc-nav-top)+var(--vc-nav-height)+clamp(1.25rem,1rem+1vw,2rem))]">
+      <div className="container pb-3 pt-[calc(var(--vc-nav-top)+var(--vc-nav-height)+0.75rem)]">
         <nav
           aria-label="Breadcrumb"
           className="vc-label text-xs text-ink-muted"
@@ -68,12 +67,12 @@ export default function PageHero({
             eager
             text={title}
             by="word"
-            className="mt-4 max-w-[24ch] text-[clamp(1.75rem,2.4vw,2.5rem)] leading-[0.95] tracking-[-0.02em] text-ink"
+            className="mt-2 max-w-[24ch] text-[clamp(1.5rem,2vw,2rem)] leading-[1.05] tracking-[-0.02em] text-ink"
           />
         )}
 
         {eyebrow && (
-          <p className="vc-serif mt-3 text-lg text-school-red md:text-xl">
+          <p className="vc-serif mt-2 text-base text-school-red md:text-lg">
             {eyebrow}
           </p>
         )}
@@ -83,8 +82,8 @@ export default function PageHero({
             className={
               hideTitle
                 ? // Sized off the viewport so the sentence fits one line from lg up.
-                  "mt-3 font-display text-base font-semibold leading-[1.25] tracking-[-0.01em] text-ink-soft lg:truncate lg:text-[clamp(0.8rem,1.2vw,1.125rem)]"
-                : "mt-3 max-w-[56ch] font-display text-base font-semibold leading-[1.25] tracking-[-0.01em] text-ink-soft md:text-lg"
+                  "mt-2 font-display text-sm font-semibold leading-[1.35] tracking-[-0.01em] text-ink-soft lg:truncate lg:text-[clamp(0.8rem,1.1vw,1rem)]"
+                : "mt-2 max-w-[56ch] font-display text-sm font-semibold leading-[1.4] tracking-[-0.01em] text-ink-soft md:text-base"
             }
           >
             {subtitle}

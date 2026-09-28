@@ -468,8 +468,8 @@ function seed(): Database {
       tagline: 'In Pursuit of Excellence',
       admissionEmail: 'admission@isml-oman.com',
       announcementText: 'Admissions Open 2026–27',
-      announcementLinkLabel: 'Register today',
-      heroCaption: 'ISML felicitated for its excellence in academics 2025–26',
+      announcementLinkLabel: 'View admission details',
+      heroCaption: 'A place to grow, from the very first day.',
       heroImageUrl:
         'https://isml-oman.com/wp-content/uploads/2025/03/1-980x653.jpeg',
       welcomeHeading: 'Welcome to Indian School Muladha',
@@ -517,7 +517,7 @@ function seed(): Database {
       ],
       experienceHeading: 'EXPERIENCE\n@ISML',
       experienceBody:
-        'Get a glimpse of the vibrant and engaging environment of Indian School Muladha and visit the places where our students grow, learn and thrive.',
+        'See the people, places and activities that make a day at ISML.',
       chatSuggestions: structuredClone(CHAT_SUGGESTIONS),
       chatFaqs: [],
       experienceImages: [
@@ -552,10 +552,10 @@ function seed(): Database {
           caption: 'Live green',
         },
       ],
-      tourHeading: 'Take a virtual tour',
+      tourHeading: 'Explore our campus',
       tourBody:
-        'Take a virtual tour of our school and get a feel for Indian School Muladha, Oman from the comfort of your own home.',
-      tourLink: '#tour',
+        'See the spaces where our students learn, play and spend each school day.',
+      tourLink: '/gallery',
       contactPhone: '+968 26811234',
       contactFax: '+968 26815140',
       contactEmails: ['principal@isml-oman.com', 'ismloman@gmail.com'],
@@ -673,8 +673,10 @@ function seedMenus(): MenuItem[] {
  *       seeded page the stored copy is missing is added.
  *   3 — Gallery is one page of photos and videos, so its Photos / Videos
  *       sub-items are removed (other menu edits are kept).
+ *   4 — Homepage copy and the campus-tour route are updated only where they
+ *       still match the previous seed values.
  */
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 4;
 
 function migrate(db: Database): boolean {
   const from = db.schema ?? 1;
@@ -690,6 +692,37 @@ function migrate(db: Database): boolean {
     db.menus = db.menus.filter(
       (m) => !(m.parentId && galleries.has(m.parentId) && ['/gallery', '/videos'].includes(m.url)),
     );
+  }
+  if (from < 4) {
+    if (
+      db.settings.heroCaption ===
+      'ISML felicitated for its excellence in academics 2025–26'
+    ) {
+      db.settings.heroCaption = 'A place to grow, from the very first day.';
+    }
+    if (db.settings.announcementLinkLabel === 'Register today') {
+      db.settings.announcementLinkLabel = 'View admission details';
+    }
+    if (
+      db.settings.experienceBody ===
+      'Get a glimpse of the vibrant and engaging environment of Indian School Muladha and visit the places where our students grow, learn and thrive.'
+    ) {
+      db.settings.experienceBody =
+        'See the people, places and activities that make a day at ISML.';
+    }
+    if (db.settings.tourHeading === 'Take a virtual tour') {
+      db.settings.tourHeading = 'Explore our campus';
+    }
+    if (
+      db.settings.tourBody ===
+      'Take a virtual tour of our school and get a feel for Indian School Muladha, Oman from the comfort of your own home.'
+    ) {
+      db.settings.tourBody =
+        'See the spaces where our students learn, play and spend each school day.';
+    }
+    if (db.settings.tourLink === '#tour') {
+      db.settings.tourLink = '/gallery';
+    }
   }
   db.schema = SCHEMA_VERSION;
   return true;
