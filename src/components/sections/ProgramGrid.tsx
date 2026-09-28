@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import Media from '@/components/common/Media';
@@ -8,14 +9,28 @@ import type { K12Program } from '@/types';
  * dark ground, each titled in condensed caps. Hovering grows a grey panel
  * out from behind the card and the cursor turns into a "View" disc.
  */
-export default function ProgramGrid({ programs }: { programs: K12Program[] }) {
+export default function ProgramGrid({
+  programs,
+  heading,
+  action,
+}: {
+  programs: K12Program[];
+  heading: string;
+  action?: ReactNode;
+}) {
   const reduce = useReducedMotion();
   if (programs.length === 0) return null;
 
   return (
-    <section className="band-dark pb-[clamp(5.25rem,4.3789rem+3.7267vw,9rem)]">
+    <section className="band-dark home-section">
       <div className="container">
-        <div className="grid grid-cols-2 lg:grid-cols-4">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <h2 className="home-title text-neutral-2">{heading}</h2>
+          {action}
+        </div>
+        {/* Pulled out by the card's own padding so the photos line up with
+            the heading's edge instead of sitting a step inside it. */}
+        <div className="mt-6 grid grid-cols-2 -mx-[clamp(0.5625rem,0.4609rem+0.4348vw,1rem)] lg:grid-cols-4">
           {programs.map((p, i) => (
             <motion.div
               key={p.id}

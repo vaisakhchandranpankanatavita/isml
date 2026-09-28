@@ -31,6 +31,10 @@ export const CHAT_SUGGESTIONS: ChatSuggestions = {
   news: ['Admissions', 'Photo gallery'],
   contact: ['Admissions', 'Campus tour'],
   campus: ['Photo gallery', 'Campus tour', 'Latest news'],
+  students: ['Syllabus', 'Results', 'Latest news'],
+  alumni: ['Alumni registration', 'Contact'],
+  transport: ['Admissions', 'Contact'],
+  fallback: ['Admissions', 'Fees', 'Contact', 'Talk to the office'],
 };
 
 export const PUBLIC_NAV: NavItem[] = [
@@ -41,7 +45,11 @@ export const PUBLIC_NAV: NavItem[] = [
     children: [
       { to: '/vision-mission', label: 'Vision & Mission' },
       { to: '/school-management', label: 'School Management' },
-      { to: '/board-of-directors', label: 'Board Of Directors' },
+      {
+        to: '/board-of-directors',
+        label: 'Board Of Directors',
+        children: [{ to: '/bod-guidelines', label: 'BOD Guidelines' }],
+      },
       { to: '/mandatory-public-disclosure', label: 'Mandatory Public Disclosure' },
       { to: '/academics', label: 'Academics' },
       { to: '/faculty', label: 'Faculty' },
@@ -74,7 +82,7 @@ export const PUBLIC_NAV: NavItem[] = [
     label: 'Students Resources',
     children: [
       { to: '/syllabus-2026-2027', label: 'Syllabus 2026 – 2027' },
-      { to: '/upcoming-events', label: 'Upcoming Events / Activities' },
+      { to: '/upcoming-events', label: 'Upcoming Events /Activities' },
       { to: '/question-bank', label: 'QUESTION BANK' },
       { to: '/vle-portal', label: 'VLE Portal' },
       { to: '/useful-links', label: 'Useful Links' },

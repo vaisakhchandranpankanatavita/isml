@@ -134,8 +134,8 @@ export default {
         school: {
           green: "#eb8900",
           greenDark: "#854000",
-          red: "#c62828",
-          redDark: "#9f1f1f",
+          red: "#da251d",
+          redDark: "#b01e17",
           cream: "#fff2e0",
           gold: "#f59021",
         },

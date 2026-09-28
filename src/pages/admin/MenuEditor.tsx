@@ -35,20 +35,42 @@ export default function MenuEditor() {
     setNewTab(item.newTab);
   }, [id]);
 
-  // Prevent parenting to self or descendants.
+  // The site header renders three levels (e.g. About Us → Board Of
+  // Directors → BOD Guidelines), so a parent may be a top-level item or one of its children.
+  // Never self or a descendant; and an item that has children of its own may
+  // only sit under a top-level item, so its children stay within three levels.
   const parentOptions = useMemo(() => {
-    if (!id) return items.filter((m) => m.parentId === null);
-    const forbidden = new Set<string>([id]);
-    const collect = (parent: string) => {
+    const byId = new Map(items.map((m) => [m.id, m]));
+    const forbidden = new Set<string>();
+    if (id) {
+      forbidden.add(id);
+      const collect = (parent: string) => {
+        items
+          .filter((m) => m.parentId === parent)
+          .forEach((c) => {
+            forbidden.add(c.id);
+            collect(c.id);
+          });
+      };
+      collect(id);
+    }
+    const hasChildren = !!id && items.some((m) => m.parentId === id);
+    const depth = (m: MenuItem): number => {
+      const parent = m.parentId ? byId.get(m.parentId) : undefined;
+      return parent ? 1 + depth(parent) : 0;
+    };
+    // Listed in menu order: each top-level item followed by its children.
+    const inTreeOrder = (parent: string | null): MenuItem[] =>
       items
         .filter((m) => m.parentId === parent)
-        .forEach((c) => {
-          forbidden.add(c.id);
-          collect(c.id);
-        });
-    };
-    collect(id);
-    return items.filter((m) => m.parentId === null && !forbidden.has(m.id));
+        .sort((a, b) => a.order - b.order)
+        .flatMap((m) => [m, ...inTreeOrder(m.id)]);
+    return inTreeOrder(null)
+      .filter((m) => !forbidden.has(m.id) && depth(m) <= (hasChildren ? 0 : 1))
+      .map((m) => ({
+        id: m.id,
+        label: m.parentId ? `${byId.get(m.parentId)?.label} › ${m.label}` : m.label,
+      }));
   }, [items, id]);
 
   const onSubmit = (e: FormEvent) => {

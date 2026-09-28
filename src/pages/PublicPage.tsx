@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, Navigate, useLocation } from 'react-router-dom';
 import PageHero from '@/components/common/PageHero';
 import { pagesService } from '@/services/cms.service';
 import { storage } from '@/services/storage';
@@ -8,6 +8,7 @@ import type { Page } from '@/types';
 
 export default function PublicPage() {
   const { slug = '' } = useParams();
+  const { pathname, hash } = useLocation();
   const [page, setPage] = useState<Page | undefined>(() => pagesService.getBySlug(slug));
   const onInvertHover = useInvertHover();
 
@@ -15,6 +16,10 @@ export default function PublicPage() {
     setPage(pagesService.getBySlug(slug));
     return storage.subscribe(() => setPage(pagesService.getBySlug(slug)));
   }, [slug]);
+
+  // CMS pages live at `/<slug>`, matching the original site; `/p/<slug>`
+  // (old links, bookmarks, menu items saved before the change) redirects there.
+  if (pathname.startsWith('/p/')) return <Navigate to={`/${slug}${hash}`} replace />;
 
   if (!page || page.status !== 'published') {
     return (
@@ -41,7 +46,7 @@ export default function PublicPage() {
 
   return (
     <>
-      <PageHero title={page.title} />
+      <PageHero title={page.title} crumb={page.title} />
 
       <section className="section-lg">
         <div className="container">

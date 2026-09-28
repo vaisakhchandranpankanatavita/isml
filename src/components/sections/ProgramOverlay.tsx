@@ -27,7 +27,7 @@ export default function ProgramOverlay({ program }: ProgramOverlayProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-xs font-semibold uppercase tracking-widest text-brand-600 mb-2"
+            className="text-xs font-semibold uppercase tracking-widest text-school-red mb-2"
           >
             {program.grades}
           </motion.p>

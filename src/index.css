@@ -7,8 +7,8 @@
 @import "@fontsource/barlow-condensed/400.css";
 @import "@fontsource/barlow-condensed/600.css";
 @import "@fontsource/barlow-condensed/700.css";
-@import "@fontsource/barlow-condensed/800.css";
 @import "@fontsource-variable/playfair-display/wght-italic.css";
+@import "@fontsource-variable/playfair-display/wght.css";
 
 @tailwind base;
 @tailwind components;
@@ -43,12 +43,12 @@
     --ink-faint-rgb: 115 115 115;
 
     --vc-accent: #f59021;
-    --site-text-accent: #c62828;
+    --site-text-accent: #da251d;
     --vc-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12h16M13 5l7 7-7 7'/%3E%3C/svg%3E");
     --vc-radius: 14px;
-    --vc-nav-height: 75px;
+    --vc-nav-height: 60px;
     --vc-nav-top: calc(
-      clamp(1.75rem, 1.4596rem + 1.2422vw, 3rem) + env(safe-area-inset-top)
+      clamp(0.75rem, 0.6rem + 0.6vw, 1.25rem) + env(safe-area-inset-top)
     );
     --vc-ease-out: cubic-bezier(0.34, 0.34, 0.02, 0.97);
     --vc-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
@@ -61,7 +61,7 @@
   }
   @media (min-width: 1280px) {
     :root {
-      --vc-nav-height: 84px;
+      --vc-nav-height: 64px;
     }
   }
 
@@ -137,14 +137,14 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* VCASS headings: condensed, uppercase, 800, tight tracking and a
+  /* VCASS headings: condensed, uppercase, 700, tight tracking and a
      sub-1 line-height so stacked lines lock together. */
   h1,
   h2,
   h3,
   h4 {
     @apply font-display text-ink;
-    font-weight: 800;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: -0.02em;
     line-height: 0.9;
@@ -228,6 +228,20 @@ html.has-custom-cursor textarea,
 html.has-custom-cursor select,
 html.has-custom-cursor [contenteditable="true"] {
   cursor: auto;
+}
+
+/* Zones that opt out of the custom cursor (the chat widget): the dot and ring
+   fade out there (CustomCursor.tsx), so the native cursor has to come back —
+   an arrow on the panel, a hand on anything clickable, a caret in the field. */
+html.has-custom-cursor [data-native-cursor],
+html.has-custom-cursor [data-native-cursor] * {
+  cursor: default;
+}
+html.has-custom-cursor [data-native-cursor] :is(a, button, [role="button"]):not(:disabled) {
+  cursor: pointer;
+}
+html.has-custom-cursor [data-native-cursor] :is(input, textarea) {
+  cursor: text;
 }
 
 @layer components {
@@ -370,7 +384,7 @@ html.has-custom-cursor [contenteditable="true"] {
     --btn-chip: #faf9f2;
     --btn-chip-fg: #1f1e1d;
     @apply relative isolate inline-flex select-none items-center justify-center gap-3 rounded-full
-           font-display text-[0.95rem] font-bold uppercase leading-none tracking-normal;
+           font-sans text-[0.95rem] font-medium leading-none tracking-normal;
     color: var(--btn-fg);
     padding: 0.45rem 0.45rem 0.45rem 1.6rem;
   }
@@ -378,7 +392,7 @@ html.has-custom-cursor [contenteditable="true"] {
     padding: 1.05rem 1.75rem;
   }
   .vc-btn--sm {
-    @apply text-xs;
+    @apply text-[0.8rem];
     padding: 0.3rem 0.3rem 0.3rem 1.1rem;
   }
   .vc-btn--sm.vc-btn--no-icon {
@@ -564,13 +578,13 @@ html.has-custom-cursor [contenteditable="true"] {
   }
 
   /* ------------------------------------------------------------- labels
-     VCASS `.label`: condensed, uppercase, bold. The workhorse for nav items,
+     VCASS `.label`: condensed, uppercase, semibold. The workhorse for nav items,
      eyebrows, meta and footer links. */
   .vc-label {
-    @apply font-display text-sm font-bold uppercase leading-[1.1];
+    @apply font-display text-sm font-semibold uppercase leading-[1.1];
   }
   .vc-label-l {
-    @apply font-display text-xl font-bold uppercase leading-[1.1] md:text-2xl;
+    @apply font-display text-xl font-semibold uppercase leading-[1.1] md:text-2xl;
   }
   /* VCASS `.h7`: the italic serif accent line. */
   .vc-serif {
@@ -578,7 +592,7 @@ html.has-custom-cursor [contenteditable="true"] {
     font-weight: 400;
   }
   .vc-display {
-    @apply font-display text-display font-extrabold uppercase;
+    @apply font-display text-display font-bold uppercase;
   }
 
   /* The hover tint sweeps in from the pointer's entry point (`--ex`/`--ey`,
@@ -605,11 +619,11 @@ html.has-custom-cursor [contenteditable="true"] {
      doesn't collide with descenders. */
   .link {
     @apply underline underline-offset-[3px];
-    color: #c62828;
-    text-decoration-color: rgb(198 40 40 / 0.3);
+    color: var(--site-text-accent);
+    text-decoration-color: rgb(218 37 29 / 0.3);
   }
   .link:hover {
-    text-decoration-color: #c62828;
+    text-decoration-color: var(--site-text-accent);
   }
 
   /* ------------------------------------------------------------------ panels */
@@ -628,6 +642,19 @@ html.has-custom-cursor [contenteditable="true"] {
   }
   .section-xl {
     @apply py-14 md:py-20;
+  }
+  /* Homepage rhythm: one block padding for every section, so the gaps
+     between bands are equal instead of each section picking its own. Two
+     sections on the same dark ground read as one band — the second drops
+     its top padding so the seam is one gap, not two stacked. */
+  .home-section {
+    padding-block: clamp(3.5rem, 2.9rem + 2.6vw, 6rem);
+  }
+  .band-dark.home-section + .band-dark.home-section {
+    padding-top: 0;
+  }
+  .home-title {
+    @apply text-[clamp(2rem,1.6rem+1.8vw,3rem)] leading-[0.95] tracking-[-0.02em];
   }
   /* Alternating ground. Full-bleed, so it must sit outside `.container`. */
   .band {
@@ -648,7 +675,7 @@ html.has-custom-cursor [contenteditable="true"] {
     --paper-line: #ffdead;
   }
   .band-brand :is(h1, h2, h3, h4) {
-    color: #eb8900;
+    color: var(--site-text-accent);
   }
   /* VCASS `theme-neutral dark` band: fixed near-black, whatever the theme. */
   .band-dark {
@@ -668,14 +695,14 @@ html.has-custom-cursor [contenteditable="true"] {
      the rule is already doing the work of separating the label from the
      heading below it. */
   .rule-label {
-    @apply flex items-center gap-4 font-display text-sm font-bold uppercase text-ink-muted;
+    @apply flex items-center gap-4 font-display text-sm font-semibold uppercase text-ink-muted;
   }
   .rule-label::after {
     content: "";
     @apply h-px flex-1 bg-paper-line;
   }
   .rule-label--brand {
-    color: #c62828;
+    color: var(--site-text-accent);
   }
   .rule-label--light {
     @apply text-white/70;
@@ -706,7 +733,7 @@ html.has-custom-cursor [contenteditable="true"] {
     @apply px-0 py-5 sm:px-6 sm:first:pl-0;
   }
   .register__value {
-    @apply font-display text-4xl font-extrabold uppercase leading-none text-ink;
+    @apply font-display text-4xl font-bold uppercase leading-none text-ink;
   }
   .register__label {
     @apply mt-1 text-xs text-ink-muted;
@@ -725,8 +752,8 @@ html.has-custom-cursor [contenteditable="true"] {
     @apply bg-brand-50/60;
   }
   .notice__date {
-    @apply pt-0.5 font-display text-base font-bold uppercase leading-tight;
-    color: #c62828;
+    @apply pt-0.5 font-display text-base font-semibold uppercase leading-tight;
+    color: var(--site-text-accent);
   }
   .notice__title {
     @apply text-sm font-medium leading-snug text-ink;
@@ -761,11 +788,11 @@ html.has-custom-cursor [contenteditable="true"] {
     transform: scale(1.05);
   }
   .story__cat {
-    @apply font-display text-sm font-bold uppercase;
-    color: #c62828;
+    @apply font-display text-sm font-semibold uppercase;
+    color: var(--site-text-accent);
   }
   .story__title {
-    @apply mt-2 font-display text-2xl font-extrabold uppercase leading-[0.95] text-ink
+    @apply mt-2 font-display text-2xl font-bold uppercase leading-[0.95] text-ink
            transition-colors;
   }
   .story__excerpt {
@@ -846,9 +873,9 @@ html.has-custom-cursor [contenteditable="true"] {
   .cms-prose {
     @apply max-w-measure whitespace-pre-line text-base leading-relaxed text-ink-soft;
   }
-  /* The principal's voice — the one italic serif on the site. Everything
-     else uses `font-display`; this is the one place PP Editorial New shows
-     up, on purpose. */
+  /* The principal's voice — the one italic serif on the site, read as a
+     handwritten note. Used by the About page and the homepage alike, so
+     both match. */
   .voice {
     @apply font-serif text-xl italic leading-relaxed text-ink-soft;
     font-weight: 400;
@@ -993,18 +1020,31 @@ html.has-custom-cursor [contenteditable="true"] {
   padding-right: max(1rem, env(safe-area-inset-right));
 }
 .vc-nav {
-  @apply pointer-events-auto relative flex items-center justify-between gap-6;
+  @apply pointer-events-auto relative flex items-center justify-between gap-4 2xl:gap-6;
   height: var(--vc-nav-height);
   width: 100%;
   border-radius: 8px;
-  padding: 0.875rem 1rem;
+  padding: 0.5rem 1rem;
   color: #1f1e1d;
-  background: rgb(255 255 255 / 0.76);
+  /* Frozen, semi-transparent glass; clearer once scrolled or on narrow
+     screens so more of the page shows through. The blur keeps text legible. */
+  --vc-nav-alpha: 0.76;
+  background: rgb(255 255 255 / var(--vc-nav-alpha));
   border: 1px solid rgb(255 255 255 / 0.72);
   box-shadow: 0 10px 32px rgb(31 30 29 / 0.12);
   -webkit-backdrop-filter: blur(18px) saturate(150%);
   backdrop-filter: blur(18px) saturate(150%);
-  transition: width 0.6s var(--vc-ease-in-out);
+  transition:
+    width 0.6s var(--vc-ease-in-out),
+    background-color 0.4s ease;
+}
+.vc-nav-container.is-scrolled .vc-nav {
+  --vc-nav-alpha: 0.55;
+}
+@media (max-width: 1023px) {
+  .vc-nav {
+    --vc-nav-alpha: 0.55;
+  }
 }
 .vc-nav .text-neutral-1,
 .vc-nav .text-neutral-2,
@@ -1016,7 +1056,7 @@ html.has-custom-cursor [contenteditable="true"] {
 }
 .vc-nav .vc-menu-item:hover .vc-menu-link,
 .vc-nav .vc-menu-item.is-open .vc-menu-link {
-  color: #b65d00;
+  color: var(--site-text-accent);
 }
 .vc-nav .vc-icon-btn {
   --btn-bg: rgb(31 30 29 / 0.08);
@@ -1051,7 +1091,7 @@ html.has-custom-cursor [contenteditable="true"] {
   @apply relative leading-none text-neutral-2;
 }
 .vc-menu-link {
-  @apply inline-flex items-center whitespace-nowrap px-3 py-3 text-[0.95rem] transition-colors duration-200 2xl:px-4;
+  @apply inline-flex items-center whitespace-nowrap px-1.5 py-3 font-sans text-[0.85rem] font-medium normal-case tracking-normal transition-colors duration-200 xl:px-2 xl:text-[0.9rem] 2xl:px-4 2xl:text-[0.95rem];
 }
 .vc-menu-item:hover .vc-menu-link,
 .vc-menu-item.is-open .vc-menu-link {
@@ -1105,7 +1145,7 @@ html.has-custom-cursor [contenteditable="true"] {
 /* The label swaps for a larger twin of itself on hover (VCASS
    `.Submenu-heading span`). */
 .vc-submenu__heading {
-  @apply relative flex-1 text-neutral-6 transition-colors duration-200;
+  @apply relative flex-1 font-sans font-medium normal-case text-neutral-6 transition-colors duration-200;
   font-size: 1rem;
 }
 .vc-submenu__heading > span {
@@ -1133,6 +1173,19 @@ html.has-custom-cursor [contenteditable="true"] {
 .vc-submenu__link:focus-visible .vc-submenu__arrow {
   opacity: 1;
   transform: scale(1);
+}
+
+/* Third menu level, listed under its parent row. */
+.vc-submenu__sub {
+  @apply -mt-1 mb-2 ml-1 flex flex-col border-l-2 pl-3;
+  border-color: rgb(218 37 29 / 0.35);
+}
+.vc-submenu__sub-link {
+  @apply block py-1 font-sans text-[0.85rem] font-normal leading-tight text-neutral-5 transition-colors;
+}
+.vc-submenu__sub-link:hover,
+.vc-submenu__sub-link:focus-visible {
+  color: var(--site-text-accent);
 }
 
 /* ==========================================================================
@@ -1244,7 +1297,7 @@ html[data-theme="studio"] .hero-media [class~="text-neutral-3"] {
   color: #fff;
 }
 html[data-theme="studio"] .vc-nav {
-  background: rgb(255 255 255 / 0.76);
+  background: rgb(255 255 255 / var(--vc-nav-alpha));
   color: #1f1e1d;
   border: 1px solid rgb(255 255 255 / 0.72);
   box-shadow: 0 10px 32px rgb(31 30 29 / 0.12);
@@ -1297,6 +1350,19 @@ html[data-theme="studio"] .vc-curtain {
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
+}
+
+/* Inner pages are read, not scrolled through: tighter section rhythm than
+   the homepage so content starts close to the masthead and sections don't
+   float in empty bands. */
+.public-inner-page .section {
+  @apply py-6 md:py-9;
+}
+.public-inner-page .section-lg {
+  @apply py-8 md:py-11;
+}
+.public-inner-page .section-xl {
+  @apply py-10 md:py-14;
 }
 
 html[data-theme="studio"] .public-inner-page {

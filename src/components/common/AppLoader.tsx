@@ -89,7 +89,7 @@ export default function AppLoader() {
               transition={{ delay: 0.05, duration: 0.55, ease: 'easeOut' }}
             />
             <motion.p
-              className="font-display text-2xl font-extrabold uppercase leading-none md:text-3xl"
+              className="font-display text-2xl font-bold uppercase leading-none md:text-3xl"
               style={{ color: '#1f1e1d' }}
               initial={false}
               animate={{ opacity: 1, y: 0 }}

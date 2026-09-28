@@ -125,9 +125,28 @@ function RouteScrollReset() {
   const lenis = useLenis();
 
   useEffect(() => {
-    if (hash) return;
-    if (lenis) lenis.scrollTo(0, { immediate: true });
-    else window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    if (!hash) {
+      if (lenis) lenis.scrollTo(0, { immediate: true });
+      else window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      return;
+    }
+    // `/about#principal`-style links (chat, footer): the target mounts with
+    // the route, so wait a frame or two for it, then scroll it clear of the
+    // floating header. Gives up quietly if the section doesn't exist.
+    let tries = 0;
+    let raf = 0;
+    const find = () => {
+      const el = document.getElementById(decodeURIComponent(hash.slice(1)));
+      if (el) {
+        const offset = -(document.querySelector(".vc-nav")?.getBoundingClientRect().bottom ?? 0) - 16;
+        if (lenis) lenis.scrollTo(el, { offset });
+        else window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY + offset });
+      } else if (tries++ < 30) {
+        raf = requestAnimationFrame(find);
+      }
+    };
+    raf = requestAnimationFrame(find);
+    return () => cancelAnimationFrame(raf);
   }, [pathname, hash, lenis]);
 
   return null;

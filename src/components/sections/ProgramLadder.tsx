@@ -23,7 +23,7 @@ export default function ProgramLadder({ programs }: ProgramLadderProps) {
           }`}
         >
           <div className="absolute left-0 top-0 z-10 flex h-10 w-10 items-center justify-center md:left-1/2 md:-translate-x-1/2">
-            <div className="h-full w-full rounded-full border-2 border-brand-600 bg-paper text-brand-700 font-display text-sm font-bold">
+            <div className="h-full w-full rounded-full border-2 border-brand-600 bg-paper text-school-red font-display text-sm font-bold">
               {i + 1}
             </div>
           </div>
@@ -38,7 +38,7 @@ export default function ProgramLadder({ programs }: ProgramLadderProps) {
                 />
               </div>
               <div className="p-6">
-                <p className="text-xs font-semibold uppercase tracking-wider text-brand-600">
+                <p className="text-xs font-semibold uppercase tracking-wider text-school-red">
                   {program.grades}
                 </p>
                 <h3 className="mt-2 font-display text-xl font-bold text-ink">

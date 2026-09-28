@@ -19,8 +19,9 @@ import { Button } from '@/components/common/Button';
  * logo, menu and the call to action. It never hides.
  *
  * Dropdowns are the VCASS "Submenu": a pale rounded panel that springs up
- * from 90px below with a 15° tilt on a bounce curve, each row numbered in
- * the serif italic, with the label growing on hover.
+ * from 90px below with a 15° tilt on a bounce curve, with the label growing
+ * on hover. A third menu level (e.g. Board Of Directors → BOD Guidelines) is listed
+ * indented under its parent row rather than opening a second flyout.
  */
 
 const SCROLL_THRESHOLD = 100;
@@ -157,7 +158,7 @@ function TopItem({ node, pathname }: { node: NavNode; pathname: string }) {
         className={clsx('vc-menu-link vc-label', active && 'is-active')}
       />
       {hasChildren && (
-        <div className="vc-submenu">
+        <div className="vc-submenu" data-lenis-prevent>
           <ul className="vc-submenu__list">
             {node.children.map((child) => (
               <li key={`${child.label}-${child.to}`} className="vc-submenu__item vc-hover-parent">
@@ -172,6 +173,19 @@ function TopItem({ node, pathname }: { node: NavNode; pathname: string }) {
                     </span>
                   </span>
                 </NavLinkish>
+                {child.children.length > 0 && (
+                  <ul className="vc-submenu__sub">
+                    {child.children.map((grand) => (
+                      <li key={`${grand.label}-${grand.to}`}>
+                        <NavLinkish
+                          node={grand}
+                          className="vc-submenu__sub-link"
+                          onClick={() => setOpen(false)}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
           </ul>
@@ -197,7 +211,7 @@ function MobileItem({
       <div className="flex items-center gap-2.5 py-1.5">
         <NavLinkish
           node={node}
-          className="flex-1 font-display text-lg font-bold uppercase leading-tight text-neutral-2 transition-colors hover:text-school-red"
+          className="flex-1 font-sans text-base font-medium leading-tight text-neutral-2 transition-colors hover:text-school-red"
           onClick={onNavigate}
           tabIndex={itemTabIndex}
         />
@@ -236,10 +250,24 @@ function MobileItem({
               <li key={`${child.label}-${child.to}`}>
                 <NavLinkish
                   node={child}
-                  className="vc-label block py-1.5 text-sm text-neutral-4 transition-colors hover:text-neutral-1"
+                  className="block py-1.5 font-sans text-sm font-normal text-neutral-4 transition-colors hover:text-neutral-1"
                   onClick={onNavigate}
                   tabIndex={itemTabIndex}
                 />
+                {child.children.length > 0 && (
+                  <ul className="mb-1 border-l border-neutral-6 pl-3">
+                    {child.children.map((grand) => (
+                      <li key={`${grand.label}-${grand.to}`}>
+                        <NavLinkish
+                          node={grand}
+                          className="block py-1 font-sans text-xs font-normal text-neutral-4 transition-colors hover:text-neutral-1"
+                          onClick={onNavigate}
+                          tabIndex={itemTabIndex}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </li>
             ))}
             <li className="h-2" />
@@ -270,24 +298,23 @@ export default function Header() {
       <nav aria-label="Main" className="vc-nav">
         <Link
           to="/"
-          className="flex h-full min-w-0 flex-1 items-center gap-2 text-neutral-1 sm:gap-3 xl:flex-none"
+          className="flex h-full min-w-0 flex-1 items-center gap-2 text-neutral-1 sm:gap-3 lg:flex-none"
           aria-label={settings.siteName}
         >
-          <img src="/logo.png" alt="" className="h-9 w-9 shrink-0 sm:h-10 sm:w-10 xl:h-12 xl:w-12" />
-          <span className="vc-nav__brand-name block min-w-0 flex-1 font-display text-[0.72rem] font-extrabold uppercase leading-[0.95] sm:text-xl sm:leading-[0.85] xl:flex-none">
-            {settings.siteName.split(' ').slice(0, -1).join(' ') || settings.siteName}
-            <span className="block text-neutral-4">{settings.siteName.split(' ').slice(-1)}</span>
+          <img src="/logo.png" alt="" className="h-8 w-8 shrink-0 sm:h-9 sm:w-9 xl:h-10 xl:w-10" />
+          <span className="vc-nav__brand-name block min-w-0 flex-1 truncate whitespace-nowrap font-sans text-sm font-semibold uppercase leading-none tracking-wide sm:text-lg lg:flex-none lg:text-sm xl:text-base 2xl:text-lg">
+            {settings.siteName}
           </span>
         </Link>
 
-        <ul className="vc-menu hidden 2xl:flex">
+        <ul className="vc-menu hidden lg:flex">
           {nav.map((node) => (
             <TopItem key={`${node.label}-${node.to}`} node={node} pathname={pathname} />
           ))}
         </ul>
 
         <div className="flex shrink-0 items-center gap-2">
-          <div className="vc-nav-utility hidden 2xl:flex">
+          <div className="vc-nav-utility hidden lg:flex">
             <ThemeToggle />
           </div>
           <Button variant="accent" size="sm" as="a" to="/admissions" className="hidden sm:inline-flex">
@@ -299,7 +326,7 @@ export default function Header() {
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav"
             aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-            className="vc-icon-btn 2xl:hidden"
+            className="vc-icon-btn lg:hidden"
           >
             <span
               aria-hidden
@@ -336,7 +363,7 @@ export default function Header() {
             onKeyDown={(e) => {
               if (e.key === 'Escape') setMobileOpen(false);
             }}
-            className="mobile-nav-panel pointer-events-auto mt-2 w-full overflow-y-auto rounded-xl bg-neutral-7 px-3.5 pb-3 pt-2 sm:max-w-[26rem] sm:self-end sm:px-4 2xl:hidden"
+            className="mobile-nav-panel pointer-events-auto mt-2 w-full overflow-y-auto rounded-xl bg-neutral-7 px-3.5 pb-3 pt-2 sm:max-w-[26rem] sm:self-end sm:px-4 lg:hidden"
             data-lenis-prevent
           >
             <ul>

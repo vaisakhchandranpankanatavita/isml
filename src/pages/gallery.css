@@ -1,0 +1,225 @@
+/*
+ * Gallery motion. framer-motion owns entrances, reflow and the viewer; these
+ * rules own the always-on loops (showreel, shimmer, play pulse) and hover
+ * states, which CSS does more cheaply than JS.
+ */
+
+/* ---------------------------------------------------------------- showreel */
+.gallery-reel {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.gallery-reel__track {
+  display: flex;
+  width: max-content;
+  gap: 0.75rem;
+  animation: gallery-reel var(--reel-duration, 60s) linear infinite;
+}
+
+.gallery-reel__track--reverse {
+  animation-direction: reverse;
+}
+
+.gallery-reel:hover .gallery-reel__track {
+  animation-play-state: paused;
+}
+
+.gallery-reel__item {
+  position: relative;
+  height: 7rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: rgb(var(--paper-band-rgb));
+  transition:
+    transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.6s ease;
+  filter: saturate(0.85);
+}
+
+.gallery-reel__item:hover {
+  transform: translateY(-6px) scale(1.04);
+  filter: saturate(1.1);
+}
+
+@media (min-width: 640px) {
+  .gallery-reel__item {
+    height: 10rem;
+  }
+}
+
+/* The track holds the list twice, so -50% lands exactly on the loop seam. */
+@keyframes gallery-reel {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* ------------------------------------------------------------------- tiles */
+.gallery-tile {
+  --rx: 0deg;
+  --ry: 0deg;
+  position: relative;
+  display: block;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 1.25rem;
+  transform: perspective(900px) rotateX(var(--ry)) rotateY(var(--rx));
+  transition:
+    transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.5s ease;
+  /* Shimmer shows until the image paints over it. */
+  background: linear-gradient(
+    110deg,
+    rgb(var(--paper-band-rgb)) 30%,
+    rgb(var(--paper-sunk-rgb)) 50%,
+    rgb(var(--paper-band-rgb)) 70%
+  );
+  background-size: 200% 100%;
+  animation: gallery-shimmer 1.6s linear infinite;
+}
+
+.gallery-tile:hover,
+.gallery-tile:focus-visible {
+  box-shadow: 0 24px 48px -20px rgb(0 0 0 / 0.45);
+}
+
+.gallery-tile:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+.gallery-tile__media {
+  transition:
+    transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1),
+    filter 0.6s ease;
+}
+
+.gallery-tile:hover .gallery-tile__media,
+.gallery-tile:focus-visible .gallery-tile__media {
+  transform: scale(1.08);
+  filter: saturate(1.15);
+}
+
+.gallery-tile__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.75), rgb(0 0 0 / 0.1) 45%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.gallery-tile__caption {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  padding: 1rem;
+  color: #fff;
+  opacity: 0;
+  transform: translateY(1rem);
+  transition:
+    opacity 0.5s ease,
+    transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.gallery-tile__rule {
+  display: block;
+  height: 2px;
+  margin-top: 0.5rem;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) 0.1s;
+}
+
+.gallery-tile:hover .gallery-tile__shade,
+.gallery-tile:focus-visible .gallery-tile__shade,
+.gallery-tile:hover .gallery-tile__caption,
+.gallery-tile:focus-visible .gallery-tile__caption {
+  opacity: 1;
+}
+
+.gallery-tile:hover .gallery-tile__caption,
+.gallery-tile:focus-visible .gallery-tile__caption {
+  transform: none;
+}
+
+.gallery-tile:hover .gallery-tile__rule,
+.gallery-tile:focus-visible .gallery-tile__rule {
+  transform: scaleX(1);
+}
+
+/* Touch screens have no hover: keep captions readable. */
+@media (hover: none) {
+  .gallery-tile__shade,
+  .gallery-tile__caption {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.gallery-play {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  height: 3.25rem;
+  width: 3.25rem;
+  place-items: center;
+  border-radius: 9999px;
+  background: rgb(255 255 255 / 0.9);
+  color: #111;
+  font-size: 1.1rem;
+  transform: translate(-50%, -50%);
+  transition:
+    transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.4s ease;
+}
+
+.gallery-play::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 2px solid rgb(255 255 255 / 0.8);
+  animation: gallery-pulse 2s ease-out infinite;
+}
+
+.gallery-tile:hover .gallery-play {
+  transform: translate(-50%, -50%) scale(0.7);
+  opacity: 0;
+}
+
+@keyframes gallery-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes gallery-pulse {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-reel__track,
+  .gallery-tile,
+  .gallery-play::after {
+    animation: none;
+  }
+  .gallery-tile,
+  .gallery-tile__media,
+  .gallery-reel__item {
+    transform: none !important;
+    transition: opacity 0.2s ease;
+  }
+}

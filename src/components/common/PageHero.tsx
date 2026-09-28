@@ -7,10 +7,16 @@ interface PageHeroProps {
   /** Short label set into the rule above the title. */
   eyebrow?: string;
   crumb?: string;
+  /** Keep the h1 for screen readers only and run the subtitle on one line —
+   *  for pages whose breadcrumb already names them. */
+  hideTitle?: boolean;
 }
 
 function toCrumb(pathname: string): string {
-  const seg = pathname.split("/").filter(Boolean)[0];
+  // `/p/<slug>` is the legacy prefix for CMS pages; the crumb is the page,
+  // never the "p".
+  const segs = pathname.split("/").filter(Boolean);
+  const seg = segs[0] === "p" ? segs[1] : segs[0];
   if (!seg) return "Home";
   return seg.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
@@ -25,13 +31,14 @@ export default function PageHero({
   subtitle,
   eyebrow,
   crumb,
+  hideTitle,
 }: PageHeroProps) {
   const { pathname } = useLocation();
   const breadcrumb = crumb ?? toCrumb(pathname);
 
   return (
     <header className="border-b border-paper-line bg-paper">
-      <div className="container pb-[clamp(2.5rem,2.1516rem+1.4907vw,4rem)] pt-[calc(var(--vc-nav-top)+var(--vc-nav-height)+clamp(2.5rem,2.1516rem+1.4907vw,4rem))]">
+      <div className="container pb-[clamp(1.25rem,1rem+1vw,2rem)] pt-[calc(var(--vc-nav-top)+var(--vc-nav-height)+clamp(1.25rem,1rem+1vw,2rem))]">
         <nav
           aria-label="Breadcrumb"
           className="vc-label text-xs text-ink-muted"
@@ -53,22 +60,33 @@ export default function PageHero({
 
         {/* `eager`, not scroll-triggered — this masthead is above the fold
             on every inner page, the same as the Hero headline. */}
-        <ScaffoldedText
-          as="h1"
-          eager
-          text={title}
-          by="word"
-          className="mt-6 max-w-[18ch] text-[clamp(2rem,3.5vw,4rem)] leading-[0.92] tracking-[-0.025em] text-ink"
-        />
+        {hideTitle ? (
+          <h1 className="sr-only">{title}</h1>
+        ) : (
+          <ScaffoldedText
+            as="h1"
+            eager
+            text={title}
+            by="word"
+            className="mt-4 max-w-[24ch] text-[clamp(1.75rem,2.4vw,2.5rem)] leading-[0.95] tracking-[-0.02em] text-ink"
+          />
+        )}
 
         {eyebrow && (
-          <p className="vc-serif mt-4 text-xl text-school-red md:text-2xl">
+          <p className="vc-serif mt-3 text-lg text-school-red md:text-xl">
             {eyebrow}
           </p>
         )}
 
         {subtitle && (
-          <p className="mt-4 max-w-[56ch] font-display text-lg font-semibold leading-[1.25] tracking-[-0.01em] text-ink-soft md:text-xl">
+          <p
+            className={
+              hideTitle
+                ? // Sized off the viewport so the sentence fits one line from lg up.
+                  "mt-3 font-display text-base font-semibold leading-[1.25] tracking-[-0.01em] text-ink-soft lg:truncate lg:text-[clamp(0.8rem,1.2vw,1.125rem)]"
+                : "mt-3 max-w-[56ch] font-display text-base font-semibold leading-[1.25] tracking-[-0.01em] text-ink-soft md:text-lg"
+            }
+          >
             {subtitle}
           </p>
         )}

@@ -11,6 +11,8 @@ interface Database {
   media: MediaItem[];
   menus: MenuItem[];
   settings: SiteSettings;
+  /** See `migrate`. Absent on databases saved before versioning. */
+  schema?: number;
 }
 
 const nowIso = () => new Date().toISOString();
@@ -29,6 +31,7 @@ export function slugify(input: string): string {
 function seed(): Database {
   const createdAt = nowIso();
   return {
+    schema: SCHEMA_VERSION,
     users: [
       {
         id: uid(),
@@ -134,6 +137,16 @@ function seed(): Database {
         slug: 'board-of-directors',
         content:
           'The Board of Directors of Indian Schools in Oman comprises distinguished members representing parent bodies, the community and educational leadership.',
+        status: 'published',
+        createdAt,
+        updatedAt: createdAt,
+      },
+      {
+        id: uid(),
+        title: 'BOD Guidelines',
+        slug: 'bod-guidelines',
+        content:
+          'Guidelines issued by the Board of Directors of Indian Schools in Oman for school management committees, parents and staff.',
         status: 'published',
         createdAt,
         updatedAt: createdAt,
@@ -505,15 +518,8 @@ function seed(): Database {
       experienceHeading: 'EXPERIENCE\n@ISML',
       experienceBody:
         'Get a glimpse of the vibrant and engaging environment of Indian School Muladha and visit the places where our students grow, learn and thrive.',
-      chatSuggestions: {
-        welcome: [...CHAT_SUGGESTIONS.welcome],
-        admissions: [...CHAT_SUGGESTIONS.admissions],
-        programs: [...CHAT_SUGGESTIONS.programs],
-        fees: [...CHAT_SUGGESTIONS.fees],
-        news: [...CHAT_SUGGESTIONS.news],
-        contact: [...CHAT_SUGGESTIONS.contact],
-        campus: [...CHAT_SUGGESTIONS.campus],
-      },
+      chatSuggestions: structuredClone(CHAT_SUGGESTIONS),
+      chatFaqs: [],
       experienceImages: [
         {
           id: uid(),
@@ -562,122 +568,131 @@ function seed(): Database {
   };
 }
 
-function seedMenus(): MenuItem[] {
-  const roots: Array<Omit<MenuItem, 'id' | 'parentId'> & { children?: Array<Omit<MenuItem, 'id' | 'parentId' | 'order'>> }> = [
-    { label: 'Home', url: '/', order: 1, active: true, newTab: false },
-    {
-      label: 'About Us',
-      url: '/about',
-      order: 2,
-      active: true,
-      newTab: false,
-      children: [
-        { label: 'Vision & Mission', url: '/p/vision-mission', active: true, newTab: false },
-        { label: 'School Management', url: '/p/school-management', active: true, newTab: false },
-        { label: 'Board Of Directors', url: '/p/board-of-directors', active: true, newTab: false },
-        {
-          label: 'Mandatory Public Disclosure',
-          url: '/p/mandatory-public-disclosure',
-          active: true,
-          newTab: false,
-        },
-        { label: 'Academics', url: '/academics', active: true, newTab: false },
-        { label: 'Faculty', url: '/p/faculty', active: true, newTab: false },
-        { label: 'Infrastructure', url: '/p/infrastructure', active: true, newTab: false },
-      ],
-    },
-    {
-      label: 'Admission',
-      url: '/admissions',
-      order: 3,
-      active: true,
-      newTab: false,
-      children: [
-        { label: 'Admission Procedures', url: '/p/admission-procedures', active: true, newTab: false },
-        { label: 'Fee Structure', url: '/p/fee-structure', active: true, newTab: false },
-        { label: 'Transfer Certificate', url: '/p/transfer-certificate', active: true, newTab: false },
-      ],
-    },
-    {
-      label: 'News & Events',
-      url: '/news',
-      order: 4,
-      active: true,
-      newTab: false,
-      children: [
-        { label: 'Circulars', url: '/p/circulars', active: true, newTab: false },
-        { label: 'Results', url: '/p/results', active: true, newTab: false },
-        { label: 'E-Magazine', url: '/p/e-magazine', active: true, newTab: false },
-        { label: 'Press release', url: '/p/press-release', active: true, newTab: false },
-        { label: 'School Calendar', url: '/p/school-calendar', active: true, newTab: false },
-        { label: 'Gallery', url: '/gallery', active: true, newTab: false },
-      ],
-    },
-    {
-      label: 'Students Resources',
-      url: '/students',
-      order: 5,
-      active: true,
-      newTab: false,
-      children: [
-        { label: 'Syllabus 2026 – 2027', url: '/p/syllabus-2026-2027', active: true, newTab: false },
-        { label: 'Upcoming Events / Activities', url: '/p/upcoming-events', active: true, newTab: false },
-        { label: 'QUESTION BANK', url: '/p/question-bank', active: true, newTab: false },
-        { label: 'VLE Portal', url: '/p/vle-portal', active: true, newTab: false },
-        { label: 'Useful Links', url: '/p/useful-links', active: true, newTab: false },
-      ],
-    },
-    {
-      label: 'Alumni',
-      url: '/alumni',
-      order: 6,
-      active: true,
-      newTab: false,
-      children: [
-        { label: 'About ALUMNI', url: '/p/about-alumni', active: true, newTab: false },
-        { label: 'ALUMNI Objective', url: '/p/alumni-objective', active: true, newTab: false },
-        { label: 'ALUMNI Registration', url: '/p/alumni-registration', active: true, newTab: false },
-      ],
-    },
-    {
-      label: 'Contact Us',
-      url: '/contact',
-      order: 7,
-      active: true,
-      newTab: false,
-      children: [
-        { label: 'Contact Us', url: '/contact', active: true, newTab: false },
-        { label: 'Careers & Tenders at ISML', url: '/p/careers-tenders', active: true, newTab: false },
-        { label: 'Grievance Redressal System', url: '/p/grievance-redressal', active: true, newTab: false },
-      ],
-    },
-  ];
+/** Mirrors the main menu of isml-oman.com, including its third level. */
+interface SeedMenu {
+  label: string;
+  url: string;
+  children?: SeedMenu[];
+}
 
+const SEED_MENU: SeedMenu[] = [
+  { label: 'Home', url: '/' },
+  {
+    label: 'About Us',
+    url: '/about',
+    children: [
+      { label: 'Vision & Mission', url: '/vision-mission' },
+      { label: 'School Management', url: '/school-management' },
+      {
+        label: 'Board Of Directors',
+        url: '/board-of-directors',
+        children: [{ label: 'BOD Guidelines', url: '/bod-guidelines' }],
+      },
+      { label: 'Mandatory Public Disclosure', url: '/mandatory-public-disclosure' },
+      { label: 'Academics', url: '/academics' },
+      { label: 'Faculty', url: '/faculty' },
+      { label: 'Infrastructure', url: '/infrastructure' },
+    ],
+  },
+  {
+    label: 'Admission',
+    url: '/admissions',
+    children: [
+      { label: 'Admission Procedures', url: '/admission-procedures' },
+      { label: 'Fee Structure', url: '/fee-structure' },
+      { label: 'Transfer Certificate', url: '/transfer-certificate' },
+    ],
+  },
+  {
+    label: 'News & Events',
+    url: '/news',
+    children: [
+      { label: 'Circulars', url: '/circulars' },
+      { label: 'Results', url: '/results' },
+      { label: 'E-Magazine', url: '/e-magazine' },
+      { label: 'Press release', url: '/press-release' },
+      { label: 'School Calendar', url: '/school-calendar' },
+      { label: 'Gallery', url: '/gallery' },
+    ],
+  },
+  {
+    label: 'Students Resources',
+    url: '/students',
+    children: [
+      { label: 'Syllabus 2026 – 2027', url: '/syllabus-2026-2027' },
+      { label: 'Upcoming Events /Activities', url: '/upcoming-events' },
+      { label: 'QUESTION BANK', url: '/question-bank' },
+      { label: 'VLE Portal', url: '/vle-portal' },
+      { label: 'Useful Links', url: '/useful-links' },
+    ],
+  },
+  {
+    label: 'Alumni',
+    url: '/alumni',
+    children: [
+      { label: 'About ALUMNI', url: '/about-alumni' },
+      { label: 'ALUMNI Objective', url: '/alumni-objective' },
+      { label: 'ALUMNI Registration', url: '/alumni-registration' },
+    ],
+  },
+  {
+    label: 'Contact Us',
+    url: '/contact',
+    children: [
+      { label: 'Contact Us', url: '/contact' },
+      { label: 'Careers & Tenders at ISML', url: '/careers-tenders' },
+      { label: 'Grievance Redressal System', url: '/grievance-redressal' },
+    ],
+  },
+];
+
+function seedMenus(): MenuItem[] {
   const menus: MenuItem[] = [];
-  roots.forEach((root) => {
-    const parentId = uid();
-    menus.push({
-      id: parentId,
-      label: root.label,
-      url: root.url,
-      order: root.order,
-      parentId: null,
-      active: root.active,
-      newTab: root.newTab,
-    });
-    root.children?.forEach((child, idx) => {
+  const add = (items: SeedMenu[], parentId: string | null) =>
+    items.forEach((item, idx) => {
+      const id = uid();
       menus.push({
-        id: uid(),
+        id,
         parentId,
-        label: child.label,
-        url: child.url,
+        label: item.label,
+        url: item.url,
         order: idx + 1,
-        active: child.active,
-        newTab: child.newTab,
+        active: true,
+        newTab: false,
       });
+      if (item.children) add(item.children, id);
     });
-  });
+  add(SEED_MENU, null);
   return menus;
+}
+
+/**
+ * One-off upgrades for a CMS database already saved in this browser, so a
+ * visitor who loaded an older build gets fixes without losing their edits.
+ *   2 — menu matches the original site (third level, no `/p/` URLs), and any
+ *       seeded page the stored copy is missing is added.
+ *   3 — Gallery is one page of photos and videos, so its Photos / Videos
+ *       sub-items are removed (other menu edits are kept).
+ */
+const SCHEMA_VERSION = 3;
+
+function migrate(db: Database): boolean {
+  const from = db.schema ?? 1;
+  if (from >= SCHEMA_VERSION) return false;
+  if (from < 2) {
+    const seeded = seed();
+    db.menus = seeded.menus;
+    const slugs = new Set(db.pages.map((p) => p.slug));
+    db.pages.push(...seeded.pages.filter((p) => !slugs.has(p.slug)));
+  }
+  if (from < 3) {
+    const galleries = new Set(db.menus.filter((m) => m.url === '/gallery').map((m) => m.id));
+    db.menus = db.menus.filter(
+      (m) => !(m.parentId && galleries.has(m.parentId) && ['/gallery', '/videos'].includes(m.url)),
+    );
+  }
+  db.schema = SCHEMA_VERSION;
+  return true;
 }
 
 function read(): Database {
@@ -688,7 +703,9 @@ function read(): Database {
       localStorage.setItem(DB_KEY, JSON.stringify(seeded));
       return seeded;
     }
-    return JSON.parse(raw) as Database;
+    const db = JSON.parse(raw) as Database;
+    if (migrate(db)) localStorage.setItem(DB_KEY, JSON.stringify(db));
+    return db;
   } catch {
     const seeded = seed();
     localStorage.setItem(DB_KEY, JSON.stringify(seeded));

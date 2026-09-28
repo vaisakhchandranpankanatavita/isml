@@ -2,6 +2,7 @@ import type { SiteSettings } from '@/types';
 import { CHAT_SUGGESTIONS } from '@/config/site';
 import { storage } from './storage';
 
+/** Settings saved before a chat field existed pick up its default. */
 function withDefaultChatSuggestions(settings: SiteSettings): SiteSettings {
   return {
     ...settings,
@@ -9,6 +10,7 @@ function withDefaultChatSuggestions(settings: SiteSettings): SiteSettings {
       ...CHAT_SUGGESTIONS,
       ...settings.chatSuggestions,
     },
+    chatFaqs: settings.chatFaqs ?? [],
   };
 }
 

@@ -90,7 +90,7 @@ export default function Home() {
           </Button>
         </div>
 
-        <dl className="mt-10 grid grid-cols-2 border-t border-neutral-6 sm:grid-cols-4">
+        <dl className="mt-12 grid grid-cols-2 border-t border-neutral-6 sm:grid-cols-4">
           {GLANCE.map((fact, index) => {
             const isNumeric = /^[\d,]+$/.test(fact.value);
             return (
@@ -111,10 +111,10 @@ export default function Home() {
                   {isNumeric ? (
                     <CountUp
                       value={parseInt(fact.value.replace(/,/g, ""), 10) || 0}
-                      className="block whitespace-nowrap font-display text-4xl font-extrabold leading-none text-school-red md:text-5xl"
+                      className="block whitespace-nowrap font-display text-4xl font-bold leading-none text-school-red md:text-5xl"
                     />
                   ) : (
-                    <span className="block whitespace-nowrap font-display text-4xl font-extrabold leading-none text-school-red md:text-5xl">
+                    <span className="block whitespace-nowrap font-display text-4xl font-bold leading-none text-school-red md:text-5xl">
                       {fact.value}
                     </span>
                   )}
@@ -128,21 +128,15 @@ export default function Home() {
         </dl>
       </InlineImagesStatement>
 
-      {settings.k12Programs.length > 0 && (
-        <>
-          <section className="band-dark">
-            <div className="container flex flex-wrap items-center justify-between gap-6 pb-4">
-              <h2 className="text-[2rem] text-neutral-2">
-                {settings.k12Heading || "Kindergarten to Grade 12"}
-              </h2>
-              <Button variant="secondary" as="a" to="/academics">
-                Academics in full
-              </Button>
-            </div>
-          </section>
-          <ProgramGrid programs={settings.k12Programs} />
-        </>
-      )}
+      <ProgramGrid
+        programs={settings.k12Programs}
+        heading={settings.k12Heading || "Kindergarten to Grade 12"}
+        action={
+          <Button variant="secondary" as="a" to="/academics">
+            Academics in full
+          </Button>
+        }
+      />
 
       <SectionBoundary
         fallback={
@@ -170,10 +164,10 @@ export default function Home() {
       <NewsCarousel posts={posts.slice(0, 8)} />
 
       {/* Closing band: tour + resources, the VCASS two-up call to action. */}
-      <section className="band-dark py-[clamp(3.5rem,3.0355rem+1.9876vw,5.5rem)]">
-        <div className="container grid gap-8 md:grid-cols-2 md:gap-0">
+      <section className="band-dark home-section">
+        <div className="container grid gap-10 md:grid-cols-2 md:gap-0">
           <div className="md:pr-14">
-            <h2 className="text-[clamp(2rem,4vw,3rem)] text-neutral-2">
+            <h2 className="home-title text-neutral-2">
               {settings.tourHeading || "Take a virtual tour"}
             </h2>
             <p className="mt-5 max-w-md text-base leading-relaxed text-neutral-4">
@@ -194,8 +188,8 @@ export default function Home() {
               </div>
             )}
           </div>
-          <div className="border-neutral-6 md:border-l md:pl-14">
-            <h2 className="text-[clamp(2rem,4vw,3rem)] text-neutral-2">
+          <div className="border-t border-neutral-6 pt-10 md:border-l md:border-t-0 md:pl-14 md:pt-0">
+            <h2 className="home-title text-neutral-2">
               Student resources
             </h2>
             <p className="mt-5 max-w-md text-base leading-relaxed text-neutral-4">

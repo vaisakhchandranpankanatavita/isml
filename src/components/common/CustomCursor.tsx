@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { motion, useMotionValue, useReducedMotion, useSpring } from 'framer-motion';
 
-const SPRING = { stiffness: 520, damping: 34, mass: 0.35 };
+// Ring trail. Stiff and light so it keeps up with fast flicks instead of
+// visibly lagging behind the pointer.
+const SPRING = { stiffness: 1100, damping: 48, mass: 0.18 };
 
 /**
  * A crisp dot nested inside a fine vector ring. Over a `[data-cursor-text]`
@@ -36,12 +38,17 @@ export default function CustomCursor() {
 
   const targetX = useMotionValue(-100);
   const targetY = useMotionValue(-100);
-  const dotX = useSpring(targetX, { ...SPRING, stiffness: 900, damping: 38, mass: 0.2 });
-  const dotY = useSpring(targetY, { ...SPRING, stiffness: 900, damping: 38, mass: 0.2 });
+  // The dot is the pointer itself: it tracks the raw position with no easing,
+  // so the cursor never feels delayed. Only the ring trails.
+  const dotX = useMotionValue(-100);
+  const dotY = useMotionValue(-100);
   const ringX = useSpring(targetX, SPRING);
   const ringY = useSpring(targetY, SPRING);
   const [magnet, setMagnet] = useState(false);
   const [label, setLabel] = useState<string | null>(null);
+  // Over the chat widget the native cursor takes over (see chatbot.css), so
+  // the dot and ring get out of the way of its buttons and text field.
+  const [hidden, setHidden] = useState(false);
 
   useEffect(() => {
     document.documentElement.classList.toggle('has-custom-cursor', enabled);
@@ -54,19 +61,21 @@ export default function CustomCursor() {
     if (!enabled) return;
 
     const onMove = (e: PointerEvent) => {
-      const labelled = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-cursor-text]');
+      dotX.set(e.clientX);
+      dotY.set(e.clientY);
+      const target = e.target as HTMLElement | null;
+      setHidden(!!target?.closest('[data-native-cursor]'));
+      const labelled = target?.closest<HTMLElement>('[data-cursor-text]');
       setLabel(labelled?.dataset.cursorText || null);
-      const magnetic = (e.target as HTMLElement | null)?.closest<HTMLElement>(
-        '[data-cursor-magnetic]',
-      );
+      const magnetic = target?.closest<HTMLElement>('[data-cursor-magnetic]');
       if (magnetic) {
         const rect = magnetic.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
-        // Pulled mostly toward the element's centre, not fully onto it — a
-        // "liquid gravity" bias rather than a snap.
-        targetX.set(e.clientX * 0.35 + cx * 0.65);
-        targetY.set(e.clientY * 0.35 + cy * 0.65);
+        // Only the ring leans toward the element's centre — a light bias,
+        // so the cursor still goes where the hand goes.
+        targetX.set(e.clientX * 0.7 + cx * 0.3);
+        targetY.set(e.clientY * 0.7 + cy * 0.3);
         setMagnet(true);
       } else {
         targetX.set(e.clientX);
@@ -75,9 +84,17 @@ export default function CustomCursor() {
       }
     };
 
+    const onLeave = () => setHidden(true);
+    const onEnter = () => setHidden(false);
     window.addEventListener('pointermove', onMove, { passive: true });
-    return () => window.removeEventListener('pointermove', onMove);
-  }, [enabled, targetX, targetY]);
+    document.documentElement.addEventListener('pointerleave', onLeave);
+    document.documentElement.addEventListener('pointerenter', onEnter);
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      document.documentElement.removeEventListener('pointerleave', onLeave);
+      document.documentElement.removeEventListener('pointerenter', onEnter);
+    };
+  }, [enabled, targetX, targetY, dotX, dotY]);
 
   if (!enabled) return null;
 
@@ -86,13 +103,14 @@ export default function CustomCursor() {
       <motion.div
         className="cursor-dot z-[210]"
         style={{ x: dotX, y: dotY, marginLeft: -4, marginTop: -4 }}
-        animate={{ opacity: label ? 0 : 1 }}
+        animate={{ opacity: label || hidden ? 0 : 1 }}
+        transition={{ duration: 0.12 }}
       />
       <motion.div
         className={label ? 'cursor-ring cursor-ring--label z-[210]' : 'cursor-ring z-[210]'}
         style={{ x: ringX, y: ringY, marginLeft: -16, marginTop: -16 }}
-        animate={{ scale: label ? 2.4 : magnet ? 1.7 : 1 }}
-        transition={SPRING}
+        animate={{ scale: label ? 2.4 : magnet ? 1.5 : 1, opacity: hidden ? 0 : 1 }}
+        transition={{ ...SPRING, opacity: { duration: 0.12 } }}
       >
         {label}
       </motion.div>

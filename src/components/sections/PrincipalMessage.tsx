@@ -27,9 +27,9 @@ export default function PrincipalMessage({
   return (
     <section
       id="principal"
-      className="band-dark relative isolate overflow-hidden"
+      className="band-dark home-section relative isolate overflow-hidden"
     >
-      <div className="container grid items-center gap-8 py-[clamp(3.5rem,3.0355rem+1.9876vw,5.5rem)] lg:grid-cols-[1fr_minmax(0,440px)] lg:gap-12">
+      <div className="container grid items-center gap-10 lg:grid-cols-[1fr_minmax(0,440px)] lg:gap-16">
         <div className="text-center">
           <motion.p
             className="vc-label text-school-red"
@@ -41,7 +41,7 @@ export default function PrincipalMessage({
             From the Principal
           </motion.p>
           <motion.blockquote
-            className="voice mt-6 text-xl leading-[1.6] text-neutral-1 md:text-2xl lg:text-[1.75rem]"
+            className="voice mx-auto mt-6 max-w-[46ch] text-xl leading-[1.6] text-neutral-1 md:text-2xl lg:text-[1.75rem]"
             initial={reduce ? false : { opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -49,7 +49,7 @@ export default function PrincipalMessage({
           >
             {message}
           </motion.blockquote>
-          <p className="mt-8 font-display text-3xl font-extrabold uppercase leading-none text-neutral-3">
+          <p className="mt-8 font-display text-3xl font-bold uppercase leading-none text-neutral-3">
             {name}
           </p>
           <p className="vc-label mt-2 text-neutral-4">{title}</p>

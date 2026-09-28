@@ -80,7 +80,7 @@ export default function News() {
                       className={
                         selected
                           ? 'border-b-2 border-brand-600 pb-3 text-sm font-semibold text-ink'
-                          : 'border-b-2 border-transparent pb-3 text-sm font-semibold text-ink-muted hover:text-brand-700'
+                          : 'border-b-2 border-transparent pb-3 text-sm font-semibold text-ink-muted hover:text-school-red'
                       }
                     >
                       {f.label}

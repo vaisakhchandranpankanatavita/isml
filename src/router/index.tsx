@@ -47,6 +47,7 @@ const routes: RouteObject[] = [
           { path: 'news', element: <News /> },
           { path: 'news/:slug', element: <NewsDetail /> },
           { path: 'gallery', element: <Gallery /> },
+          { path: 'videos', element: <Navigate to="/gallery" replace /> },
           { path: 'students', element: <Students /> },
           { path: 'alumni', element: <Alumni /> },
           { path: 'contact', element: <Contact /> },

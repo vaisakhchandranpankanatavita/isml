@@ -166,8 +166,8 @@ export default function Hero() {
           by="word"
           className={
             long
-              ? "max-w-[18ch] text-[clamp(2rem,4vw,3rem)] font-extrabold leading-[0.92] tracking-[-0.025em] text-neutral-2"
-              : "max-w-[14ch] text-[clamp(2rem,4vw,3rem)] font-display font-extrabold leading-[0.92] tracking-[-0.025em] text-neutral-2"
+              ? "max-w-[18ch] text-[clamp(2rem,4vw,3rem)] font-bold leading-[0.92] tracking-[-0.025em] text-neutral-2"
+              : "max-w-[14ch] text-[clamp(2rem,4vw,3rem)] font-display font-bold leading-[0.92] tracking-[-0.025em] text-neutral-2"
           }
         />
 
@@ -175,7 +175,7 @@ export default function Hero() {
           initial={reducedMotion ? false : { opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", duration: 0.7, delay: 0.8 }}
-          className="max-w-[42ch] font-display text-lg font-semibold leading-[1.25] tracking-[-0.01em] text-school-red md:text-xl"
+          className="max-w-[42ch] font-display text-lg font-semibold leading-[1.25] tracking-[-0.01em] text-school-red [text-shadow:0_1px_3px_rgb(0_0_0/0.8),0_0_16px_rgb(0_0_0/0.55)] md:text-xl"
         >
           An English-medium, co-educational CBSE school in Al Muladha, Oman,
           from Kindergarten through Grade 12.

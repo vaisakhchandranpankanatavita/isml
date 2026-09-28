@@ -78,6 +78,21 @@ export interface ChatSuggestions {
   news: string[];
   contact: string[];
   campus: string[];
+  students: string[];
+  alumni: string[];
+  transport: string[];
+  /** Offered when the assistant can't answer. */
+  fallback: string[];
+}
+
+/** An answer written by the school, matched on keywords before built-in topics. */
+export interface ChatFaq {
+  id: string;
+  /** Comma-separated words or phrases, e.g. "bus, transport, pick up". */
+  keywords: string;
+  answer: string;
+  linkLabel?: string;
+  linkUrl?: string;
 }
 
 export interface SiteSettings {
@@ -109,6 +124,10 @@ export interface SiteSettings {
   experienceBody: string;
   experienceImages: HomeGalleryImage[];
   chatSuggestions?: ChatSuggestions;
+  // Assistant
+  chatGreeting?: string;
+  chatFallback?: string;
+  chatFaqs?: ChatFaq[];
   // Virtual tour
   tourHeading: string;
   tourBody: string;

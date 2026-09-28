@@ -38,9 +38,9 @@ export default function SectionHeading({
         text={title}
         by="word"
         className={[
-          "text-2xl sm:text-3xl lg:text-4xl",
+          "text-[1.5rem] sm:text-[1.75rem] lg:text-[2rem]",
           eyebrow ? "mt-4" : "",
-          ruled ? "border-b border-paper-line pb-6" : "",
+          ruled ? "border-b border-paper-line pb-4" : "",
         ]
           .filter(Boolean)
           .join(" ")}

@@ -113,7 +113,7 @@ export default function Footer() {
                 </ul>
               </nav>
 
-              <p className="max-w-[12ch] font-display text-[2.85rem] font-extrabold uppercase leading-[0.88] tracking-[-0.03em] text-neutral-2">
+              <p className="max-w-[14ch] font-display text-[2.25rem] font-semibold uppercase leading-[0.95] tracking-[-0.01em] text-neutral-2">
                 {settings.tagline || "In pursuit of excellence"}
               </p>
 
@@ -172,13 +172,13 @@ export default function Footer() {
             >
               {COLUMNS.map((col) => (
                 <div key={col.heading}>
-                  <h2 className="text-xl text-school-red">{col.heading}</h2>
+                  <h2 className="text-lg font-semibold leading-tight tracking-[0.02em] text-school-red">{col.heading}</h2>
                   <ul className="mt-3 space-y-2">
                     {col.links.map((l) => (
                       <li key={l.to}>
                         <Link
                           to={l.to}
-                          className="vc-label text-base text-neutral-3 hover:text-neutral-1"
+                          className="text-[0.95rem] font-normal leading-snug text-neutral-3 transition-colors hover:text-neutral-1"
                         >
                           {l.label}
                         </Link>
@@ -196,7 +196,7 @@ export default function Footer() {
         <div className="container flex flex-col items-start justify-between gap-3 py-4 text-xs text-neutral-5 md:flex-row md:items-center">
           <div className="flex items-center gap-3">
             <img src="/logo.png" alt="" className="h-9 w-9" />
-            <span className="font-display text-base font-extrabold uppercase leading-none text-neutral-3">
+            <span className="font-display text-base font-semibold uppercase leading-none tracking-[0.02em] text-neutral-3">
               {settings.siteName}
             </span>
           </div>

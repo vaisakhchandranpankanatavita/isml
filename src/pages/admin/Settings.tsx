@@ -6,7 +6,7 @@ import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { storage, uid } from '@/services/storage';
 import { useToast } from '@/hooks/useToast';
 import { useAuth } from '@/hooks/useAuth';
-import type { ChatSuggestions, K12Program, HomeGalleryImage } from '@/types';
+import type { ChatFaq, ChatSuggestions, K12Program, HomeGalleryImage } from '@/types';
 import { CHAT_SUGGESTIONS } from '@/config/site';
 
 export default function Settings() {
@@ -30,6 +30,20 @@ export default function Settings() {
         .filter(Boolean),
     });
   };
+
+  // Assistant custom answers
+  const addFaq = () =>
+    set('chatFaqs', [...(form.chatFaqs ?? []), { id: uid(), keywords: '', answer: '' }]);
+  const updateFaq = (id: string, patch: Partial<ChatFaq>) =>
+    set(
+      'chatFaqs',
+      (form.chatFaqs ?? []).map((f) => (f.id === id ? { ...f, ...patch } : f)),
+    );
+  const removeFaq = (id: string) =>
+    set(
+      'chatFaqs',
+      (form.chatFaqs ?? []).filter((f) => f.id !== id),
+    );
 
   // K-12 programs helpers
   const addProgram = () =>
@@ -238,26 +252,125 @@ export default function Settings() {
           />
         </section>
 
+        {/* Assistant (chat) */}
         <section className="card space-y-4 p-6 lg:col-span-2">
           <div>
             <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
-              Assistant suggestions
+              Assistant — messages
             </h2>
             <p className="mt-1 text-sm text-slate-500">
-              Edit the quick-reply suggestions shown for each topic. Enter one
-              suggestion per line.
+              What the chat assistant says first, and when it can't find an answer. Leave
+              blank to use the default wording.
             </p>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
+            <TextArea
+              label="Greeting"
+              rows={3}
+              value={form.chatGreeting ?? ''}
+              placeholder={`Hi, I'm the ${form.siteName || 'ISML'} assistant. I can help with admissions, programmes, fees, news and getting in touch. What would you like to know?`}
+              onChange={(e) => set('chatGreeting', e.target.value)}
+            />
+            <TextArea
+              label="When it has no answer"
+              rows={3}
+              value={form.chatFallback ?? ''}
+              placeholder="I'm not sure I have that information — I'd rather not guess. Please ask the school office directly."
+              onChange={(e) => set('chatFallback', e.target.value)}
+            />
+          </div>
+        </section>
+
+        <section className="card space-y-4 p-6 lg:col-span-2">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                Assistant — custom answers
+              </h2>
+              <p className="mt-1 text-sm text-slate-500">
+                Your own answers to common questions (uniform, transport, timings…). When a
+                visitor's question contains one of the keywords, this answer is used instead
+                of the built-in one.
+              </p>
+            </div>
+            <button type="button" className="btn-outline shrink-0" onClick={addFaq}>
+              + Add answer
+            </button>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {(form.chatFaqs ?? []).map((faq, i) => (
+              <div key={faq.id} className="space-y-3 rounded-md border border-slate-200 p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold uppercase text-slate-500">
+                    Answer #{i + 1}
+                  </span>
+                  <button
+                    type="button"
+                    className="text-xs font-medium text-school-red hover:underline"
+                    onClick={() => removeFaq(faq.id)}
+                  >
+                    Remove
+                  </button>
+                </div>
+                <TextInput
+                  label="Keywords"
+                  hint="Comma-separated words or phrases, e.g. bus, transport, pick up"
+                  value={faq.keywords}
+                  onChange={(e) => updateFaq(faq.id, { keywords: e.target.value })}
+                />
+                <TextArea
+                  label="Answer"
+                  rows={3}
+                  value={faq.answer}
+                  onChange={(e) => updateFaq(faq.id, { answer: e.target.value })}
+                />
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <TextInput
+                    label="Link label (optional)"
+                    value={faq.linkLabel ?? ''}
+                    onChange={(e) => updateFaq(faq.id, { linkLabel: e.target.value })}
+                  />
+                  <TextInput
+                    label="Link URL (optional)"
+                    hint="/page or https://…"
+                    value={faq.linkUrl ?? ''}
+                    onChange={(e) => updateFaq(faq.id, { linkUrl: e.target.value })}
+                  />
+                </div>
+              </div>
+            ))}
+            {(form.chatFaqs ?? []).length === 0 && (
+              <p className="text-sm text-slate-500">
+                No custom answers yet. Click "Add answer" to create one.
+              </p>
+            )}
+          </div>
+        </section>
+
+        <section className="card space-y-4 p-6 lg:col-span-2">
+          <div>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-slate-500">
+              Assistant — suggestions
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              The quick-reply buttons offered after each topic. Enter one suggestion per
+              line.
+            </p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {(
               [
-                ['welcome', 'Welcome'],
-                ['admissions', 'Admissions'],
+                ['welcome', 'Welcome (first message)'],
+                ['admissions', 'Admissions & documents'],
                 ['programs', 'Programmes'],
                 ['fees', 'Fees'],
                 ['news', 'News'],
-                ['contact', 'Contact'],
-                ['campus', 'Campus and gallery'],
+                ['contact', 'Contact & office'],
+                ['campus', 'Campus, facilities & gallery'],
+                ['students', 'Student resources'],
+                ['alumni', 'Alumni'],
+                ['transport', 'Transport'],
+                ['fallback', 'When it has no answer'],
               ] as const
             ).map(([group, label]) => (
               <TextArea

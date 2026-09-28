@@ -24,7 +24,7 @@ export default function InlineImagesStatement({
   const reduce = useReducedMotion();
 
   return (
-    <section className="band-dark relative py-[clamp(4rem,3.5355rem+1.9876vw,6rem)] text-center">
+    <section className="band-dark home-section relative text-center">
       <div className="container">
         <motion.h2
           className="mx-auto max-w-[64rem] text-[clamp(2.15rem,1.6rem+3.2vw,5.25rem)] leading-[0.94] tracking-[-0.02em] text-neutral-2"

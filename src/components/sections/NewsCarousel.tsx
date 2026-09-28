@@ -48,10 +48,10 @@ export default function NewsCarousel({
   };
 
   return (
-    <section className="band-brand py-[clamp(3.5rem,3.0355rem+1.9876vw,5.5rem)]">
+    <section className="band-brand home-section">
       <div className="container">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <h2 className="text-[clamp(1.5768rem,1.2341rem+1.4658vw,3.0518rem)]">
+        <div className="flex flex-wrap items-end justify-between gap-4">
+          <h2 className="home-title">
             {heading}
           </h2>
           <div className="flex items-center gap-3">
@@ -97,10 +97,10 @@ export default function NewsCarousel({
           </div>
         </div>
 
-        <div className="relative mt-8 pt-10 before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-[#ffdead]">
+        <div className="relative mt-6 pt-6 before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-[#ffdead]">
           <div
             ref={trackRef}
-            className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4 pt-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 pt-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {posts.map((post, i) => (
               <motion.article

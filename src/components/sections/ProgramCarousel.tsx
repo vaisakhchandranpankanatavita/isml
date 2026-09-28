@@ -25,7 +25,7 @@ function ProgramGrid({ programs }: ProgramCarouselProps) {
               className="aspect-[4/3] object-cover rounded-xl mb-4"
             />
           )}
-          <p className="text-xs font-semibold text-brand-600 uppercase">
+          <p className="text-xs font-semibold text-school-red uppercase">
             {program.grades}
           </p>
           <h3 className="font-display text-xl font-bold text-ink">

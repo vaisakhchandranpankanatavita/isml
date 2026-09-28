@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 import { postsService } from '@/services/cms.service';
-import { getChatSuggestions, reply, type ChatLink } from './chatEngine';
+import { getChatSuggestions, greeting, reply, type ChatLink } from './chatEngine';
 import Mascot, { usePointerLook } from './Mascot';
 import './chatbot.css';
 
@@ -185,10 +185,7 @@ export default function ChatBot() {
       later(
         () => {
           setTyping(false);
-          pushBot({
-            text: `Hi, I'm the ${settings.siteName || 'ISML'} assistant. I can help with admissions, programmes, fees, news and getting in touch. What would you like to know?`,
-            chips: getChatSuggestions(settings, 'welcome'),
-          });
+          pushBot(greeting(settings));
         },
         reduced ? 0 : 700,
       );
@@ -244,7 +241,7 @@ export default function ChatBot() {
   };
 
   return (
-    <div className="cb" data-open={open || undefined}>
+    <div className="cb" data-open={open || undefined} data-native-cursor>
       <AnimatePresence>
         {open && (
           <motion.section
