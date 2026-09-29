@@ -3,15 +3,12 @@ import { useParams, Link, Navigate, useLocation } from 'react-router-dom';
 import PageHero from '@/components/common/PageHero';
 import { pagesService } from '@/services/cms.service';
 import { storage } from '@/services/storage';
-import { useInvertHover } from '@/hooks/useInvertHover';
 import type { Page } from '@/types';
 
 export default function PublicPage() {
   const { slug = '' } = useParams();
   const { pathname, hash } = useLocation();
-  const [page, setPage] = useState<Page | undefined>(() => pagesService.getBySlug(slug));
-  const onInvertHover = useInvertHover();
-
+  const [page, setPage] = useState<Page | undefined>(() => pagesService.getBySlug(slug));
   useEffect(() => {
     setPage(pagesService.getBySlug(slug));
     return storage.subscribe(() => setPage(pagesService.getBySlug(slug)));
@@ -32,9 +29,7 @@ export default function PublicPage() {
           <div className="container">
             <Link
               to="/"
-              className="btn-primary btn-invert"
-              onPointerEnter={onInvertHover}
-              data-cursor-magnetic
+              className="btn-primary"              data-cursor-magnetic
             >
               Back to home
             </Link>

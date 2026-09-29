@@ -1,4 +1,7 @@
+import { useRef } from "react";
 import { Link } from "react-router-dom";
+import { useGSAP } from "@gsap/react";
+import { gsap } from "@/motion/gsap";
 import { SCHOOL_CONTACT } from "@/config/site";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 
@@ -76,133 +79,92 @@ const SOCIAL: { label: string; href: string; path: string }[] = [
 export default function Footer() {
   const year = new Date().getFullYear();
   const { settings } = useSiteSettings();
+  const bg = useRef<HTMLDivElement>(null);
+
+  // Background drifts y -80 -> 80 across the footer's pass through the viewport.
+  useGSAP(
+    () => {
+      if (!bg.current) return;
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.fromTo(
+          bg.current,
+          { y: -80 },
+          {
+            y: 80,
+            ease: "none",
+            scrollTrigger: { trigger: ".r-footer", start: "top bottom", end: "bottom top", scrub: true },
+          },
+        );
+      });
+      return () => mm.revert();
+    },
+    { scope: bg },
+  );
 
   return (
-    // Navigation footer: a large condensed statement, link directory, and
-    // round social chips on the theme-aware page ground.
-    <footer data-dark-ground className="site-footer band-dark mt-auto">
-      <div
-        aria-hidden
-        className="site-footer__glow pointer-events-none absolute inset-0 overflow-hidden"
-      />
-      <div className="container relative z-10 py-8 sm:py-10">
-        <div className="site-footer__glass rounded-2xl px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,22rem)_1fr] lg:gap-12 xl:gap-16">
-            <div className="flex flex-col items-start gap-6">
-              <nav
-                aria-label="Footer utility"
-                className="self-stretch border-b border-neutral-6 pb-4"
-              >
-                <ul className="flex flex-wrap gap-x-5 gap-y-2">
-                  <li>
-                    <Link
-                      to="/contact"
-                      className="vc-label text-neutral-3 hover:text-school-red"
-                    >
-                      Contact us
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/admissions"
-                      className="vc-label text-neutral-3 hover:text-school-red"
-                    >
-                      Enrol
-                    </Link>
-                  </li>
-                </ul>
-              </nav>
-
-              <p className="max-w-[14ch] font-display text-[2.25rem] font-semibold uppercase leading-[0.95] tracking-[-0.01em] text-neutral-2">
-                {settings.tagline || "In pursuit of excellence"}
-              </p>
-
-              <div className="space-y-3 text-sm text-neutral-4">
-                <address className="whitespace-pre-line not-italic leading-relaxed">
-                  {settings.contactAddress}
-                </address>
-                <p>
-                  <a
-                    href={`tel:${settings.contactPhone.replace(/\s+/g, "")}`}
-                    className="text-neutral-2 hover:text-school-red"
-                  >
-                    {settings.contactPhone}
-                  </a>
-                  {settings.contactFax && (
-                    <span className="block">Fax {settings.contactFax}</span>
-                  )}
-                </p>
-                <p className="flex flex-col">
-                  {settings.contactEmails.map((email) => (
-                    <a
-                      key={email}
-                      href={`mailto:${email}`}
-                      className="text-neutral-2 hover:text-school-red"
-                    >
-                      {email}
-                    </a>
-                  ))}
-                </p>
-              </div>
-
-              <ul className="flex gap-2">
-                {SOCIAL.map((s) => (
-                  <li key={s.label}>
-                    <a
-                      href={s.href}
-                      aria-label={s.label}
-                      className="vc-icon-btn [--btn-bg:#363633] [--btn-fg:#e6e5dd]"
-                    >
-                      <svg
-                        viewBox="0 0 24 24"
-                        className="h-4 w-4"
-                        fill="currentColor"
-                      >
-                        <path d={s.path} />
-                      </svg>
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <nav
-              aria-label="Footer"
-              className="grid content-start gap-x-8 gap-y-7 sm:grid-cols-2 xl:grid-cols-4 xl:gap-x-6"
-            >
-              {COLUMNS.map((col) => (
-                <div key={col.heading}>
-                  <h2 className="text-lg font-semibold leading-tight tracking-[0.02em] text-school-red">{col.heading}</h2>
-                  <ul className="mt-3 space-y-2">
-                    {col.links.map((l) => (
-                      <li key={l.to}>
-                        <Link
-                          to={l.to}
-                          className="text-[0.95rem] font-normal leading-snug text-neutral-3 transition-colors hover:text-neutral-1"
-                        >
-                          {l.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </nav>
-          </div>
-        </div>
+    <footer className="r-footer mt-auto bg-obsidian text-neutral-1" data-role-section="dark">
+      <div ref={bg} aria-hidden className="r-footer__bg flex items-end justify-center">
+        <span className="r-footer__word select-none text-white/[0.06]">ISML</span>
       </div>
 
-      <div className="site-footer__legal relative z-10 border-t border-neutral-6">
-        <div className="container flex flex-col items-start justify-between gap-3 py-4 text-xs text-neutral-5 md:flex-row md:items-center">
+      <div className="container relative z-10 py-16 md:py-24">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,22rem)_1fr]">
+          <div className="flex flex-col items-start gap-6">
+            <p className="font-display text-4xl uppercase leading-none md:text-5xl">
+              {settings.tagline || "In pursuit of excellence"}
+            </p>
+            <address className="whitespace-pre-line text-base not-italic leading-snug text-neutral-4">
+              {settings.contactAddress}
+            </address>
+            <div className="space-y-1 text-base">
+              <a href={`tel:${settings.contactPhone.replace(/\s+/g, "")}`} className="block hover:underline">
+                {settings.contactPhone}
+              </a>
+              {settings.contactEmails.map((email) => (
+                <a key={email} href={`mailto:${email}`} className="block text-neutral-4 hover:text-neutral-1">
+                  {email}
+                </a>
+              ))}
+            </div>
+            <ul className="flex gap-2">
+              {SOCIAL.map((s) => (
+                <li key={s.label}>
+                  <a href={s.href} aria-label={s.label} className="vc-icon-btn">
+                    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+                      <path d={s.path} />
+                    </svg>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <nav aria-label="Footer" className="grid grid-cols-2 content-start gap-x-6 gap-y-10 xl:grid-cols-4">
+            {COLUMNS.map((col) => (
+              <div key={col.heading}>
+                <h2 className="text-xl text-white">{col.heading}</h2>
+                <ul className="mt-4 space-y-2">
+                  {col.links.map((l) => (
+                    <li key={l.to}>
+                      <Link to={l.to} className="text-base text-neutral-4 transition-colors hover:text-neutral-1">
+                        {l.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </nav>
+        </div>
+
+        <div className="mt-16 flex flex-col items-start justify-between gap-3 border-t border-neutral-6 pt-6 text-sm text-neutral-5 md:flex-row md:items-center">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="" className="h-9 w-9" />
-            <span className="font-display text-base font-semibold uppercase leading-none tracking-[0.02em] text-neutral-3">
-              {settings.siteName}
-            </span>
+            <img src="/logo.png" alt="" className="h-8 w-8 object-contain" />
+            <span className="font-display text-base uppercase leading-none text-neutral-3">{settings.siteName}</span>
           </div>
           <p>
-            © {year} {settings.siteName}. CBSE affiliated, English medium,
-            co-educational. Founded 1981.
+            © {year} {settings.siteName}. CBSE affiliated, English medium, co-educational. Founded 1981.
           </p>
         </div>
       </div>

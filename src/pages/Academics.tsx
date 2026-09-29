@@ -1,10 +1,6 @@
-import { motion } from 'framer-motion';
 import PageHero from '@/components/common/PageHero';
 import SectionHeading from '@/components/common/SectionHeading';
 import Media from '@/components/common/Media';
-import GlobalAtmosphere from '@/components/common/GlobalAtmosphere';
-import PerspectiveCard from '@/components/common/PerspectiveCard';
-import TextTrack from '@/components/common/TextTrack';
 import { usePage } from '@/hooks/usePage';
 import { useSiteSettings } from '@/hooks/useSiteSettings';
 
@@ -14,34 +10,24 @@ export default function Academics() {
   const programs = settings.k12Programs;
 
   return (
-    <GlobalAtmosphere>
+    <>
       <PageHero
         title={page?.title ?? 'Academics'}
         subtitle="A CBSE curriculum from Kindergarten through Grade 12."
       />
 
       {page?.content && (
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="section"
+        <section data-r="fade-up" data-delay="0.1"          className="section"
         >
           <div className="container">
             <div className="cms-prose">{page.content}</div>
           </div>
-        </motion.section>
+        </section>
       )}
 
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="section-lg"
+      <section data-r="fade-up" data-delay="0.1"        className="section-lg"
       >
-        <TextTrack text="EXCELLENCE" />
+        <p aria-hidden data-r="fade" className="container overflow-hidden whitespace-nowrap font-display text-[clamp(5rem,20vw,18rem)] leading-[0.85] text-ink/10">EXCELLENCE</p>
         <div className="container">
           <SectionHeading
             eyebrow="Curriculum"
@@ -56,7 +42,7 @@ export default function Academics() {
           {programs.length > 0 ? (
             <div className="mt-10 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
               {programs.map((p) => (
-                <PerspectiveCard key={p.id}>
+                <div key={p.id}>
                   <article className="h-full">
                     <div className="story__media">
                       <Media src={p.coverUrl} alt={p.title} />
@@ -64,7 +50,7 @@ export default function Academics() {
                     <p className="story__cat">{p.grades}</p>
                     <h3 className="story__title">{p.title}</h3>
                   </article>
-                </PerspectiveCard>
+                </div>
               ))}
             </div>
           ) : (
@@ -74,7 +60,7 @@ export default function Academics() {
             </p>
           )}
         </div>
-      </motion.section>
-    </GlobalAtmosphere>
+      </section>
+    </>
   );
 }

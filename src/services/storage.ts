@@ -483,7 +483,7 @@ function seed(): Database {
       principalTitle: 'Principal, Indian School Muladha',
       principalMessage:
         'It is with great pleasure that I welcome you to our school website. At ISML we believe every child is unique, and we strive to nurture curiosity, character and confidence in every learner who walks through our gates.',
-      principalImageUrl: 'https://isml-oman.com/wp-content/uploads/2026/08/Nayer.jpg',
+      principalImageUrl: '/home/principal.jpg',
       k12Heading: 'K–12 journey of your child',
       k12Programs: [
         {
@@ -491,7 +491,7 @@ function seed(): Database {
           title: 'Foundational',
           grades: 'Pre-KG – Grade 2',
           coverUrl:
-            'https://isml-oman.com/wp-content/uploads/2026/05/foun-1-980x653.jpeg',
+            '/home/foundational-cover.png',
         },
         {
           id: uid(),
@@ -512,7 +512,7 @@ function seed(): Database {
           title: 'Senior',
           grades: 'Grade 9 – Grade 12',
           coverUrl:
-            'https://isml-oman.com/wp-content/uploads/2026/05/senior-2-980x551.jpg',
+            '/home/senior-cover.jpg',
         },
       ],
       experienceHeading: 'EXPERIENCE\n@ISML',
@@ -675,8 +675,12 @@ function seedMenus(): MenuItem[] {
  *       sub-items are removed (other menu edits are kept).
  *   4 — Homepage copy and the campus-tour route are updated only where they
  *       still match the previous seed values.
+ *   5 — The Foundational programme cover moves to the local artwork, only
+ *       where it still holds the previous remote seed image.
+ *   6 — The Senior programme cover moves to a full-resolution local copy,
+ *       only where it still holds the previous 980px remote thumbnail.
  */
-const SCHEMA_VERSION = 4;
+const SCHEMA_VERSION = 6;
 
 function migrate(db: Database): boolean {
   const from = db.schema ?? 1;
@@ -722,6 +726,20 @@ function migrate(db: Database): boolean {
     }
     if (db.settings.tourLink === '#tour') {
       db.settings.tourLink = '/gallery';
+    }
+  }
+  if (from < 5) {
+    for (const program of db.settings.k12Programs) {
+      if (program.coverUrl === 'https://isml-oman.com/wp-content/uploads/2026/05/foun-1-980x653.jpeg') {
+        program.coverUrl = '/home/foundational-cover.png';
+      }
+    }
+  }
+  if (from < 6) {
+    for (const program of db.settings.k12Programs) {
+      if (program.coverUrl === 'https://isml-oman.com/wp-content/uploads/2026/05/senior-2-980x551.jpg') {
+        program.coverUrl = '/home/senior-cover.jpg';
+      }
     }
   }
   db.schema = SCHEMA_VERSION;

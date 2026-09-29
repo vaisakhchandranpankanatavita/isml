@@ -21,6 +21,7 @@ export default function Media({
       src={src || DEFAULT_MEDIA_SRC}
       alt={src ? alt : ''}
       loading="lazy"
+      decoding="async"
       onError={(event) => {
         const image = event.currentTarget;
         if (image.src.endsWith(DEFAULT_MEDIA_SRC)) return;

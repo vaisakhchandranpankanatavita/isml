@@ -104,7 +104,7 @@ export default function Students() {
                   }
                   className="group grid gap-1 py-4 transition-colors hover:bg-paper-sunk/70 md:grid-cols-[22rem_1fr] md:gap-6"
                 >
-                  <h3 className="font-display text-lg font-semibold text-ink transition-colors group-hover:text-school-red">
+                  <h3 className="t-h4 text-ink transition-colors group-hover:underline">
                     {r.title}
                   </h3>
                   <p className="text-sm leading-relaxed text-ink-soft">

@@ -1,10 +1,6 @@
-import { motion } from "framer-motion";
 import PageHero from "@/components/common/PageHero";
 import SectionHeading from "@/components/common/SectionHeading";
 import Media from "@/components/common/Media";
-import GlobalAtmosphere from "@/components/common/GlobalAtmosphere";
-import FuturisticElement from "@/components/common/FuturisticElement";
-import TextTrack from "@/components/common/TextTrack";
 import { usePage } from "@/hooks/usePage";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 
@@ -57,7 +53,7 @@ export default function About() {
   const { settings } = useSiteSettings();
 
   return (
-    <GlobalAtmosphere>
+    <>
       <PageHero
         title={page?.title ?? "About the school"}
         subtitle={settings.tagline}
@@ -65,11 +61,7 @@ export default function About() {
       />
 
       {/* ------------------------------------------------------------- story */}
-      <motion.section
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      <section data-r="fade-up" data-delay="0.1"
         className="section-lg"
       >
         <div className="container grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:gap-12">
@@ -85,7 +77,7 @@ export default function About() {
             <dl className="mt-6 divide-y divide-paper-line">
               {VALUES.map((value) => (
                 <div key={value.title} className="py-4">
-                  <dt className="font-display text-base font-semibold text-ink">
+                  <dt className="t-h4 text-ink">
                     {value.title}
                   </dt>
                   <dd className="mt-1 text-sm leading-relaxed text-ink-soft">
@@ -96,7 +88,7 @@ export default function About() {
             </dl>
           </div>
         </div>
-      </motion.section>
+      </section>
 
       {/* -------------------------------------------------------- at a glance */}
       <section className="band band-line section">
@@ -116,15 +108,11 @@ export default function About() {
       </section>
 
       {/* ------------------------------------------------------------ vision */}
-      <motion.section
+      <section data-r="fade-up" data-delay="0.1"
         id="vision"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="section-lg scroll-mt-32"
       >
-        <TextTrack text="LEGACY" />
+        <p aria-hidden data-r="fade" className="container overflow-hidden whitespace-nowrap font-display text-[clamp(5rem,20vw,18rem)] leading-[0.85] text-ink/10">LEGACY</p>
         <div className="container grid gap-8 md:grid-cols-2 md:gap-10">
           <div>
             <SectionHeading title="Vision" />
@@ -144,16 +132,11 @@ export default function About() {
             </p>
           </div>
         </div>
-        <FuturisticElement />
-      </motion.section>
+      </section>
 
       {/* --------------------------------------------------------- management */}
-      <motion.section
+      <section data-r="fade-up" data-delay="0.1"
         id="management"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="band band-line section-lg scroll-mt-32"
       >
         <div className="container">
@@ -173,15 +156,11 @@ export default function About() {
             .
           </p>
         </div>
-      </motion.section>
+      </section>
 
       {/* ------------------------------------------------------------- campus */}
-      <motion.section
+      <section data-r="fade-up" data-delay="0.1"
         id="campus"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="section-lg scroll-mt-32"
       >
         <div className="container">
@@ -198,15 +177,11 @@ export default function About() {
             </figcaption>
           </figure>
         </div>
-      </motion.section>
+      </section>
 
       {/* ----------------------------------------------------- infrastructure */}
-      <motion.section
+      <section data-r="fade-up" data-delay="0.1"
         id="infrastructure"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="band band-line section-lg scroll-mt-32"
       >
         <div className="container">
@@ -214,7 +189,7 @@ export default function About() {
           <dl className="mt-6 grid gap-x-8 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
             {FACILITIES.map((f) => (
               <div key={f.title}>
-                <dt className="font-display text-lg font-semibold text-ink">
+                <dt className="t-h4 text-ink">
                   {f.title}
                 </dt>
                 <dd className="mt-2 text-sm leading-relaxed text-ink-soft">
@@ -224,15 +199,11 @@ export default function About() {
             ))}
           </dl>
         </div>
-      </motion.section>
+      </section>
 
       {/* ---------------------------------------------------------- principal */}
-      <motion.section
+      <section data-r="fade-up" data-delay="0.1"
         id="principal"
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="section-lg scroll-mt-32"
       >
         <div className="container">
@@ -247,7 +218,7 @@ export default function About() {
                 />
               </div>
               <figcaption className="mt-3">
-                <span className="block font-display text-base font-semibold text-ink">
+                <span className="block t-h4 text-ink">
                   {settings.principalName}
                 </span>
                 <span className="block text-sm text-ink-muted">
@@ -261,7 +232,7 @@ export default function About() {
             </blockquote>
           </div>
         </div>
-      </motion.section>
-    </GlobalAtmosphere>
+      </section>
+    </>
   );
 }

@@ -33,24 +33,26 @@
 /* ------------------------------------------------------------------ launcher */
 .cb__launcher {
   position: relative;
-  width: 3.75rem;
-  height: 3.75rem;
-  border-radius: 1.05rem;
-  background: linear-gradient(155deg, #f59d21, #eb8900);
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 1rem 1rem 0.3rem 1rem;
+  background: var(--lime);
   border: none;
-  color: #fff;
+  color: var(--dark);
   cursor: pointer;
   box-shadow:
-    0 10px 24px -6px rgba(193, 79, 68, 0.45),
-    0 2px 6px rgba(0, 0, 0, 0.08);
+    0 8px 18px -6px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgb(0 0 0 / 0.06);
   transition:
-    transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.25s;
+    transform 0.3s cubic-bezier(0.32, 0, 0.29, 0.99),
+    border-radius 0.3s,
+    box-shadow 0.3s;
 }
 .cb__launcher:hover {
+  border-radius: 1rem;
   box-shadow:
-    0 14px 30px -6px rgba(193, 79, 68, 0.5),
-    0 2px 6px rgba(0, 0, 0, 0.1);
+    0 10px 22px -6px rgba(0, 0, 0, 0.4),
+    0 0 0 4px rgb(225 237 186 / 0.35);
 }
 .cb__float {
   position: absolute;
@@ -75,7 +77,7 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #f9ab12;
+  background: #ff5a4f;
   border: 2px solid rgb(var(--paper-rgb));
   animation: cb-blink 1.6s ease-in-out infinite;
 }
@@ -113,92 +115,49 @@
 
 /* -------------------------------------------------------------------- mascot */
 .cb-bot {
-  --s: 2.2rem;
+  --s: 1.6rem;
   position: relative;
   display: block;
   width: var(--s);
   height: var(--s);
 }
-.cb-bot__aura {
+.cb-bot__spark {
   position: absolute;
   inset: 0;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 32% 28%, rgba(255, 222, 173, 0.95), transparent 62%),
-    radial-gradient(circle at 68% 38%, rgba(245, 144, 33, 0.85), transparent 66%),
-    radial-gradient(circle at 50% 78%, rgba(249, 171, 18, 0.5), transparent 70%);
-  filter: blur(2.5px) saturate(1.1);
-  animation: cb-aura-drift 7s ease-in-out infinite;
+  overflow: visible;
 }
-.cb__launcher .cb-bot__aura {
-  background:
-    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.9), transparent 62%),
-    radial-gradient(circle at 68% 38%, rgba(255, 255, 255, 0.5), transparent 66%);
+.cb-bot__bubble {
+  fill: currentColor;
 }
-@keyframes cb-aura-drift {
-  50% {
-    filter: blur(3px) saturate(1.25);
-  }
-}
-.cb-bot__face {
-  position: absolute;
-  inset: 0;
-  fill: none;
-  stroke: #fff;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.cb-bot__brow {
-  stroke-width: 2.6;
-}
-.cb-bot__hair {
-  fill: rgba(255, 255, 255, 0.24);
-}
-.cb-bot__head {
-  fill: rgba(255, 255, 255, 0.1);
-}
-.cb-bot__glasses {
-  fill: rgba(31, 30, 29, 0.14);
-  stroke-width: 2.5;
-}
-.cb-bot__glasses-bridge,
-.cb-bot__ear {
-  stroke-width: 2.2;
-}
-.cb-bot__eye {
-  fill: #fff;
-  stroke: none;
+.cb-bot__dot {
+  fill: var(--lime);
   transform-box: fill-box;
   transform-origin: center;
-  animation: cb-blinkeye 5s infinite;
+  animation: cb-dot 1.6s ease-in-out infinite;
 }
-@keyframes cb-blinkeye {
+.cb-bot__dot--2 {
+  animation-delay: 0.18s;
+}
+.cb-bot__dot--3 {
+  animation-delay: 0.36s;
+}
+@keyframes cb-dot {
   0%,
-  92%,
+  60%,
   100% {
-    transform: scaleY(1);
+    transform: translateY(0) scale(1);
   }
-  95% {
-    transform: scaleY(0.1);
+  30% {
+    transform: translateY(-2px) scale(1.25);
   }
 }
-.cb-bot__nose {
-  stroke-width: 1.8;
+/* While the assistant is typing, the dots move faster */
+.cb-bot[data-talking] .cb-bot__dot {
+  animation-duration: 0.7s;
 }
-.cb-bot__collar {
-  stroke-width: 2.4;
-}
-.cb-bot__mouth {
-  transform-box: fill-box;
-  transform-origin: center;
-}
-.cb-bot[data-talking] .cb-bot__mouth {
-  animation: cb-talk 0.32s ease-in-out infinite;
-}
-@keyframes cb-talk {
-  50% {
-    transform: scaleY(2.2) scaleX(0.85);
+@media (prefers-reduced-motion: reduce) {
+  .cb-bot__dot {
+    animation: none;
   }
 }
 
@@ -208,7 +167,7 @@
   display: flex;
   flex-direction: column;
   width: min(24.5rem, calc(100vw - 2.5rem));
-  height: min(35rem, calc(100vh - 8.5rem));
+  height: min(35rem, calc(100dvh - 8.5rem));
   background: var(--cb-bg);
   border: 1px solid var(--cb-line);
   border-radius: 1.75rem;
@@ -233,11 +192,15 @@
   place-items: center;
   width: 2.75rem;
   height: 2.75rem;
-  border-radius: 0.7rem;
-  background: linear-gradient(155deg, #f59d21, #eb8900);
+  border-radius: 50%;
+  background: var(--dark);
+  color: var(--lime);
 }
 .cb__avatar .cb-bot {
-  --s: 1.75rem;
+  --s: 1.5rem;
+}
+.cb__avatar .cb-bot__dot {
+  fill: var(--dark);
 }
 .cb__who {
   flex: 1;

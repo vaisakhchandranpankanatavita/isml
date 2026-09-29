@@ -4,7 +4,6 @@ import PageHero from "@/components/common/PageHero";
 import SectionHeading from "@/components/common/SectionHeading";
 import { usePage } from "@/hooks/usePage";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
-import { useInvertHover } from "@/hooks/useInvertHover";
 
 /**
  * `#register`, `#directory` and `#events` are linked from the main navigation,
@@ -18,7 +17,6 @@ export default function Alumni() {
   const page = usePage("alumni");
   const { settings } = useSiteSettings();
   const [submitted, setSubmitted] = useState(false);
-  const onInvertHover = useInvertHover();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -65,7 +63,7 @@ export default function Alumni() {
                 role="status"
                 className="notice-success"
               >
-                <h3 className="font-display text-lg font-semibold text-ink">
+                <h3 className="t-h4 text-ink">
                   You're on the list
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">
@@ -123,9 +121,8 @@ export default function Alumni() {
                 <div className="sm:col-span-2">
                   <button
                     type="submit"
-                    className="btn-primary btn-invert"
+                    className="btn-primary"
                     data-cursor-magnetic
-                    onPointerEnter={onInvertHover}
                   >
                     Join the register
                   </button>
@@ -168,16 +165,14 @@ export default function Alumni() {
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
               to="/news?category=event"
-              className="btn-primary btn-invert"
+              className="btn-primary"
               data-cursor-magnetic
-              onPointerEnter={onInvertHover}
             >
               See upcoming events
             </Link>
             <Link
               to="/contact"
-              className="btn-outline btn-invert"
-              onPointerEnter={onInvertHover}
+              className="btn-outline"
             >
               Contact the alumni desk
             </Link>

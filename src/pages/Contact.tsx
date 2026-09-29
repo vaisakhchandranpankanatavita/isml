@@ -2,7 +2,6 @@ import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import PageHero from "@/components/common/PageHero";
 import SectionHeading from "@/components/common/SectionHeading";
-import { useInvertHover } from "@/hooks/useInvertHover";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 /**
@@ -13,7 +12,6 @@ export default function Contact() {
   const { settings } = useSiteSettings();
   const emails = (settings.contactEmails ?? []).filter(Boolean);
   const [submitted, setSubmitted] = useState(false);
-  const onInvertHover = useInvertHover();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -34,7 +32,7 @@ export default function Contact() {
 
           <div className="mt-6 grid gap-8 md:grid-cols-3 md:gap-10">
             <div>
-              <h3 className="font-display text-lg font-semibold text-ink">
+              <h3 className="t-h4 text-ink">
                 Address
               </h3>
               <address className="mt-3 whitespace-pre-line text-sm not-italic leading-relaxed text-ink-soft">
@@ -43,7 +41,7 @@ export default function Contact() {
             </div>
 
             <div className="md:border-l md:border-paper-line md:pl-12">
-              <h3 className="font-display text-lg font-semibold text-ink">
+              <h3 className="t-h4 text-ink">
                 Telephone
               </h3>
               {settings.contactPhone ? (
@@ -66,7 +64,7 @@ export default function Contact() {
             </div>
 
             <div className="md:border-l md:border-paper-line md:pl-12">
-              <h3 className="font-display text-lg font-semibold text-ink">
+              <h3 className="t-h4 text-ink">
                 Email
               </h3>
               {emails.length ? (
@@ -109,7 +107,7 @@ export default function Contact() {
                 role="status"
                 className="notice-success mt-6"
               >
-                <h3 className="font-display text-lg font-semibold text-ink">
+                <h3 className="t-h4 text-ink">
                   Message sent
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">
@@ -170,9 +168,8 @@ export default function Contact() {
                 <div className="sm:col-span-2">
                   <button
                     type="submit"
-                    className="btn-primary btn-invert"
+                    className="btn-primary"
                     data-cursor-magnetic
-                    onPointerEnter={onInvertHover}
                   >
                     Send message
                   </button>

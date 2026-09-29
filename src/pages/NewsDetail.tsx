@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Media from '@/components/common/Media';
 import PageHero from '@/components/common/PageHero';
-import { useInvertHover } from '@/hooks/useInvertHover';
 import { postsService } from '@/services/cms.service';
 import { storage } from '@/services/storage';
 import type { Post, PostCategory } from '@/types';
@@ -18,9 +17,7 @@ const CATEGORY_LABEL: Record<PostCategory, string> = {
 
 export default function NewsDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const [post, setPost] = useState<Post | null | undefined>(undefined);
-  const onInvertHover = useInvertHover();
-
+  const [post, setPost] = useState<Post | null | undefined>(undefined);
   useEffect(() => {
     if (!slug) return;
     const refresh = () => setPost(postsService.getBySlug(slug) ?? null);
@@ -50,10 +47,8 @@ export default function NewsDetail() {
           <div className="container">
             <Link
               to="/news"
-              className="btn-primary btn-invert"
-              data-cursor-magnetic
-              onPointerEnter={onInvertHover}
-            >
+              className="btn-primary"
+              data-cursor-magnetic            >
               All news and circulars
             </Link>
           </div>
@@ -92,10 +87,8 @@ export default function NewsDetail() {
           <div className="mt-14 border-t border-paper-line pt-8">
             <Link
               to="/news"
-              className="btn-outline btn-invert"
-              data-cursor-magnetic
-              onPointerEnter={onInvertHover}
-            >
+              className="btn-outline"
+              data-cursor-magnetic            >
               All news and circulars
             </Link>
           </div>

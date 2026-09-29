@@ -2,10 +2,8 @@ import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import PageHero from "@/components/common/PageHero";
 import SectionHeading from "@/components/common/SectionHeading";
-import Parallax from "@/components/motion/Parallax";
 import { usePage } from "@/hooks/usePage";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
-import { useInvertHover } from "@/hooks/useInvertHover";
 
 /**
  * Section ids here are linked from the main navigation (`/admissions#fees`,
@@ -42,7 +40,6 @@ export default function Admissions() {
   const [submitted, setSubmitted] = useState(false);
   const page = usePage("admissions");
   const { settings } = useSiteSettings();
-  const onInvertHover = useInvertHover();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -75,7 +72,7 @@ export default function Admissions() {
                 <li key={step.title} className="flex gap-5 py-6">
                   <span className="step-marker mt-0.5">{i + 1}</span>
                   <div>
-                    <h3 className="font-display text-lg font-semibold text-ink">
+                    <h3 className="t-h4 text-ink">
                       {step.title}
                     </h3>
                     <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
@@ -93,7 +90,7 @@ export default function Admissions() {
               below the address. Centring it within the stretched height
               reads as a deliberate composition instead. */}
           <aside className="flex flex-col justify-center">
-            <Parallax speed={0.85}>
+            <div>
               <SectionHeading title="Admissions office" ruled />
               <dl className="mt-6 divide-y divide-paper-line">
                 {settings.admissionEmail && (
@@ -129,7 +126,7 @@ export default function Admissions() {
                   </dd>
                 </div>
               </dl>
-            </Parallax>
+            </div>
           </aside>
         </div>
       </section>
@@ -149,7 +146,7 @@ export default function Admissions() {
                 role="status"
                 className="notice-success mt-6 sm:p-5"
               >
-                <h3 className="font-display text-lg font-semibold text-ink">
+                <h3 className="t-h4 text-ink">
                   Enquiry sent
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">
@@ -235,9 +232,8 @@ export default function Admissions() {
                 <div className="sm:col-span-2">
                   <button
                     type="submit"
-                    className="btn-primary btn-invert"
+                    className="btn-primary"
                     data-cursor-magnetic
-                    onPointerEnter={onInvertHover}
                   >
                     Send enquiry
                   </button>

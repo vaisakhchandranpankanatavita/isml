@@ -281,13 +281,13 @@ function Lightbox({
                 autoPlay
                 playsInline
                 aria-label={photo.caption || "Video from the school gallery"}
-                className="max-h-[calc(100vh-12rem)] max-w-full rounded-lg shadow-2xl"
+                className="max-h-[calc(100dvh-12rem)] max-w-full rounded-lg shadow-2xl"
               />
             ) : (
               <motion.img
                 src={photo.url}
                 alt={photo.caption || "Photograph from the school gallery"}
-                className="max-h-[calc(100vh-12rem)] max-w-full select-none rounded-lg object-contain shadow-2xl"
+                className="max-h-[calc(100dvh-12rem)] max-w-full select-none rounded-lg object-contain shadow-2xl"
                 draggable={false}
                 // Slow Ken Burns drift while the photo is on screen.
                 initial={{ scale: 1 }}
@@ -419,7 +419,7 @@ export default function Gallery() {
         {all.length === 0 ? (
           <section className="section-lg">
             <div className="container">
-              <h2 className="font-display text-xl font-semibold">Nothing here yet</h2>
+              <h2 className="t-h4">Nothing here yet</h2>
               <p className="body-copy mt-3">
                 Photographs added in Settings and news posts, and photos or videos uploaded to the
                 Media library, appear here.
@@ -460,16 +460,16 @@ export default function Gallery() {
                               setOpen(null);
                             }}
                             className={clsx(
-                              "relative flex items-center gap-2.5 rounded-full border px-4 py-2.5 text-sm font-semibold whitespace-nowrap transition-colors duration-300",
+                              "relative flex items-center gap-2.5 rounded-full border min-h-11 px-4 py-2.5 text-sm font-semibold whitespace-nowrap transition-colors duration-300",
                               selected
-                                ? "border-school-red text-white shadow-md shadow-school-red/15"
-                                : "border-paper-line bg-paper-band/60 text-ink hover:border-school-red/40 hover:bg-paper-band",
+                                ? "border-obsidian text-neutral-1 shadow-md"
+                                : "border-paper-line bg-paper-band/60 text-ink hover:border-obsidian/40 hover:bg-paper-band",
                             )}
                           >
                             {selected && (
                               <motion.span
                                 layoutId="gallery-chip"
-                                className="absolute inset-0 -z-10 rounded-full bg-school-red"
+                                className="absolute inset-0 -z-10 rounded-full bg-obsidian"
                                 transition={{ type: "spring", stiffness: 380, damping: 32 }}
                               />
                             )}

@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import PageHero from '@/components/common/PageHero';
 import Media from '@/components/common/Media';
-import { useInvertHover } from '@/hooks/useInvertHover';
 import { postsService } from '@/services/cms.service';
 import { storage } from '@/services/storage';
 import type { Post, PostCategory } from '@/types';
@@ -35,7 +34,6 @@ export default function News() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [params, setParams] = useSearchParams();
-  const onInvertHover = useInvertHover();
 
   const raw = params.get('category');
   const active: PostCategory | 'all' = isCategory(raw) ? raw : 'all';
@@ -68,7 +66,7 @@ export default function News() {
           {/* Filters are a real control, so they are buttons that change the
               URL — the state is shareable and the back button works. */}
           <nav aria-label="Filter by type" className="border-b border-paper-line">
-            <ul className="-mb-px flex flex-wrap gap-x-7">
+            <ul className="-mb-px flex flex-wrap gap-x-5 sm:gap-x-7">
               {FILTERS.map((f) => {
                 const selected = f.value === active;
                 return (
@@ -79,8 +77,8 @@ export default function News() {
                       aria-current={selected ? 'true' : undefined}
                       className={
                         selected
-                          ? 'border-b-2 border-brand-600 pb-3 text-sm font-semibold text-ink'
-                          : 'border-b-2 border-transparent pb-3 text-sm font-semibold text-ink-muted hover:text-school-red'
+                          ? 'border-b-2 border-brand-600 pb-3 pt-2 text-sm font-semibold text-ink min-h-[2.75rem]'
+                          : 'border-b-2 border-transparent pb-3 pt-2 text-sm font-semibold text-ink-muted min-h-[2.75rem] hover:text-ink'
                       }
                     >
                       {f.label}
@@ -95,7 +93,7 @@ export default function News() {
             <p className="mt-12 text-sm text-ink-muted">Loading stories.</p>
           ) : shown.length === 0 ? (
             <div className="mt-12 max-w-measure">
-              <h2 className="text-xl">
+              <h2 className="t-h4">
                 {active === 'all' ? 'Nothing published yet' : 'Nothing in this section yet'}
               </h2>
               <p className="body-copy mt-3">
@@ -106,9 +104,8 @@ export default function News() {
               {active === 'all' ? (
                 <Link
                   to="/"
-                  className="btn-outline btn-invert mt-7"
+                  className="btn-outline mt-7"
                   data-cursor-magnetic
-                  onPointerEnter={onInvertHover}
                 >
                   Back to home
                 </Link>
@@ -116,9 +113,8 @@ export default function News() {
                 <button
                   type="button"
                   onClick={() => select('all')}
-                  className="btn-outline btn-invert mt-7"
+                  className="btn-outline mt-7"
                   data-cursor-magnetic
-                  onPointerEnter={onInvertHover}
                 >
                   Show everything
                 </button>

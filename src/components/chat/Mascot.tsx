@@ -37,23 +37,17 @@ export function usePointerLook(ref: RefObject<HTMLElement>, enabled = true): Loo
   return { x, y };
 }
 
-/** A teacher-inspired assistant avatar with a squared face and spectacles. */
+/** Compact AI mark: a speech bubble whose three dots ripple, with a small spark; the dots lean toward the pointer. */
 export default function Mascot({ look, talking = false }: { look: Look; talking?: boolean }) {
   return (
     <span className="cb-bot" data-talking={talking || undefined} aria-hidden>
-      <svg className="cb-bot__face" viewBox="0 0 64 64">
-        <path className="cb-bot__hair" d="M13 27 11 19 16 12 25 9 34 10 44 8 52 15 53 27 48 23 43 17 35 20 26 17 19 23Z" />
-        <path className="cb-bot__head" d="M16 22 21 18 29 20 37 17 44 20 49 25V39Q49 49 40 54L32 58 24 54Q15 49 15 39V27Z" />
-        <path className="cb-bot__ear" d="M15 31H12V39H16M49 31H52V39H48" />
-        <path className="cb-bot__brow" d="m19 28 9-1m9 0 9 1" />
-        <rect className="cb-bot__glasses" x="17" y="29" width="13" height="9" rx="2" />
-        <rect className="cb-bot__glasses" x="34" y="29" width="13" height="9" rx="2" />
-        <path className="cb-bot__glasses-bridge" d="M30 32H34M17 32l-3-1M47 32l3-1" />
-        <motion.circle className="cb-bot__eye" cx="23.5" cy="33.5" r="1.5" style={{ x: look.x, y: look.y }} />
-        <motion.circle className="cb-bot__eye" cx="40.5" cy="33.5" r="1.5" style={{ x: look.x, y: look.y }} />
-        <path className="cb-bot__nose" d="m32 35-2 6h4" />
-        <path className="cb-bot__mouth" d="M27 45Q32 49 37 45" />
-        <path className="cb-bot__collar" d="m24 53 8 5 8-5" />
+      <svg className="cb-bot__spark" viewBox="0 0 24 24">
+        <path className="cb-bot__bubble" d="M5 3h11a4 4 0 0 1 4 4v6a4 4 0 0 1-4 4h-5l-4.5 3.6c-.5.4-1.2 0-1.2-.6V17A4 4 0 0 1 1 13V7a4 4 0 0 1 4-4Z" transform="translate(1.5 .5)" />
+        <motion.g style={{ x: look.x, y: look.y }}>
+          <circle className="cb-bot__dot" cx="8.5" cy="10.5" r="1.4" />
+          <circle className="cb-bot__dot cb-bot__dot--2" cx="13" cy="10.5" r="1.4" />
+          <circle className="cb-bot__dot cb-bot__dot--3" cx="17.5" cy="10.5" r="1.4" />
+        </motion.g>
       </svg>
     </span>
   );

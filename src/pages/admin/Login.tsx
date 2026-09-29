@@ -4,10 +4,6 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 import { useToast } from "@/hooks/useToast";
 import { Button } from "@/components/common/Button";
-import GlassPanel from "@/components/common/GlassPanel";
-import GlobalAtmosphere from "@/components/common/GlobalAtmosphere";
-import MeshGradient from "@/components/common/MeshGradient";
-import { motion } from "framer-motion";
 
 export default function Login() {
   const { login } = useAuth();
@@ -45,15 +41,8 @@ export default function Login() {
 
   return (
     <div className="admin-shell relative flex min-h-screen items-center justify-center overflow-hidden bg-paper-sunk p-4">
-      <GlobalAtmosphere />
-      <MeshGradient />
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 w-full max-w-md"
-      >
+      <div className="relative z-10 w-full max-w-md">
         <Link
           to="/"
           className="mb-8 flex items-center justify-center gap-3 group"
@@ -73,7 +62,7 @@ export default function Login() {
           </div>
         </Link>
 
-        <GlassPanel className="border border-paper-line p-6 shadow-xl sm:p-8">
+        <div className="rounded-2xl bg-paper-light border border-paper-line p-6 shadow-xl sm:p-8">
           <div className="mb-6">
             <h1 className="text-3xl font-display font-semibold text-ink">
               Secure Portal
@@ -121,13 +110,9 @@ export default function Login() {
             </div>
 
             {error && (
-              <motion.p
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="p-3 text-sm text-red-400 bg-red-500/10 border border-red-500/20"
-              >
+              <p className="p-3 text-sm text-clay-700 bg-clay-500/10 border border-clay-500/20">
                 {error}
-              </motion.p>
+              </p>
             )}
 
             <Button
@@ -161,8 +146,8 @@ export default function Login() {
               </div>
             </div>
           </div>
-        </GlassPanel>
-      </motion.div>
+        </div>
+      </div>
     </div>
   );
 }

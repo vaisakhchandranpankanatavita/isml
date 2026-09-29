@@ -1,26 +1,13 @@
-import ScaffoldedText from "@/components/motion/ScaffoldedText";
-
 interface SectionHeadingProps {
   eyebrow?: string;
   title: string;
   description?: string;
   align?: "left" | "center";
-  /** Renders a rule beneath the heading, matching the homepage sections. */
+  /** Draws a hairline rule beneath the heading. */
   ruled?: boolean;
 }
 
-/**
- * Section masthead for inner pages.
- *
- * `ruled` draws the underline that the homepage sections use, so a page can
- * match the landing page's structure where it has several sections, and stay
- * quieter where it has one.
- *
- * Shared by nearly every inner page, which makes it the highest-leverage
- * place to wire up the scaffolded text reveal — every `<SectionHeading>` on
- * the site now cascades into view as the reader scrolls to it, with no
- * per-page change required.
- */
+/** Section masthead for inner pages: eyebrow, Anton heading, lead. */
 export default function SectionHeading({
   eyebrow,
   title,
@@ -29,23 +16,29 @@ export default function SectionHeading({
   ruled = false,
 }: SectionHeadingProps) {
   return (
-    <div
-      className={align === "center" ? "mx-auto max-w-measure text-center" : ""}
-    >
-      {eyebrow && <p className="vc-label text-school-red">{eyebrow}</p>}
-      <ScaffoldedText
-        as="h2"
-        text={title}
-        by="word"
+    <div className={align === "center" ? "mx-auto max-w-measure text-center" : ""}>
+      {eyebrow && (
+        <p data-r="fade-up" className="vc-label text-signal-deep">
+          {eyebrow}
+        </p>
+      )}
+      <h2
+        data-r="words"
         className={[
-          "text-[1.5rem] sm:text-[1.75rem] lg:text-[2rem]",
+          "t-h2 break-words",
           eyebrow ? "mt-4" : "",
           ruled ? "border-b border-paper-line pb-4" : "",
         ]
           .filter(Boolean)
           .join(" ")}
-      />
-      {description && <p className="body-copy mt-5">{description}</p>}
+      >
+        {title}
+      </h2>
+      {description && (
+        <p data-r="fade-up" className="body-copy mt-5">
+          {description}
+        </p>
+      )}
     </div>
   );
 }
