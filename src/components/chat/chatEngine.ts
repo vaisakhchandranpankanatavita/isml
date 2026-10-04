@@ -208,10 +208,10 @@ const INTENTS: Intent[] = [
   {
     id: 'about',
     keys: [
-      /\b(about|history|founded|established|since|1981|campus|acres?|size|students?|enrol\w*ment|strength|muladha|isml)\b/,
+      /\b(about|history|founded|established|since|1991|campus|acres?|size|students?|enrol\w*ment|strength|muladha|isml)\b/,
     ],
     answer: ({ settings }) => ({
-      text: `**${settings.siteName}** was founded in 1981 in Al Muladha. \\n\\n- **Community:** Home to ~2,200 students \\n- **Campus:** 16 acres of facilities \\n- **Curriculum:** Continuous CBSE (KG to Grade 12) \\n\\nWould you like to see the **Photo Gallery**?`,
+      text: `**${settings.siteName}** was founded in 1991 in Al Muladha. \\n\\n- **Community:** Home to ~2,200 students \\n- **Campus:** 16 acres of facilities \\n- **Curriculum:** Continuous CBSE (KG to Grade 12) \\n\\nWould you like to see the **Photo Gallery**?`,
       links: [{ label: 'About the school', to: '/about' }],
       chips: getChatSuggestions(settings, 'campus'),
     }),

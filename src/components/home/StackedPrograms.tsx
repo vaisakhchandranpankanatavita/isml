@@ -98,7 +98,7 @@ export default function StackedPrograms({ programs }: { programs: K12Program[] }
               <article
                 key={program.id}
                 data-card
-                className="r-stack__card relative h-[64svh] min-h-[26rem] overflow-hidden rounded-[0.5rem] bg-obsidian text-neutral-1 motion-safe:[grid-area:1/1] lg:h-[74svh]"
+                className="r-stack__card relative h-[52svh] min-h-[22rem] overflow-hidden rounded-[0.5rem] bg-obsidian text-neutral-1 motion-safe:[grid-area:1/1] lg:h-[62svh]"
                 style={{ zIndex: programs.length - i }}
               >
                 <img
@@ -106,7 +106,7 @@ export default function StackedPrograms({ programs }: { programs: K12Program[] }
                   alt=""
                   loading="lazy"
                   data-parallax="off"
-                  className="absolute inset-0 h-full w-full object-cover"
+                  className="absolute inset-0 h-full w-full object-cover object-top"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 flex flex-col justify-between gap-6 p-8 md:flex-row md:items-end md:p-12">

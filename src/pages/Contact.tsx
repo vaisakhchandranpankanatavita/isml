@@ -85,13 +85,14 @@ export default function Contact() {
               )}
             </div>
           </div>
+
         </div>
       </section>
 
       {/* ----------------------------------------------------------- feedback */}
       <section id="feedback" className="band band-line section-lg scroll-mt-32">
-        <div className="container">
-          <div className="max-w-2xl">
+        <div className="container grid gap-10 md:grid-cols-2 md:gap-14">
+          <div>
             <SectionHeading title="Send a message" />
             <p className="body-copy mt-4">
               General enquiries and feedback reach the front office. For
@@ -177,6 +178,18 @@ export default function Contact() {
               </form>
             )}
           </div>
+
+          {settings.contactAddress && (
+            <div className="overflow-hidden rounded-[0.5rem] border border-paper-line md:sticky md:top-32 md:h-fit">
+              <iframe
+                title="School location map"
+                src={`https://www.google.com/maps?q=${encodeURIComponent(settings.contactAddress)}&output=embed`}
+                className="aspect-[4/3] w-full md:aspect-auto md:h-full md:min-h-[26rem]"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          )}
         </div>
       </section>
     </>

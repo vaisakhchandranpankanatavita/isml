@@ -56,7 +56,7 @@ function seed(): Database {
         title: 'About Us',
         slug: 'about',
         content:
-          'Indian School Muladha (ISML) started in 1981 as an English-medium, co-educational school affiliated to CBSE. From a humble beginning with 9 teachers and 90 students, ISML is now one of the largest schools outside the capital area with nearly 2200 students and 98 staff.\n\nLocated on a sprawling 16-acre campus of lush greenery, the school has 56 sections from KG to XII. Facilities include well-equipped laboratories, a library, junior/senior/super-senior computer labs, dance/music/arts rooms and a dedicated KG play area. Science and commerce streams are offered at the senior-secondary level.\n\nThe school has a rich culture of inter-house sports and cultural activities, and has pioneered inter-school festivals in the Sultanate of Oman.',
+          'Indian School Muladha (ISML) started in 1991 as an English-medium, co-educational school affiliated to CBSE. From a humble beginning with 9 teachers and 90 students, ISML is now one of the largest schools outside the capital area with nearly 2200 students and 98 staff.\n\nLocated on a sprawling 16-acre campus of lush greenery, the school has 56 sections from KG to XII. Facilities include well-equipped laboratories, a library, junior/senior/super-senior computer labs, dance/music/arts rooms and a dedicated KG play area. Science and commerce streams are offered at the senior-secondary level.\n\nThe school has a rich culture of inter-house sports and cultural activities, and has pioneered inter-school festivals in the Sultanate of Oman.',
         status: 'published',
         createdAt,
         updatedAt: createdAt,
@@ -581,8 +581,8 @@ const SEED_MENU: SeedMenu[] = [
     label: 'About Us',
     url: '/about',
     children: [
-      { label: 'Vision & Mission', url: '/vision-mission' },
-      { label: 'School Management', url: '/school-management' },
+      { label: 'Vision & Mission', url: '/about#vision' },
+      { label: 'School Management', url: '/about#management' },
       {
         label: 'Board Of Directors',
         url: '/board-of-directors',
@@ -591,16 +591,20 @@ const SEED_MENU: SeedMenu[] = [
       { label: 'Mandatory Public Disclosure', url: '/mandatory-public-disclosure' },
       { label: 'Academics', url: '/academics' },
       { label: 'Faculty', url: '/faculty' },
-      { label: 'Infrastructure', url: '/infrastructure' },
+      { label: 'Infrastructure', url: '/about#infrastructure' },
+      { label: 'Our Campus', url: '/about#campus' },
+      { label: "Principal's Message", url: '/about#principal' },
     ],
   },
   {
     label: 'Admission',
     url: '/admissions',
     children: [
-      { label: 'Admission Procedures', url: '/admission-procedures' },
-      { label: 'Fee Structure', url: '/fee-structure' },
-      { label: 'Transfer Certificate', url: '/transfer-certificate' },
+      { label: 'Admission Procedures', url: '/admissions' },
+      { label: 'Enquiry Form', url: '/admissions#enquire' },
+      { label: 'Fee Structure', url: '/admissions#fees' },
+      { label: 'Age Criteria', url: '/admissions#age' },
+      { label: 'Transfer Certificate', url: '/admissions#tc' },
     ],
   },
   {
@@ -619,8 +623,11 @@ const SEED_MENU: SeedMenu[] = [
     label: 'Students Resources',
     url: '/students',
     children: [
+      { label: 'Time Table', url: '/students#timetable' },
+      { label: 'Home Work', url: '/students#homework' },
       { label: 'Syllabus 2026 – 2027', url: '/syllabus-2026-2027' },
       { label: 'Upcoming Events /Activities', url: '/upcoming-events' },
+      { label: 'CBSE Results', url: '/students#results' },
       { label: 'QUESTION BANK', url: '/question-bank' },
       { label: 'VLE Portal', url: '/vle-portal' },
       { label: 'Useful Links', url: '/useful-links' },
@@ -632,7 +639,9 @@ const SEED_MENU: SeedMenu[] = [
     children: [
       { label: 'About ALUMNI', url: '/about-alumni' },
       { label: 'ALUMNI Objective', url: '/alumni-objective' },
-      { label: 'ALUMNI Registration', url: '/alumni-registration' },
+      { label: 'ALUMNI Registration', url: '/alumni#register' },
+      { label: 'Batch Directory', url: '/alumni#directory' },
+      { label: 'Alumni Events', url: '/alumni#events' },
     ],
   },
   {
@@ -679,8 +688,15 @@ function seedMenus(): MenuItem[] {
  *       where it still holds the previous remote seed image.
  *   6 — The Senior programme cover moves to a full-resolution local copy,
  *       only where it still holds the previous 980px remote thumbnail.
+ *   7 — Several submenu items (About Us, Admission, Students Resources,
+ *       Alumni) pointed at thin stand-alone stub pages instead of the
+ *       detailed section that already exists on the parent page; those URLs
+ *       are repointed to the matching anchor, and the items that were
+ *       missing from the menu entirely (e.g. the Admission enquiry form,
+ *       Time Table) are added, only where the stored menu still matches the
+ *       previous seed.
  */
-const SCHEMA_VERSION = 6;
+const SCHEMA_VERSION = 7;
 
 function migrate(db: Database): boolean {
   const from = db.schema ?? 1;
@@ -741,6 +757,47 @@ function migrate(db: Database): boolean {
         program.coverUrl = '/home/senior-cover.jpg';
       }
     }
+  }
+  if (from < 7) {
+    const REURL: Record<string, string> = {
+      '/vision-mission': '/about#vision',
+      '/school-management': '/about#management',
+      '/infrastructure': '/about#infrastructure',
+      '/admission-procedures': '/admissions',
+      '/fee-structure': '/admissions#fees',
+      '/transfer-certificate': '/admissions#tc',
+      '/alumni-registration': '/alumni#register',
+    };
+    for (const item of db.menus) {
+      if (REURL[item.url]) item.url = REURL[item.url];
+    }
+    const existingUrls = new Set(db.menus.map((m) => m.url));
+    const findParent = (url: string) => db.menus.find((m) => m.url === url && !m.parentId);
+    const appendChild = (parentUrl: string, label: string, url: string) => {
+      if (existingUrls.has(url)) return;
+      const parent = findParent(parentUrl);
+      if (!parent) return;
+      const siblingOrders = db.menus.filter((m) => m.parentId === parent.id).map((m) => m.order);
+      db.menus.push({
+        id: uid(),
+        parentId: parent.id,
+        label,
+        url,
+        order: siblingOrders.length ? Math.max(...siblingOrders) + 1 : 1,
+        active: true,
+        newTab: false,
+      });
+      existingUrls.add(url);
+    };
+    appendChild('/about', 'Our Campus', '/about#campus');
+    appendChild('/about', "Principal's Message", '/about#principal');
+    appendChild('/admissions', 'Enquiry Form', '/admissions#enquire');
+    appendChild('/admissions', 'Age Criteria', '/admissions#age');
+    appendChild('/students', 'Time Table', '/students#timetable');
+    appendChild('/students', 'Home Work', '/students#homework');
+    appendChild('/students', 'CBSE Results', '/students#results');
+    appendChild('/alumni', 'Batch Directory', '/alumni#directory');
+    appendChild('/alumni', 'Alumni Events', '/alumni#events');
   }
   db.schema = SCHEMA_VERSION;
   return true;

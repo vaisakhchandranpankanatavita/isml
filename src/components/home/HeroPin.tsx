@@ -125,7 +125,7 @@ export default function HeroPin() {
             </p>
           ) : (
             <p data-r="fade" data-delay="1.2" className="hidden text-right sm:block">
-              Est. 1981
+              Est. 1991
             </p>
           )}
         </div>

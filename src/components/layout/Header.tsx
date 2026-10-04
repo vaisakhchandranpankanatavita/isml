@@ -152,7 +152,7 @@ export default function Header() {
           <div className="r-header__inner">
             <Link
               to="/"
-              className="flex min-h-11 items-center gap-3"
+              className="flex min-h-11 shrink-0 items-center gap-3"
               aria-label={`${settings.siteName} home`}
               onClick={() => setOpen(false)}
             >
@@ -162,16 +162,28 @@ export default function Header() {
               </span>
             </Link>
 
-            <nav aria-label="Primary" className="hidden lg:block">
-              <ul className="flex items-center gap-8">
+            <nav aria-label="Primary" className="hidden min-w-0 xl:block">
+              <ul className="flex items-center gap-6 whitespace-nowrap 2xl:gap-8">
                 {nodes.map((node) => {
                   const list = flatten(node.children);
                   return (
                     <li key={node.label} className="r-nav-item relative">
-                      <NodeLink
-                        node={node}
-                        className={clsx("r-nav-link", isActive(node, pathname) && "is-active")}
-                      />
+                      {list.length > 0 ? (
+                        // Has a dropdown: the label just opens it (on hover/focus) instead
+                        // of navigating, so a click doesn't jump away before the panel is seen.
+                        <button
+                          type="button"
+                          className={clsx("r-nav-link", isActive(node, pathname) && "is-active")}
+                          aria-haspopup="true"
+                        >
+                          {node.label}
+                        </button>
+                      ) : (
+                        <NodeLink
+                          node={node}
+                          className={clsx("r-nav-link", isActive(node, pathname) && "is-active")}
+                        />
+                      )}
                       {list.length > 0 && (
                         <div className="r-drop">
                           <div className="r-drop__panel">
@@ -191,19 +203,19 @@ export default function Header() {
               </ul>
             </nav>
 
-            <div className="flex items-center gap-3">
+            <div className="flex shrink-0 items-center gap-3">
               <Button
                 as="a"
                 to="/admissions#enquire"
                 variant={light ? "accent" : "dark"}
                 size="sm"
-                className="hidden sm:inline-flex"
+                className="hidden whitespace-nowrap sm:inline-flex"
               >
                 Enquire
               </Button>
               <button
                 type="button"
-                className="r-nav-link -mr-2 px-2 lg:hidden"
+                className="r-nav-link -mr-2 px-2 xl:hidden"
                 aria-expanded={open}
                 aria-controls="r-menu"
                 aria-label={open ? "Close menu" : "Open menu"}
@@ -216,7 +228,7 @@ export default function Header() {
         </div>
       </header>
 
-      <div id="r-menu" className={clsx("r-menu lg:hidden", open && "is-open")} aria-hidden={!open} {...(!open ? { inert: "" as unknown as boolean } : {})}>
+      <div id="r-menu" className={clsx("r-menu xl:hidden", open && "is-open")} aria-hidden={!open} {...(!open ? { inert: "" as unknown as boolean } : {})}>
         {nodes.map((node, i) => (
           <div key={node.label} className="r-menu__item flex flex-col" style={{ "--i": i } as CSSProperties}>
             <NodeLink node={node} onClick={() => setOpen(false)} />

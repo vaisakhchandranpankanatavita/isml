@@ -8,7 +8,7 @@ import type { Page } from '@/types';
 export default function PublicPage() {
   const { slug = '' } = useParams();
   const { pathname, hash } = useLocation();
-  const [page, setPage] = useState<Page | undefined>(() => pagesService.getBySlug(slug));
+  const [page, setPage] = useState<Page | undefined>(() => pagesService.getBySlug(slug));
   useEffect(() => {
     setPage(pagesService.getBySlug(slug));
     return storage.subscribe(() => setPage(pagesService.getBySlug(slug)));
@@ -45,20 +45,22 @@ export default function PublicPage() {
 
       <section className="section-lg">
         <div className="container">
-          {page.coverUrl && (
-            <figure className="mb-10">
-              <div className="aspect-[16/9] overflow-hidden bg-paper-band">
-                <img
-                  src={page.coverUrl}
-                  alt={page.title}
-                  loading="lazy"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            </figure>
-          )}
+          <div className="mx-auto max-w-2xl">
+            {page.coverUrl && (
+              <figure className="mb-10">
+                <div className="aspect-[16/9] overflow-hidden bg-paper-band">
+                  <img
+                    src={page.coverUrl}
+                    alt={page.title}
+                    loading="lazy"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+              </figure>
+            )}
 
-          <article className="cms-prose">{page.content}</article>
+            <article className="cms-prose text-lg">{page.content}</article>
+          </div>
         </div>
       </section>
     </>

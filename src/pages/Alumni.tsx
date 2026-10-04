@@ -95,7 +95,7 @@ export default function Alumni() {
                     id="al-batch"
                     required
                     type="number"
-                    min="1981"
+                    min="1991"
                     max="2026"
                     placeholder="e.g. 2004"
                     className="field-input"
@@ -148,7 +148,7 @@ export default function Alumni() {
           </p>
           <p className="mt-6 text-sm text-ink-muted">
             The register goes back to the first batch to leave the school, in
-            1981.
+            1991.
           </p>
         </div>
       </section>

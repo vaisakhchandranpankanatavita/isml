@@ -164,7 +164,7 @@ export default function Footer() {
             <span className="font-display text-base uppercase leading-none text-neutral-3">{settings.siteName}</span>
           </div>
           <p>
-            © {year} {settings.siteName}. CBSE affiliated, English medium, co-educational. Founded 1981.
+            © {year} {settings.siteName}. CBSE affiliated, English medium, co-educational. Founded 1991.
           </p>
         </div>
       </div>

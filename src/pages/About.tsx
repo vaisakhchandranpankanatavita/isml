@@ -5,7 +5,7 @@ import { usePage } from "@/hooks/usePage";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
 
 const FALLBACK_BODY =
-  "Indian School Muladha (ISML), started in 1981, is an English-medium co-educational school affiliated to CBSE. From a humble beginning with 9 teachers and 90 students, ISML has grown to become one of the largest schools outside the capital area with nearly 2200 students and 98 staff, spread across 16 acres of lush green land.";
+  "Indian School Muladha (ISML), started in 1991, is an English-medium co-educational school affiliated to CBSE. From a humble beginning with 9 teachers and 90 students, ISML has grown to become one of the largest schools outside the capital area with nearly 2200 students and 98 staff, spread across 16 acres of lush green land.";
 
 const VALUES = [
   { title: "Curiosity", body: "We ask questions, and we like finding out." },
@@ -18,7 +18,7 @@ const VALUES = [
 ];
 
 const GLANCE = [
-  { value: "1981", label: "Founded" },
+  { value: "1991", label: "Founded" },
   { value: "2,200", label: "Students" },
   { value: "98", label: "Faculty and staff" },
   { value: "16", label: "Acres of campus" },
@@ -57,7 +57,7 @@ export default function About() {
       <PageHero
         title={page?.title ?? "About the school"}
         subtitle={settings.tagline}
-        eyebrow="Established 1981 in Al Muladha"
+        eyebrow="Established 1991 in Al Muladha"
       />
 
       {/* ------------------------------------------------------------- story */}

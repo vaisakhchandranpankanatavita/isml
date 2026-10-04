@@ -2,12 +2,24 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/common/Button";
 import Media from "@/components/common/Media";
 
-const STATS = [
-  { value: "1981", label: "Founded" },
-  { value: "2200", label: "Students" },
+const FACTS = [
+  { value: "1991", label: "Founded" },
+  { value: "~2,200", label: "Students" },
   { value: "56", label: "Sections" },
-  { value: "16", label: "Acres of campus" },
+  { value: "16 acres", label: "Al Muladha campus" },
 ];
+
+const STAGES = [
+  { name: "Foundational", note: "Pre-KG to Grade 2" },
+  { name: "Preparatory", note: "Grades 3 to 5" },
+  { name: "Middle", note: "Grades 6 to 8" },
+  { name: "Senior", note: "Grades 9 to 12" },
+];
+
+const LANDSCAPE = {
+  src: `${import.meta.env.BASE_URL}home/campus-landscape.svg`,
+  alt: "Illustration of the Indian School Muladha campus beneath the Hajar mountains at golden hour.",
+};
 
 const STORY_IMAGE_2 = {
   src: `${import.meta.env.BASE_URL}home/science-forum.jpg`,
@@ -37,7 +49,7 @@ export function Story() {
       <div className="home-gap grid gap-8 lg:grid-cols-12 lg:gap-14">
         <div className="lg:col-span-5">
           <p data-r="fade-up" className="text-2xl font-semibold leading-tight tracking-[-0.02em] md:text-4xl">
-            Since 1981, Indian School Muladha has helped generations of children learn, grow and find their next step.
+            Since 1991, Indian School Muladha has helped generations of children learn, grow and find their next step.
           </p>
           <p data-r="fade-up" data-delay="0.6" className="body-copy mt-6">
             What began with 9 teachers and 90 students is now an English-medium, co-educational CBSE school for Pre-KG
@@ -63,22 +75,35 @@ export function Story() {
         </figure>
       </div>
 
-      <dl className="home-gap grid grid-cols-2 gap-y-10 border-t border-paper-line pt-10 md:grid-cols-4">
-        {STATS.map((stat) => (
-          <div key={stat.label}>
-            <dd
-              data-r="scramble"
-              data-chars="0123456789"
-              className="font-display text-[clamp(3.5rem,8vw,8rem)] leading-none tracking-[-0.02em]"
-            >
-              {stat.value}
-            </dd>
-            <dt data-r="fade-up" className="mt-2 text-base font-semibold text-ink-soft">
-              {stat.label}
-            </dt>
-          </div>
-        ))}
-      </dl>
+      <div data-r="image" className="r-img home-gap aspect-[16/9] sm:aspect-[21/9]" data-parallax="off">
+        <img src={LANDSCAPE.src} alt={LANDSCAPE.alt} loading="lazy" />
+      </div>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-sm font-semibold text-ink-soft">
+        <span>Affiliated to CBSE, India · Affiliation no. 6130007</span>
+        <Link to="/admissions" className="r-nav-link">
+          Admissions open for 2026–2027 ↗
+        </Link>
+      </div>
+
+      <div className="home-gap overflow-hidden rounded-[0.5rem] border border-paper-line bg-paper-line">
+        <dl className="grid grid-cols-2 gap-px lg:grid-cols-4">
+          {FACTS.map((fact) => (
+            <div key={fact.label} data-r="fade-up" className="flex items-baseline justify-between gap-3 bg-ink px-5 py-3 text-paper">
+              <dd className="font-display text-2xl leading-none md:text-3xl">{fact.value}</dd>
+              <dt className="text-right text-sm font-semibold opacity-70">{fact.label}</dt>
+            </div>
+          ))}
+        </dl>
+        <ul className="mt-px grid gap-px sm:grid-cols-2 lg:grid-cols-4">
+          {STAGES.map((stage, i) => (
+            <li key={stage.name} data-r="fade-up" data-delay={i * 0.1} className="bg-paper p-6">
+              <p className="vc-label">Stage {i + 1}</p>
+              <p className="mt-3 font-display text-3xl uppercase leading-none">{stage.name}</p>
+              <p className="mt-2 text-base font-semibold text-ink-soft">{stage.note}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }

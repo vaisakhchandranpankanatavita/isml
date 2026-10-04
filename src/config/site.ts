@@ -43,8 +43,8 @@ export const PUBLIC_NAV: NavItem[] = [
     to: '/about',
     label: 'About Us',
     children: [
-      { to: '/vision-mission', label: 'Vision & Mission' },
-      { to: '/school-management', label: 'School Management' },
+      { to: '/about#vision', label: 'Vision & Mission' },
+      { to: '/about#management', label: 'School Management' },
       {
         to: '/board-of-directors',
         label: 'Board Of Directors',
@@ -53,16 +53,20 @@ export const PUBLIC_NAV: NavItem[] = [
       { to: '/mandatory-public-disclosure', label: 'Mandatory Public Disclosure' },
       { to: '/academics', label: 'Academics' },
       { to: '/faculty', label: 'Faculty' },
-      { to: '/infrastructure', label: 'Infrastructure' },
+      { to: '/about#infrastructure', label: 'Infrastructure' },
+      { to: '/about#campus', label: 'Our Campus' },
+      { to: '/about#principal', label: "Principal's Message" },
     ],
   },
   {
     to: '/admissions',
     label: 'Admission',
     children: [
-      { to: '/admission-procedures', label: 'Admission Procedures' },
-      { to: '/fee-structure', label: 'Fee Structure' },
-      { to: '/transfer-certificate', label: 'Transfer Certificate' },
+      { to: '/admissions', label: 'Admission Procedures' },
+      { to: '/admissions#enquire', label: 'Enquiry Form' },
+      { to: '/admissions#fees', label: 'Fee Structure' },
+      { to: '/admissions#age', label: 'Age Criteria' },
+      { to: '/admissions#tc', label: 'Transfer Certificate' },
     ],
   },
   {
@@ -81,8 +85,11 @@ export const PUBLIC_NAV: NavItem[] = [
     to: '/students',
     label: 'Students Resources',
     children: [
+      { to: '/students#timetable', label: 'Time Table' },
+      { to: '/students#homework', label: 'Home Work' },
       { to: '/syllabus-2026-2027', label: 'Syllabus 2026 – 2027' },
       { to: '/upcoming-events', label: 'Upcoming Events /Activities' },
+      { to: '/students#results', label: 'CBSE Results' },
       { to: '/question-bank', label: 'QUESTION BANK' },
       { to: '/vle-portal', label: 'VLE Portal' },
       { to: '/useful-links', label: 'Useful Links' },
@@ -94,7 +101,9 @@ export const PUBLIC_NAV: NavItem[] = [
     children: [
       { to: '/about-alumni', label: 'About ALUMNI' },
       { to: '/alumni-objective', label: 'ALUMNI Objective' },
-      { to: '/alumni-registration', label: 'ALUMNI Registration' },
+      { to: '/alumni#register', label: 'ALUMNI Registration' },
+      { to: '/alumni#directory', label: 'Batch Directory' },
+      { to: '/alumni#events', label: 'Alumni Events' },
     ],
   },
   {
